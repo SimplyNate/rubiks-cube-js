@@ -1,30 +1,138 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+    <canvas id="c"></canvas>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script lang="ts">
+import { defineComponent } from 'vue';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+function main() {
+    const canvas = document.querySelector('#c');
+    const renderer = new THREE.WebGLRenderer({
+        canvas,
+        logarithmicDepthBuffer: true,
+        antialias: true,
+    });
+    // @ts-ignore
+    renderer.physicallyCorrectLights = true;
+    const fov = 45;
+    const aspect = 2;  // the canvas default
+    const near = 0.00001;
+    const far = 100;
+    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    camera.position.set(10, 6, 0);
+
+    const controls = new OrbitControls(camera, canvas);
+    // @ts-ignore
+    controls.target.set(0, 5, 0);
+    // @ts-ignore
+    controls.update();
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('black');
+
+    {
+        const planeSize = 40;
+
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load('https://threejs.org/manual/examples/resources/images/checker.png');
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.magFilter = THREE.NearestFilter;
+        const repeats = planeSize / 2;
+        texture.repeat.set(repeats, repeats);
+
+        const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
+        const planeMat = new THREE.MeshPhongMaterial({
+            map: texture,
+            side: THREE.DoubleSide,
+        });
+        const mesh = new THREE.Mesh(planeGeo, planeMat);
+        mesh.rotation.x = Math.PI * -.5;
+        scene.add(mesh);
+    }
+    {
+        const cubeSize = 1;
+        const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+        const cubeMat = new THREE.MeshLambertMaterial({ color: '#ff0000', flatShading: true });
+        const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
+        cubeMesh.position.set(0, 6, 0);
+        scene.add(cubeMesh);
+    }
+
+    {
+        const color = 0xFFFFFF;
+        const intensity = 1;
+        const light = new THREE.DirectionalLight(color, intensity);
+        light.position.set(5, 10, 3);
+        light.target.position.set(0, 0, 0);
+        scene.add(light);
+        scene.add(light.target);
+        const helper = new THREE.DirectionalLightHelper(light);
+        scene.add(helper);
+
+        const secondary_intensity = 0.40;
+        const secondary_light = new THREE.DirectionalLight(color, secondary_intensity);
+        secondary_light.position.set(0, 0, 0);
+        secondary_light.target.position.set(5, 10, 3);
+        scene.add(secondary_light);
+        scene.add(secondary_light.target);
+        const secondary_helper = new THREE.DirectionalLightHelper(secondary_light);
+        scene.add(secondary_helper);
+    }
+
+    function resizeRendererToDisplaySize(renderer) {
+        const canvas = renderer.domElement;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        const needResize = canvas.width !== width || canvas.height !== height;
+        if (needResize) {
+            renderer.setSize(width, height, false);
+        }
+        return needResize;
+    }
+
+    function render() {
+
+        if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+        }
+
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+export default defineComponent({
+    name: 'App',
+    mounted() {
+        main();
+    }
+});
+
+</script>
+<style>
+html, body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+#app {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    height: 100%;
 }
+#c {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
 </style>
