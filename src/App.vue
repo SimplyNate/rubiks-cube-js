@@ -51,41 +51,34 @@ function main() {
         scene.add(mesh);
     }
     {
-        const cubeSize = 1;
-        const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-        const cubeMat = new THREE.MeshLambertMaterial({ color: '#ff0000', flatShading: true });
-        const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
-        cubeMesh.position.set(0, 0, 0);
-        scene.add(cubeMesh);
+        const cubeSize = 0.95;
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                for (let z = 0; z < 3; z++) {
+                    if (x === 1 && y === 1 && z === 1) {
+                        continue;
+                    }
+                    const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+                    const cubeMat = new THREE.MeshLambertMaterial({ color: '#b76060', flatShading: true });
+                    // const cubeMat = new THREE.MeshNormalMaterial();
+                    const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
+                    cubeMesh.position.set(x - 1, y - 1, z - 1);
+                    scene.add(cubeMesh);
+                }
+            }
+        }
     }
-
-    {
-        const color = 0xFFFFFF;
-        const intensity = 1;
-        const light = new THREE.DirectionalLight(color, intensity);
-        light.position.set(5, 10, 3);
-        light.target.position.set(0, 0, 0);
-        scene.add(light);
-        scene.add(light.target);
-        const helper = new THREE.DirectionalLightHelper(light);
-        scene.add(helper);
-
-        const secondary_intensity = 0.40;
-        const secondary_light = new THREE.DirectionalLight(color, secondary_intensity);
-        secondary_light.position.set(-5, -10, -3);
-        secondary_light.target.position.set(0, 0, 0);
-        scene.add(secondary_light);
-        scene.add(secondary_light.target);
-        const secondary_helper = new THREE.DirectionalLightHelper(secondary_light);
-        scene.add(secondary_helper);
-    }
+    const color = 0xFFFFFF;
+    const intensity = 1;
+    const light = new THREE.AmbientLight(color, intensity);
+    light.position.set(15, 5, 5);
+    scene.add(light);
 
     {
         const near = 50;
         const far = 100;
         const color = '#add8e6';
         scene.fog = new THREE.Fog(color, near, far);
-
     }
 
     function resizeRendererToDisplaySize(renderer) {
