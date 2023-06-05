@@ -19,7 +19,7 @@ function main() {
     const near = 0.00001;
     const far = 1000;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(10, 0, 0);
+    camera.position.set(0, 0, -10);
 
     const controls = new OrbitControls(camera, canvas);
     // @ts-ignore
@@ -29,41 +29,28 @@ function main() {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#add8e6');
-
     {
-        const planeSize = 200;
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load('https://threejs.org/manual/examples/resources/images/checker.png');
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.magFilter = THREE.NearestFilter;
-        const repeats = planeSize / 2;
-        texture.repeat.set(repeats, repeats);
-
-        const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-        const planeMat = new THREE.MeshPhongMaterial({
-            map: texture,
-            side: THREE.DoubleSide,
-        });
-        const mesh = new THREE.Mesh(planeGeo, planeMat);
-        mesh.rotation.x = Math.PI * -.5;
-        mesh.position.y = -10;
-        scene.add(mesh);
-    }
-    {
+        const colors = [
+            'red',
+            'green',
+            'orange',
+            'blue',
+            'yellow',
+            'white',
+        ];
         const cubeSize = 0.95;
-        for (let x = 0; x < 3; x++) {
-            for (let y = 0; y < 3; y++) {
-                for (let z = 0; z < 3; z++) {
-                    if (x === 1 && y === 1 && z === 1) {
-                        continue;
-                    }
-                    const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-                    const cubeMat = new THREE.MeshLambertMaterial({ color: '#b76060', flatShading: true });
-                    // const cubeMat = new THREE.MeshNormalMaterial();
-                    const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
-                    cubeMesh.position.set(x - 1, y - 1, z - 1);
-                    scene.add(cubeMesh);
+        for (let s = 0; s < 6; s++) {
+            for (let x = 0; x < 3; x++) {
+                for (let y = 0; y < 3; y++) {
+                    // Draw 1, 2, or 3 planes depending on x y and z
+                    const plane = new THREE.PlaneGeometry(cubeSize, cubeSize);
+                    const color = colors[s];
+                    const mat = new THREE.MeshLambertMaterial({ color, flatShading: true, side: THREE.DoubleSide });
+                    const mesh = new THREE.Mesh(plane, mat);
+                    mesh.position.set(x - 1, y - 1, s);
+                    mesh.rotateY(THREE.MathUtils.degToRad(0));
+                    // adjust rotation depending on x y and z
+                    scene.add(mesh);
                 }
             }
         }
@@ -73,13 +60,6 @@ function main() {
     const light = new THREE.AmbientLight(color, intensity);
     light.position.set(15, 5, 5);
     scene.add(light);
-
-    {
-        const near = 50;
-        const far = 100;
-        const color = '#add8e6';
-        scene.fog = new THREE.Fog(color, near, far);
-    }
 
     function resizeRendererToDisplaySize(renderer) {
         const canvas = renderer.domElement;
