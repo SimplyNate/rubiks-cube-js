@@ -38,19 +38,19 @@ function main() {
             'yellow',
             'white',
         ];
-        const cubeSize = 0.95;
-        for (let s = 0; s < 6; s++) {
-            for (let x = 0; x < 3; x++) {
-                for (let y = 0; y < 3; y++) {
-                    // Draw 1, 2, or 3 planes depending on x y and z
-                    const plane = new THREE.PlaneGeometry(cubeSize, cubeSize);
-                    const color = colors[s];
-                    const mat = new THREE.MeshLambertMaterial({ color, flatShading: true, side: THREE.DoubleSide });
-                    const mesh = new THREE.Mesh(plane, mat);
-                    mesh.position.set(x - 1, y - 1, s);
-                    mesh.rotateY(THREE.MathUtils.degToRad(0));
-                    // adjust rotation depending on x y and z
-                    scene.add(mesh);
+        const materials = colors.map(c => new THREE.MeshLambertMaterial({ color: c, flatShading: true }));
+        const cubeSize = 0.99;
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                for (let z = 0; z < 3; z++) {
+                    if (x === 1 && y === 1 && z === 1) {
+                        continue;
+                    }
+                    const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+                    // const cubeMat = new THREE.MeshNormalMaterial();
+                    const cubeMesh = new THREE.Mesh(cubeGeo, materials);
+                    cubeMesh.position.set(x - 1, y - 1, z - 1);
+                    scene.add(cubeMesh);
                 }
             }
         }
