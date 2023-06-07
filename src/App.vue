@@ -54,6 +54,10 @@ function main() {
                 }
             }
         }
+        const innerCubeGeo = new THREE.BoxGeometry(2.989, 2.989, 2.989);
+        const innerMesh = new THREE.Mesh(innerCubeGeo, new THREE.MeshBasicMaterial({ color: 'black' }));
+        innerMesh.position.set(0, 0, 0);
+        scene.add(innerMesh);
     }
     const color = 0xFFFFFF;
     const intensity = 1;
