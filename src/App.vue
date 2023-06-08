@@ -2,13 +2,18 @@
     <canvas id="c"></canvas>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import PickHelper from './PickHelper';
 
 function main() {
-    const canvas = document.querySelector('#c');
+    const canvas: HTMLCanvasElement = document.querySelector('#c');
+    const pickHelper = new PickHelper(canvas);
+    window.addEventListener('mousemove', pickHelper.setPickPosition);
+    window.addEventListener('mouseout', pickHelper.clearPickPosition);
+    window.addEventListener('mouseleave', pickHelper.clearPickPosition);
     const renderer = new THREE.WebGLRenderer({
         canvas,
         logarithmicDepthBuffer: true,
@@ -29,6 +34,7 @@ function main() {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#add8e6');
+    const cubes = [];
     {
         const colors = [
             'red',
@@ -38,7 +44,7 @@ function main() {
             'yellow',
             'white',
         ];
-        const materials = colors.map(c => new THREE.MeshLambertMaterial({ color: c, flatShading: true }));
+        const materials = colors.map(c => new THREE.MeshLambertMaterial({ color: c, flatShading: false }));
         const cubeSize = 0.99;
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
@@ -51,11 +57,12 @@ function main() {
                     const cubeMesh = new THREE.Mesh(cubeGeo, materials);
                     cubeMesh.position.set(x - 1, y - 1, z - 1);
                     scene.add(cubeMesh);
+                    cubes.push(cubeMesh);
                 }
             }
         }
-        const innerCubeGeo = new THREE.BoxGeometry(2.989, 2.989, 2.989);
-        const innerMesh = new THREE.Mesh(innerCubeGeo, new THREE.MeshBasicMaterial({ color: 'black' }));
+        const innerCubeGeo = new THREE.BoxGeometry(4, 4, 4);
+        const innerMesh = new THREE.Mesh(innerCubeGeo, new THREE.MeshBasicMaterial({ color: 'black', wireframe: true }));
         innerMesh.position.set(0, 0, 0);
         scene.add(innerMesh);
     }
@@ -83,7 +90,7 @@ function main() {
             camera.aspect = canvas.clientWidth / canvas.clientHeight;
             camera.updateProjectionMatrix();
         }
-
+        pickHelper.pick(scene, camera);
         renderer.render(scene, camera);
 
         requestAnimationFrame(render);
@@ -92,11 +99,8 @@ function main() {
     requestAnimationFrame(render);
 }
 
-export default defineComponent({
-    name: 'App',
-    mounted() {
-        main();
-    }
+onMounted(() => {
+    main();
 });
 
 </script>
