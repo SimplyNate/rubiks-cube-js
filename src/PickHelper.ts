@@ -3,11 +3,9 @@ import * as THREE from 'three';
 export default class {
     private raycaster: THREE.Raycaster;
     public pickedObject: null | THREE.Object3D;
-    public canvas: HTMLCanvasElement;
-    constructor(canvas: HTMLCanvasElement) {
+    constructor() {
         this.raycaster = new THREE.Raycaster();
         this.pickedObject = null;
-        this.canvas = canvas;
     }
 
     pick(position: THREE.Vector2, scene: THREE.Scene, camera: THREE.Camera) {

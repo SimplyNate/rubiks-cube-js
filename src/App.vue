@@ -31,7 +31,7 @@ onMounted(() => {
         position.y = -Infinity;
     }
 
-    const pickHelper = new PickHelper(canvas);
+    const pickHelper = new PickHelper();
     const renderer = new THREE.WebGLRenderer({
         canvas,
         logarithmicDepthBuffer: true,
