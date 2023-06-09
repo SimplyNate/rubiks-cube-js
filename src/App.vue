@@ -8,9 +8,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import PickHelper from './PickHelper';
 
-const position = new THREE.Vector2(0, 0);
 
-function main() {
+onMounted(() => {
+    const position = new THREE.Vector2(0, 0);
     const canvas: HTMLCanvasElement = document.querySelector('#c');
     function getCanvasRelativePosition(event: MouseEvent) {
         const rect = canvas.getBoundingClientRect();
@@ -20,21 +20,18 @@ function main() {
         };
     }
 
-    function setPickPosition(position: THREE.Vector2, event: MouseEvent) {
+    function setPickPosition(event: MouseEvent) {
         const pos = getCanvasRelativePosition(event);
         position.x = (pos.x / canvas.width) * 2 - 1;
         position.y = (pos.y / canvas.height) * -2 + 1;
     }
 
-    function clearPickPosition(position: THREE.Vector2) {
+    function clearPickPosition() {
         position.x = -Infinity;
         position.y = -Infinity;
     }
 
     const pickHelper = new PickHelper(canvas);
-    window.addEventListener('mousemove', setPickPosition);
-    window.addEventListener('mouseout', clearPickPosition);
-    window.addEventListener('mouseleave', clearPickPosition);
     const renderer = new THREE.WebGLRenderer({
         canvas,
         logarithmicDepthBuffer: true,
@@ -64,7 +61,7 @@ function main() {
             'blue',
             'yellow',
             'white',
-        ];
+            ];
         const materials = colors.map(c => new THREE.MeshLambertMaterial({ color: c, flatShading: false }));
         const cubeSize = 0.99;
         for (let x = 0; x < 3; x++) {
@@ -82,10 +79,6 @@ function main() {
                 }
             }
         }
-        const innerCubeGeo = new THREE.BoxGeometry(4, 4, 4);
-        const innerMesh = new THREE.Mesh(innerCubeGeo, new THREE.MeshBasicMaterial({ color: 'black', wireframe: true }));
-        innerMesh.position.set(0, 0, 0);
-        scene.add(innerMesh);
     }
     const color = 0xFFFFFF;
     const intensity = 1;
@@ -117,10 +110,9 @@ function main() {
     }
 
     requestAnimationFrame(render);
-}
-
-onMounted(() => {
-    main();
+    window.addEventListener('mousemove', setPickPosition);
+    window.addEventListener('mouseout', clearPickPosition);
+    window.addEventListener('mouseleave', clearPickPosition);
 });
 
 </script>
