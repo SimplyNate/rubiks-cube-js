@@ -8,12 +8,33 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import PickHelper from './PickHelper';
 
+const position = new THREE.Vector2(0, 0);
+
 function main() {
     const canvas: HTMLCanvasElement = document.querySelector('#c');
+    function getCanvasRelativePosition(event: MouseEvent) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (event.clientX - rect.left) * canvas.width / rect.width,
+            y: (event.clientY - rect.top) * canvas.height / rect.height,
+        };
+    }
+
+    function setPickPosition(position: THREE.Vector2, event: MouseEvent) {
+        const pos = getCanvasRelativePosition(event);
+        position.x = (pos.x / canvas.width) * 2 - 1;
+        position.y = (pos.y / canvas.height) * -2 + 1;
+    }
+
+    function clearPickPosition(position: THREE.Vector2) {
+        position.x = -Infinity;
+        position.y = -Infinity;
+    }
+
     const pickHelper = new PickHelper(canvas);
-    window.addEventListener('mousemove', pickHelper.setPickPosition);
-    window.addEventListener('mouseout', pickHelper.clearPickPosition);
-    window.addEventListener('mouseleave', pickHelper.clearPickPosition);
+    window.addEventListener('mousemove', setPickPosition);
+    window.addEventListener('mouseout', clearPickPosition);
+    window.addEventListener('mouseleave', clearPickPosition);
     const renderer = new THREE.WebGLRenderer({
         canvas,
         logarithmicDepthBuffer: true,
@@ -84,13 +105,12 @@ function main() {
     }
 
     function render() {
-
         if (resizeRendererToDisplaySize(renderer)) {
             const canvas = renderer.domElement;
             camera.aspect = canvas.clientWidth / canvas.clientHeight;
             camera.updateProjectionMatrix();
         }
-        pickHelper.pick(scene, camera);
+        pickHelper.pick(position, scene, camera);
         renderer.render(scene, camera);
 
         requestAnimationFrame(render);
