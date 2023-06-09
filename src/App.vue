@@ -52,9 +52,6 @@ onMounted(() => {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#add8e6');
-    {
-        const xAxis = new THREE.Line3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(10, 0, 0));
-    }
     const cubes = [];
     {
         const colors = [
@@ -66,7 +63,7 @@ onMounted(() => {
             'white',
             ];
         const materials = colors.map(c => new THREE.MeshLambertMaterial({ color: c, flatShading: false }));
-        const cubeSize = 0.97;
+        const cubeSize = 1;
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
                 for (let z = 0; z < 3; z++) {
@@ -80,16 +77,25 @@ onMounted(() => {
                     scene.add(cubeMesh);
                     cubes.push(cubeMesh);
                     {
-                        const cylinderPositions = [
-                            [-0.5, 0.5, 0, 90],
-                            []
-                        ];
+                        /*
                         const cylinder = new THREE.CylinderGeometry(0.03, 0.03, 1);
                         const cylinderMaterial = new THREE.MeshBasicMaterial({ color: 'black'});
                         const cylinderMesh = new THREE.Mesh(cylinder, cylinderMaterial);
                         cylinderMesh.position.set(x - 1 - 0.5, y - 1 + 0.5, z - 1);
                         cylinderMesh.rotateX(THREE.MathUtils.degToRad(90));
                         scene.add(cylinderMesh);
+
+                        const c2 = new THREE.Mesh(cylinder, cylinderMaterial);
+                        c2.position.set(x - 1 + 0.5, y - 1 + 0.5, z - 1);
+                        c2.rotateX(THREE.MathUtils.degToRad(90));
+                        scene.add(c2);
+                         */
+                        const edgeSize = cubeSize + 0.0005;
+                        const edgeCubeGeo = new THREE.BoxGeometry(edgeSize, edgeSize, edgeSize);
+                        const edgeGeometry = new THREE.EdgesGeometry(edgeCubeGeo);
+                        const lines = new THREE.LineSegments(edgeGeometry, new THREE.LineBasicMaterial({ color: 0x000000 }));
+                        lines.position.set(x - 1, y - 1, z - 1);
+                        scene.add(lines);
                     }
                 }
             }
