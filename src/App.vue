@@ -7,6 +7,7 @@ import { onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import PickHelper from './PickHelper';
+import { createCube } from './shapes';
 
 
 onMounted(() => {
@@ -42,7 +43,7 @@ onMounted(() => {
     const near = 0.00001;
     const far = 1000;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(0, 0, -10);
+    camera.position.set(0, 0, 10);
 
     const controls = new OrbitControls(camera, canvas);
     // @ts-ignore
@@ -51,6 +52,26 @@ onMounted(() => {
     controls.update();
 
     const scene = new THREE.Scene();
+    {
+        const x = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(20, 0, 0),
+        ]);
+        const xMesh = new THREE.Line(x, new THREE.LineBasicMaterial({ color: 'red' }));
+        scene.add(xMesh);
+        const y = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 20, 0),
+        ]);
+        const yMesh = new THREE.Line(y, new THREE.LineBasicMaterial({ color: 'green' }));
+        scene.add(yMesh);
+        const z = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, 20),
+        ]);
+        const zMesh = new THREE.Line(z, new THREE.LineBasicMaterial({ color: 'blue' }));
+        scene.add(zMesh);
+    }
     scene.background = new THREE.Color('#add8e6');
     const cubes = [];
     {
@@ -64,6 +85,7 @@ onMounted(() => {
             ];
         const materials = colors.map(c => new THREE.MeshLambertMaterial({ color: c, flatShading: false }));
         const cubeSize = 1;
+        /*
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
                 for (let z = 0; z < 3; z++) {
@@ -76,30 +98,11 @@ onMounted(() => {
                     cubeMesh.position.set(x - 1, y - 1, z - 1);
                     scene.add(cubeMesh);
                     cubes.push(cubeMesh);
-                    {
-                        /*
-                        const cylinder = new THREE.CylinderGeometry(0.03, 0.03, 1);
-                        const cylinderMaterial = new THREE.MeshBasicMaterial({ color: 'black'});
-                        const cylinderMesh = new THREE.Mesh(cylinder, cylinderMaterial);
-                        cylinderMesh.position.set(x - 1 - 0.5, y - 1 + 0.5, z - 1);
-                        cylinderMesh.rotateX(THREE.MathUtils.degToRad(90));
-                        scene.add(cylinderMesh);
-
-                        const c2 = new THREE.Mesh(cylinder, cylinderMaterial);
-                        c2.position.set(x - 1 + 0.5, y - 1 + 0.5, z - 1);
-                        c2.rotateX(THREE.MathUtils.degToRad(90));
-                        scene.add(c2);
-                         */
-                        const edgeSize = cubeSize + 0.0005;
-                        const edgeCubeGeo = new THREE.BoxGeometry(edgeSize, edgeSize, edgeSize);
-                        const edgeGeometry = new THREE.EdgesGeometry(edgeCubeGeo);
-                        const lines = new THREE.LineSegments(edgeGeometry, new THREE.LineBasicMaterial({ color: 0x000000 }));
-                        lines.position.set(x - 1, y - 1, z - 1);
-                        scene.add(lines);
-                    }
                 }
             }
         }
+        */
+        createCube(scene, 0, 0, 0);
     }
     const color = 0xFFFFFF;
     const intensity = 1;
