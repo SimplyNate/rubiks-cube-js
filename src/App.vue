@@ -102,7 +102,8 @@ onMounted(() => {
             }
         }
         */
-        createCube(scene, 0, 0, 0);
+        const cube = createCube(0, 0, 0);
+        scene.add(cube);
     }
     const color = 0xFFFFFF;
     const intensity = 1;
