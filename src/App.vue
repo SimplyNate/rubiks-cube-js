@@ -75,35 +75,18 @@ onMounted(() => {
     scene.background = new THREE.Color('#add8e6');
     const cubes = [];
     {
-        const colors = [
-            'red',
-            'green',
-            'orange',
-            'blue',
-            'yellow',
-            'white',
-            ];
-        const materials = colors.map(c => new THREE.MeshLambertMaterial({ color: c, flatShading: false }));
-        const cubeSize = 1;
-        /*
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
                 for (let z = 0; z < 3; z++) {
                     if (x === 1 && y === 1 && z === 1) {
                         continue;
                     }
-                    const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-                    // const cubeMat = new THREE.MeshNormalMaterial();
-                    const cubeMesh = new THREE.Mesh(cubeGeo, materials);
-                    cubeMesh.position.set(x - 1, y - 1, z - 1);
-                    scene.add(cubeMesh);
-                    cubes.push(cubeMesh);
+                    const cube = createCube(x - 1, y - 1, z - 1);
+                    scene.add(cube);
+                    cubes.push(cube);
                 }
             }
         }
-        */
-        const cube = createCube(0, 0, 0);
-        scene.add(cube);
     }
     const color = 0xFFFFFF;
     const intensity = 1;
