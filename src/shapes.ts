@@ -10,15 +10,16 @@ const colors = [
     'white',
 ];
 const materials = colors.map(c => new THREE.MeshBasicMaterial({ color: c }));
+const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+
+const cylinder = new THREE.CylinderGeometry(0.03, 0.03, 1.00);
+const cylinderMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
 
 export function createCube(scene: THREE.Scene, x: number, y: number, z: number) {
-    const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
     const cubeMesh = new THREE.Mesh(cubeGeo, materials);
     cubeMesh.position.set(x, y, z);
     scene.add(cubeMesh);
     
-    const cylinder = new THREE.CylinderGeometry(0.03, 0.03, 1);
-    const cylinderMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
     const cylinderMesh = new THREE.Mesh(cylinder, cylinderMaterial);
     cylinderMesh.position.set(x  - 0.5, y - 0.5, z);
     cylinderMesh.rotateX(THREE.MathUtils.degToRad(90));
