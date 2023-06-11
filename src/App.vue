@@ -9,6 +9,10 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import PickHelper from './PickHelper';
 import { createCube } from './shapes';
 
+const selectionDirection: 'vertical' | 'horizontal' = 'vertical';
+const selectionIndex: 0 | 1 | 2 = 0;
+
+
 
 onMounted(() => {
     const position = new THREE.Vector2(0, 0);
@@ -95,7 +99,7 @@ onMounted(() => {
     scene.add(light);
 
     function resizeRendererToDisplaySize(renderer) {
-        const canvas = renderer.domElement;
+        const canvas: HTMLCanvasElement = renderer.domElement;
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
         const needResize = canvas.width !== width || canvas.height !== height;
