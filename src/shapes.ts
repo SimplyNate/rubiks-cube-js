@@ -20,48 +20,48 @@ export function createCube(x: number, y: number, z: number) {
     cubeMesh.position.set(x, y, z);
     
     const c1 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c1.position.set(x  - 0.5, y - 0.5, z);
+    c1.position.set(-0.5, -0.5, 0);
     c1.rotateX(THREE.MathUtils.degToRad(90));
 
     const c2 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c2.position.set(x + 0.5, y - 0.5, z);
+    c2.position.set(0.5, -0.5, 0);
     c2.rotateX(THREE.MathUtils.degToRad(90));
 
     const c3 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c3.position.set(x - 0.5, y + 0.5, z);
+    c3.position.set(-0.5, 0.5, 0);
     c3.rotateX(THREE.MathUtils.degToRad(90));
 
     const c4 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c4.position.set(x + 0.5, y + 0.5, z);
+    c4.position.set(0.5, 0.5, 0);
     c4.rotateX(THREE.MathUtils.degToRad(90));
 
     const c5 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c5.position.set(x, y + 0.5, z + 0.5);
+    c5.position.set(0, 0.5, 0.5);
     c5.rotateZ(THREE.MathUtils.degToRad(90));
 
     const c6 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c6.position.set(x, y + 0.5, z - 0.5);
+    c6.position.set(0, 0.5, -0.5);
     c6.rotateZ(THREE.MathUtils.degToRad(90));
 
     const c7 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c7.position.set(x, y - 0.5, z + 0.5);
+    c7.position.set(0, -0.5, 0.5);
     c7.rotateZ(THREE.MathUtils.degToRad(90));
 
     const c8 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c8.position.set(x, y - 0.5, z - 0.5);
+    c8.position.set(0, -0.5, -0.5);
     c8.rotateZ(THREE.MathUtils.degToRad(90));
 
     const c9 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c9.position.set(x + 0.5, y, z + 0.5);
+    c9.position.set(0.5, 0, 0.5);
 
     const c10 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c10.position.set(x + 0.5, y, z - 0.5);
+    c10.position.set(0.5, 0, -0.5);
 
     const c11 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c11.position.set(x - 0.5, y, z + 0.5);
+    c11.position.set(-0.5, 0, 0.5);
 
     const c12 = new THREE.Mesh(cylinder, cylinderMaterial);
-    c12.position.set(x - 0.5, y, z - 0.5);
+    c12.position.set(-0.5, 0, -0.5);
 
     cubeMesh.add(
         c1, c2, c3, c4, c5, c6,
