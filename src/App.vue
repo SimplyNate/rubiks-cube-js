@@ -111,16 +111,16 @@ onMounted(() => {
             camera.aspect = canvas.clientWidth / canvas.clientHeight;
             camera.updateProjectionMatrix();
         }
-        pickHelper.pick(position, scene, camera);
+        // pickHelper.pick(position, scene, camera);
         renderer.render(scene, camera);
 
         requestAnimationFrame(render);
     }
 
     requestAnimationFrame(render);
-    window.addEventListener('mousemove', setPickPosition);
-    window.addEventListener('mouseout', clearPickPosition);
-    window.addEventListener('mouseleave', clearPickPosition);
+    // window.addEventListener('mousemove', setPickPosition);
+    // window.addEventListener('mouseout', clearPickPosition);
+    // window.addEventListener('mouseleave', clearPickPosition);
 });
 
 </script>
