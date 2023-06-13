@@ -1,5 +1,9 @@
 <template>
     <canvas id="c"></canvas>
+    <div class="menu">
+        <button @click="horizontalHandler">Rotate Horizontally</button>
+        <button @click="verticalHandler">Rotate Vertically</button>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -8,11 +12,21 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import PickHelper from './PickHelper';
 import { createCube } from './shapes';
-
-const selectionDirection: 'vertical' | 'horizontal' = 'vertical';
-const selectionIndex: 0 | 1 | 2 = 0;
+import { rotateHorizontal, rotateVertical } from './animate';
 
 
+const cubes: THREE.Object3D[] = [];
+let scene: THREE.Scene;
+
+function verticalHandler() {
+    console.log('Rotating vertically');
+    rotateVertical(scene, cubes, -1, Math.PI / 2);
+}
+
+function horizontalHandler() {
+    console.log('Rotating horizontally');
+    rotateHorizontal(cubes, -1, Math.PI / 2)
+}
 
 onMounted(() => {
     const position = new THREE.Vector2(0, 0);
@@ -55,7 +69,7 @@ onMounted(() => {
     // @ts-ignore
     controls.update();
 
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
     {
         const x = new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(0, 0, 0),
@@ -77,7 +91,6 @@ onMounted(() => {
         scene.add(zMesh);
     }
     scene.background = new THREE.Color('#add8e6');
-    const cubes = [];
     {
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
@@ -86,8 +99,8 @@ onMounted(() => {
                         continue;
                     }
                     const cube = createCube(x - 1, y - 1, z - 1);
-                    scene.add(cube);
                     cubes.push(cube);
+                    scene.add(cube);
                 }
             }
         }
@@ -144,6 +157,12 @@ html, body {
     width: 100%;
     height: 100%;
     display: block;
+}
+.menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 1rem;
 }
 
 </style>
