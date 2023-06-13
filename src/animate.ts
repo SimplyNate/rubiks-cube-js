@@ -11,28 +11,20 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Object3D[], laye
             rotationGroup.add(cube);
         }
     }
-    console.log(rotationGroup.children.length);
     let counter = 0;
     const i = setInterval(() => {
         counter += 1;
         rotationGroup.rotateX(THREE.MathUtils.degToRad(1));
         if (counter >= degrees) {
             clearInterval(i);
-            for (const cube of rotationGroup.children) {
-                scene.add(cube);
+            for (let i = rotationGroup.children.length - 1; i >= 0; i--) {
+                scene.add(rotationGroup.children[i]);
             }
+            scene.remove(rotationGroup);
+            console.log(scene.children.length);
         }
     }, 0.1);
 
-    /*
-    // Rotate the group of cubes
-    setTimeout(() => {
-        for (const child of rotationGroup.children) {
-            const c = rotationGroup.remove(child);
-            scene.add(c);
-        }
-    }, 1);
-     */
 }
 
 // Rotate cubes horizontally
