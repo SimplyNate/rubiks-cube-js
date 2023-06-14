@@ -6,12 +6,12 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerInde
     // Create a group for the selected cubes
     const rotationGroup = new THREE.Group();
     scene.add(rotationGroup);
-    for (const cube of cubes.children) {
+    for (let i = cubes.children.length - 1; i >= 0; i--) {
+        const cube = cubes.children[i];
         if (cube.position.x === layerIndex) {
             rotationGroup.add(cube);
         }
     }
-  console.log(rotationGroup.children.length);
     let counter = 0;
     const i = setInterval(() => {
         counter += 1;
@@ -22,7 +22,6 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerInde
                 cubes.add(rotationGroup.children[i]);
             }
             scene.remove(rotationGroup);
-            console.log(cubes.children.length);
         }
     }, 0.1);
 }

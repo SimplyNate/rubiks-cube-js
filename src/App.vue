@@ -25,7 +25,7 @@ function verticalHandler() {
 
 function horizontalHandler() {
     console.log('Rotating horizontally');
-    rotateHorizontal(cubes, -1, Math.PI / 2)
+    rotateHorizontal(scene, cubes, -1, Math.PI / 2)
 }
 
 onMounted(() => {
@@ -103,9 +103,6 @@ onMounted(() => {
                 }
             }
         }
-    }
-    for (const cube of cubes.children) {
-        console.log(cube.position);
     }
     scene.add(cubes);
     const color = 0xFFFFFF;
