@@ -1,16 +1,17 @@
 import * as THREE from 'three';
 import {MathUtils} from "three";
 
-export function rotateVertical(scene: THREE.Scene, cubes: THREE.Object3D[], layerIndex: number, angle: number) {
+export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number) {
     const degrees = MathUtils.radToDeg(angle);
     // Create a group for the selected cubes
     const rotationGroup = new THREE.Group();
     scene.add(rotationGroup);
-    for (const cube of cubes) {
+    for (const cube of cubes.children) {
         if (cube.position.x === layerIndex) {
             rotationGroup.add(cube);
         }
     }
+  console.log(rotationGroup.children.length);
     let counter = 0;
     const i = setInterval(() => {
         counter += 1;
@@ -18,13 +19,12 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Object3D[], laye
         if (counter >= degrees) {
             clearInterval(i);
             for (let i = rotationGroup.children.length - 1; i >= 0; i--) {
-                scene.add(rotationGroup.children[i]);
+                cubes.add(rotationGroup.children[i]);
             }
             scene.remove(rotationGroup);
-            console.log(scene.children.length);
+            console.log(cubes.children.length);
         }
     }, 0.1);
-
 }
 
 // Rotate cubes horizontally

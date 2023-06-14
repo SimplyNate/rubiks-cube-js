@@ -15,7 +15,7 @@ import { createCube } from './shapes';
 import { rotateHorizontal, rotateVertical } from './animate';
 
 
-const cubes: THREE.Object3D[] = [];
+const cubes = new THREE.Group();
 let scene: THREE.Scene;
 
 function verticalHandler() {
@@ -99,12 +99,15 @@ onMounted(() => {
                         continue;
                     }
                     const cube = createCube(x - 1, y - 1, z - 1);
-                    cubes.push(cube);
-                    scene.add(cube);
+                    cubes.add(cube);
                 }
             }
         }
     }
+    for (const cube of cubes.children) {
+        console.log(cube.position);
+    }
+    scene.add(cubes);
     const color = 0xFFFFFF;
     const intensity = 1;
     const light = new THREE.AmbientLight(color, intensity);
