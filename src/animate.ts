@@ -33,27 +33,36 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerInde
 }
 
 // Rotate cubes horizontally
-export function rotateHorizontal(cubes: THREE.Object3D[], layerIndex: number, angle: number) {
+export function rotateHorizontal(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number) {
     // Create a group for the selected cubes
     const rotationGroup = new THREE.Group();
-    for (const cube of cubes) {
-        console.log(cube.position.y);
+    scene.add(rotationGroup);
+    const selectedCubes: THREE.Object3D[] = [];
+    for (let i = cubes.children.length - 1; i >= 0; i--) {
+        const cube = cubes.children[i];
         if (cube.position.y === layerIndex) {
+            selectedCubes.push(cube);
             rotationGroup.add(cube);
         }
     }
-    console.log(rotationGroup.children.length);
-
-    // Rotate the group of cubes
+    const initialPositions: THREE.Vector3[] = [];
+    const initialRotations: THREE.Quaternion[] = [];
     rotationGroup.rotateY(angle);
-    /*
-    setTimeout(() => {
-        for (const child of rotationGroup.children) {
-            cube.add(child);
-        }
-        cube.remove(rotationGroup);
-    }, 1);
-     */
+    for (const cube of selectedCubes) {
+        const globalPosition = new THREE.Vector3();
+        cube.getWorldPosition(globalPosition);
+        initialPositions.push(globalPosition);
+        const globalRotation = new THREE.Quaternion();
+        cube.getWorldQuaternion(globalRotation);
+        initialRotations.push(globalRotation);
+    }
+    for (let i = 0; i < selectedCubes.length; i++) {
+        const cube = selectedCubes[i];
+        cubes.add(cube);
+        cube.position.set(initialPositions[i].x, initialPositions[i].y, initialPositions[i].z);
+        cube.rotation.setFromQuaternion(initialRotations[i]);
+    }
+    scene.remove(rotationGroup);
 }
 
 // Example usage:
