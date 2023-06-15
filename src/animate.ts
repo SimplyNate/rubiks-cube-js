@@ -13,17 +13,21 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerInde
         }
     }
     const initialPositions: THREE.Vector3[] = [];
-    const initialRotations: THREE.Euler[] = [];
+    const initialRotations: THREE.Quaternion[] = [];
     rotationGroup.rotateX(angle);
     for (const cube of selectedCubes) {
-        initialPositions.push(cube.position.clone());
-        initialRotations.push(cube.rotation.clone());
+        const globalPosition = new THREE.Vector3();
+        cube.getWorldPosition(globalPosition);
+        initialPositions.push(globalPosition);
+        const globalRotation = new THREE.Quaternion();
+        cube.getWorldQuaternion(globalRotation);
+        initialRotations.push(globalRotation);
     }
     for (let i = 0; i < selectedCubes.length; i++) {
         const cube = selectedCubes[i];
         cubes.add(cube);
         cube.position.set(initialPositions[i].x, initialPositions[i].y, initialPositions[i].z);
-        cube.rotation.set(initialRotations[i]);
+        cube.rotation.setFromQuaternion(initialRotations[i]);
     }
     scene.remove(rotationGroup);
 }
