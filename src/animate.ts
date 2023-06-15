@@ -14,24 +14,17 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerInde
     }
     const initialPositions: THREE.Vector3[] = [];
     const initialRotations: THREE.Euler[] = [];
+    rotationGroup.rotateX(angle);
     for (const cube of selectedCubes) {
         initialPositions.push(cube.position.clone());
         initialRotations.push(cube.rotation.clone());
     }
-    rotationGroup.rotateX(angle);
     for (let i = 0; i < selectedCubes.length; i++) {
-        const cube = selectedCubes[i]
-        cube.position.copy(initialPositions[i]);
-        cube.rotation.copy(initialRotations[i]);
+        const cube = selectedCubes[i];
+        cubes.add(cube);
+        cube.position.add(initialPositions[i]);
+        cube.rotation.add(initialRotations[i]);
     }
-    for (const cube of selectedCubes) {
-        const newPosition = cube.position.clone().applyMatrix4(rotationGroup.matrix);
-        cube.position.copy(newPosition);
-        cube.rotation.copy(rotationGroup.rotation);
-    }
-   for (const cube of selectedCubes) {
-       cubes.add(cube);
-   }
     scene.remove(rotationGroup);
 }
 
