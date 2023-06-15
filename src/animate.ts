@@ -22,8 +22,8 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerInde
     for (let i = 0; i < selectedCubes.length; i++) {
         const cube = selectedCubes[i];
         cubes.add(cube);
-        cube.position.add(initialPositions[i]);
-        cube.rotation.add(initialRotations[i]);
+        cube.position.set(initialPositions[i].x, initialPositions[i].y, initialPositions[i].z);
+        cube.rotation.set(initialRotations[i]);
     }
     scene.remove(rotationGroup);
 }
