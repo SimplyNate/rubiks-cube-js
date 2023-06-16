@@ -3,7 +3,6 @@
     <div class="menu">
         <button @click="horizontalHandler">Rotate Horizontally</button>
         <button @click="verticalHandler">Rotate Vertically</button>
-        <button @click="both">Both</button>
     </div>
 </template>
 
@@ -20,26 +19,11 @@ const cubes = new THREE.Group();
 let scene: THREE.Scene;
 
 function verticalHandler() {
-    console.log('Rotating vertically');
     rotateVertical(scene, cubes, -1, Math.PI / 2);
 }
 
 function horizontalHandler() {
-    console.log('Rotating horizontally');
     rotateHorizontal(scene, cubes, -1, Math.PI / 2)
-}
-
-function both() {
-    console.log('Vertical');
-    rotateVertical(scene, cubes, -1, Math.PI / 2);
-    for (const cube of cubes.children) {
-        console.log(cube.position);
-    }
-    console.log('Horizontal');
-    rotateHorizontal(scene, cubes, -1, Math.PI / 2);
-    for (const cube of cubes.children) {
-        console.log(cube.position);
-    }
 }
 
 onMounted(() => {
