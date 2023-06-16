@@ -3,6 +3,7 @@
     <div class="menu">
         <button @click="horizontalHandler">Rotate Horizontally</button>
         <button @click="verticalHandler">Rotate Vertically</button>
+        <button @click=""></button>
     </div>
 </template>
 
