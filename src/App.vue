@@ -3,7 +3,7 @@
     <div class="menu">
         <button @click="horizontalHandler">Rotate Horizontally</button>
         <button @click="verticalHandler">Rotate Vertically</button>
-        <button @click=""></button>
+        <button @click="zHandler">Rotate Z-Axis</button>
     </div>
 </template>
 
@@ -13,7 +13,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import PickHelper from './PickHelper';
 import { createCube } from './shapes';
-import { rotateHorizontal, rotateVertical } from './animate';
+import { rotateHorizontal, rotateVertical, rotateZ } from './animate';
 
 
 const cubes = new THREE.Group();
@@ -25,6 +25,10 @@ function verticalHandler() {
 
 function horizontalHandler() {
     rotateHorizontal(scene, cubes, -1, Math.PI / 2)
+}
+
+function zHandler() {
+    rotateZ(scene, cubes, -1, Math.PI / 2);
 }
 
 onMounted(() => {

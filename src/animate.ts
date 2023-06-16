@@ -39,3 +39,9 @@ export function rotateHorizontal(scene: THREE.Scene, cubes: THREE.Group, layerIn
     rotationGroup.rotateY(angle);
     deselectCubes(scene, cubes, selectedCubes, rotationGroup);
 }
+
+export function rotateZ(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number) {
+    const { rotationGroup, selectedCubes } = selectCubes(scene, cubes, layerIndex, 'z');
+    rotationGroup.rotateZ(angle);
+    deselectCubes(scene, cubes, selectedCubes, rotationGroup);
+}
