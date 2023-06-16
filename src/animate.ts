@@ -26,7 +26,7 @@ export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerInde
     for (let i = 0; i < selectedCubes.length; i++) {
         const cube = selectedCubes[i];
         cubes.add(cube);
-        cube.position.set(initialPositions[i].x, initialPositions[i].y, initialPositions[i].z);
+        cube.position.set(Math.round(initialPositions[i].x), Math.round(initialPositions[i].y), Math.round(initialPositions[i].z));
         cube.rotation.setFromQuaternion(initialRotations[i]);
     }
     scene.remove(rotationGroup);
@@ -59,7 +59,7 @@ export function rotateHorizontal(scene: THREE.Scene, cubes: THREE.Group, layerIn
     for (let i = 0; i < selectedCubes.length; i++) {
         const cube = selectedCubes[i];
         cubes.add(cube);
-        cube.position.set(initialPositions[i].x, initialPositions[i].y, initialPositions[i].z);
+        cube.position.set(Math.round(initialPositions[i].x), Math.round(initialPositions[i].y), Math.round(initialPositions[i].z));
         cube.rotation.setFromQuaternion(initialRotations[i]);
     }
     scene.remove(rotationGroup);
