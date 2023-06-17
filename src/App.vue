@@ -13,6 +13,12 @@ import PickHelper from './PickHelper';
 import { createCube } from './shapes';
 import { rotateHorizontal, rotateVertical, rotateZ } from './animate';
 
+/*
+Use [up, down] to cycle through [x, y, z] rotation
+Use [left, right] to cycle through the indexes for that axis
+Use [q, w] to make [-1] and [1] direction spins
+Highlight the selection area
+ */
 
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
