@@ -1,9 +1,7 @@
 <template>
     <canvas id="c"></canvas>
     <div class="menu">
-        <button @click="horizontalHandler">Rotate Horizontally</button>
-        <button @click="verticalHandler">Rotate Vertically</button>
-        <button @click="zHandler">Rotate Z-Axis</button>
+        <button @click="randomize">Randomize</button>
     </div>
 </template>
 
@@ -29,6 +27,41 @@ function horizontalHandler(y: number, direction: number) {
 
 function zHandler(z: number, direction: number) {
     rotateZ(scene, cubes, z, Math.PI / 2 * direction);
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function randomIndex() {
+    const indexes = [-1, 0, 1];
+    return indexes[getRandomInt(0, indexes.length)];
+}
+
+function randomDirection() {
+    const directions = [-1, 1];
+    return directions[getRandomInt(0, directions.length)];
+}
+
+function randomHandler() {
+    const handlers = [
+        verticalHandler,
+        horizontalHandler,
+        zHandler,
+    ];
+    return handlers[getRandomInt(0, handlers.length)];
+}
+
+function randomize() {
+    const iterations = 100;
+    for (let i = 0; i < iterations; i++) {
+        const index = randomIndex();
+        const direction = randomDirection();
+        const handler = randomHandler();
+        handler(index, direction);
+    }
 }
 
 function keyListener(evt) {
