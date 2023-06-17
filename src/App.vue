@@ -70,61 +70,35 @@ function randomize() {
     }
 }
 
+const settings = {
+    index: 0,
+    handlers: [
+        verticalHandler,
+        horizontalHandler,
+        zHandler,
+    ],
+    handler: 0,
+};
+
 function keyListener(evt) {
     const { key } = evt;
     if (key === 'q') {
-        horizontalHandler(1, -1);
+        settings.handlers[settings.handler](settings.index, -1);
     }
     else if (key === 'w') {
-        horizontalHandler(1, 1);
+        settings.handlers[settings.handler](settings.index, 1);
     }
-    else if (key === 'a') {
-        horizontalHandler(0, -1);
+    else if (key === 'left') {
+        settings.index = Math.max(settings.index - 1, -1);
     }
-    else if (key === 's') {
-        horizontalHandler(0, 1);
+    else if (key === 'right') {
+        settings.index = Math.min(settings.index + 1, 1);
     }
-    else if (key === 'z') {
-        horizontalHandler(-1, -1);
+    else if (key === 'up') {
+        settings.handler = Math.min(settings.handler + 1, 2);
     }
-    else if (key === 'x') {
-        horizontalHandler(-1, 1);
-    }
-    else if (key === 'e') {
-        verticalHandler(-1, -1);
-    }
-    else if (key === 'd') {
-        verticalHandler(-1, 1);
-    }
-    else if (key === 'r') {
-        verticalHandler(0, -1);
-    }
-    else if (key === 'f') {
-        verticalHandler(0, 1);
-    }
-    else if (key === 't') {
-        verticalHandler(1, -1);
-    }
-    else if (key === 'g') {
-        verticalHandler(1, 1);
-    }
-    else if (key === 'y') {
-        zHandler(-1, -1);
-    }
-    else if (key === 'u') {
-        zHandler(-1, 1);
-    }
-    else if (key === 'h') {
-        zHandler(0, -1);
-    }
-    else if (key === 'j') {
-        zHandler(0, 1);
-    }
-    else if (key === 'n') {
-        zHandler(1, -1);
-    }
-    else if (key === 'm') {
-        zHandler(1, 1);
+    else if (key === 'down') {
+        settings.handler = Math.max(settings.handler - 1, 0);
     }
 }
 
