@@ -19,16 +19,74 @@ import { rotateHorizontal, rotateVertical, rotateZ } from './animate';
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
 
-function verticalHandler() {
-    rotateVertical(scene, cubes, -1, Math.PI / 2);
+function verticalHandler(x: number, direction: number) {
+    rotateVertical(scene, cubes, x, Math.PI / 2 * direction);
 }
 
-function horizontalHandler() {
-    rotateHorizontal(scene, cubes, -1, Math.PI / 2)
+function horizontalHandler(y: number, direction: number) {
+    rotateHorizontal(scene, cubes, y, Math.PI / 2 * direction)
 }
 
-function zHandler() {
-    rotateZ(scene, cubes, -1, Math.PI / 2);
+function zHandler(z: number, direction: number) {
+    rotateZ(scene, cubes, z, Math.PI / 2 * direction);
+}
+
+function keyListener(evt) {
+    const { key } = evt;
+    if (key === 'q') {
+        horizontalHandler(1, -1);
+    }
+    else if (key === 'w') {
+        horizontalHandler(1, 1);
+    }
+    else if (key === 'a') {
+        horizontalHandler(0, -1);
+    }
+    else if (key === 's') {
+        horizontalHandler(0, 1);
+    }
+    else if (key === 'z') {
+        horizontalHandler(-1, -1);
+    }
+    else if (key === 'x') {
+        horizontalHandler(-1, 1);
+    }
+    else if (key === 'e') {
+        verticalHandler(-1, -1);
+    }
+    else if (key === 'd') {
+        verticalHandler(-1, 1);
+    }
+    else if (key === 'r') {
+        verticalHandler(0, -1);
+    }
+    else if (key === 'f') {
+        verticalHandler(0, 1);
+    }
+    else if (key === 't') {
+        verticalHandler(1, -1);
+    }
+    else if (key === 'g') {
+        verticalHandler(1, 1);
+    }
+    else if (key === 'y') {
+        zHandler(-1, -1);
+    }
+    else if (key === 'u') {
+        zHandler(-1, 1);
+    }
+    else if (key === 'h') {
+        zHandler(0, -1);
+    }
+    else if (key === 'j') {
+        zHandler(0, 1);
+    }
+    else if (key === 'n') {
+        zHandler(1, -1);
+    }
+    else if (key === 'm') {
+        zHandler(1, 1);
+    }
 }
 
 onMounted(() => {
@@ -141,6 +199,7 @@ onMounted(() => {
     // window.addEventListener('mousemove', setPickPosition);
     // window.addEventListener('mouseout', clearPickPosition);
     // window.addEventListener('mouseleave', clearPickPosition);
+    window.addEventListener('keydown', keyListener);
 });
 
 </script>
