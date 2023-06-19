@@ -11,7 +11,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import PickHelper from './PickHelper';
 import { createCube } from './shapes';
-import { rotateHorizontal, rotateVertical, rotateZ } from './animate';
+import {rotateHorizontal, rotateVertical, rotateZ, select} from './animate';
 
 /*
 Use [up, down] to cycle through [x, y, z] rotation
@@ -71,35 +71,72 @@ function randomize() {
 }
 
 const settings = {
+    last: [],
     index: 0,
-    handlers: [
-        verticalHandler,
-        horizontalHandler,
-        zHandler,
-    ],
+    handlers: ['x', 'y', 'z'],
+    axis: {
+        x: verticalHandler,
+        y: horizontalHandler,
+        z: zHandler,
+    },
     handler: 0,
 };
+
+
+function makeSelection() {
+    // @ts-ignore
+    const axis: 'x' | 'y' | 'z' = settings.handlers[settings.handler];
+    const selection = select(cubes, settings.index, axis)
+    for (const cube of selection) {
+        // Iterate over all outlining meshes
+        for (const child of cube) {
+            // Access the mesh's material and assign it a new material with the color 'white'
+            console.log(child);
+        }
+    }
+}
 
 function keyListener(evt) {
     const { key } = evt;
     if (key === 'q') {
-        settings.handlers[settings.handler](settings.index, -1);
+        settings.axis[settings.handlers[settings.handler]](settings.index, -1);
     }
     else if (key === 'w') {
-        settings.handlers[settings.handler](settings.index, 1);
+        settings.axis[settings.handlers[settings.handler]](settings.index, 1);
     }
     else if (key === 'left') {
-        settings.index = Math.max(settings.index - 1, -1);
+        if (settings.index === -1) {
+            settings.index = 1;
+        }
+        else {
+            settings.index -= 1;
+        }
     }
     else if (key === 'right') {
-        settings.index = Math.min(settings.index + 1, 1);
+        if (settings.index === 1) {
+            settings.index = -1;
+        }
+        else {
+            settings.index += 1;
+        }
     }
     else if (key === 'up') {
-        settings.handler = Math.min(settings.handler + 1, 2);
+        if (settings.handler === 2) {
+            settings.handler = 0;
+        }
+        else {
+            settings.handler += 1;
+        }
     }
     else if (key === 'down') {
-        settings.handler = Math.max(settings.handler - 1, 0);
+        if (settings.handler === 0) {
+            settings.handler = 2;
+        }
+        else {
+            settings.handler -= 1;
+        }
     }
+    makeSelection();
 }
 
 onMounted(() => {

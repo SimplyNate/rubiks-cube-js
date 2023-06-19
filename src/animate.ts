@@ -1,5 +1,16 @@
 import * as THREE from 'three';
 
+export function select(cubes: THREE.Group, layerIndex: number, axis: 'x' | 'y' | 'z'): THREE.Object3D[] {
+    const selectedCubes:THREE.Object3D[] = [];
+    for (let i = cubes.children.length - 1; i >= 0; i--) {
+        const cube = cubes.children[i];
+        if (cube.position[axis] === layerIndex) {
+            selectedCubes.push(cube);
+        }
+    }
+    return selectedCubes;
+}
+
 function selectCubes(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, axis: 'x' | 'y' | 'z'): { rotationGroup: THREE.Group, selectedCubes: THREE.Object3D[] } {
     const rotationGroup = new THREE.Group();
     scene.add(rotationGroup);
