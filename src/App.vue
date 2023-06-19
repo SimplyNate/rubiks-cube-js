@@ -86,12 +86,18 @@ const settings = {
 function makeSelection() {
     // @ts-ignore
     const axis: 'x' | 'y' | 'z' = settings.handlers[settings.handler];
-    const selection = select(cubes, settings.index, axis)
+    const selection = select(cubes, settings.index, axis);
+    for (const cube of settings.last) {
+        for (const child of cube.children) {
+            child.material = new THREE.MeshBasicMaterial({ color: 'black' });
+        }
+    }
+    settings.last = [];
     for (const cube of selection) {
+        settings.last.push(cube);
         // Iterate over all outlining meshes
-        for (const child of cube) {
-            // Access the mesh's material and assign it a new material with the color 'white'
-            console.log(child);
+        for (const child of cube.children) {
+            child.material = new THREE.MeshBasicMaterial({ color: 'white' });
         }
     }
 }
@@ -104,7 +110,7 @@ function keyListener(evt) {
     else if (key === 'w') {
         settings.axis[settings.handlers[settings.handler]](settings.index, 1);
     }
-    else if (key === 'left') {
+    else if (key === 'ArrowLeft') {
         if (settings.index === -1) {
             settings.index = 1;
         }
@@ -112,7 +118,7 @@ function keyListener(evt) {
             settings.index -= 1;
         }
     }
-    else if (key === 'right') {
+    else if (key === 'ArrowRight') {
         if (settings.index === 1) {
             settings.index = -1;
         }
@@ -120,7 +126,7 @@ function keyListener(evt) {
             settings.index += 1;
         }
     }
-    else if (key === 'up') {
+    else if (key === 'ArrowUp') {
         if (settings.handler === 2) {
             settings.handler = 0;
         }
@@ -128,7 +134,7 @@ function keyListener(evt) {
             settings.handler += 1;
         }
     }
-    else if (key === 'down') {
+    else if (key === 'ArrowDown') {
         if (settings.handler === 0) {
             settings.handler = 2;
         }
@@ -246,6 +252,7 @@ onMounted(() => {
     }
 
     requestAnimationFrame(render);
+    makeSelection();
     // window.addEventListener('mousemove', setPickPosition);
     // window.addEventListener('mouseout', clearPickPosition);
     // window.addEventListener('mouseleave', clearPickPosition);
