@@ -41,7 +41,19 @@ function deselectCubes(scene: THREE.Scene, cubes: THREE.Group, selectedCubes: TH
 
 export function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number) {
     const { rotationGroup, selectedCubes } = selectCubes(scene, cubes, layerIndex, 'x');
-    rotationGroup.rotateX(angle);
+    // rotationGroup.rotateX(angle);
+    const iterations = 100;
+    const increment = angle / iterations;
+    let counter = 0;
+    const interval = setInterval(() => {
+        if (counter < iterations) {
+            rotationGroup.rotateX(increment);
+            counter += 1;
+        }
+        else {
+            clearInterval(interval);
+        }
+    }, 10);
     deselectCubes(scene, cubes, selectedCubes, rotationGroup);
 }
 

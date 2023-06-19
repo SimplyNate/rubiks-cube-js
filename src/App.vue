@@ -68,6 +68,7 @@ function randomize() {
         const handler = randomHandler();
         handler(index, direction);
     }
+    makeSelection();
 }
 
 const settings = {
