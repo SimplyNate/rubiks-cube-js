@@ -2,12 +2,12 @@ import * as THREE from 'three';
 
 const cubeSize = 0.97;
 const colors = [
-    'red',
-    'green',
-    'orange',
-    'blue',
-    'yellow',
-    'white',
+    '#0046ad', // blue
+    '#009b48', // green
+    '#fefefe', // white
+    '#ffd500', // yellow
+    '#b71234', // red
+    '#ff5800', // orange
 ];
 const materials = colors.map(c => new THREE.MeshBasicMaterial({ color: c }));
 const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
