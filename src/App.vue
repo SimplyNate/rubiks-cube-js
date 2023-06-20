@@ -9,7 +9,6 @@
 import { onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import PickHelper from './PickHelper';
 import { createCube } from './shapes';
 import {rotateHorizontal, rotateVertical, rotateZ, select} from './animate';
 
@@ -98,6 +97,7 @@ function makeSelection() {
         settings.last.push(cube);
         // Iterate over all outlining meshes
         for (const child of cube.children) {
+            // @ts-ignore
             child.material = new THREE.MeshBasicMaterial({ color: 'white' });
         }
     }
@@ -147,28 +147,7 @@ function keyListener(evt) {
 }
 
 onMounted(() => {
-    const position = new THREE.Vector2(0, 0);
     const canvas: HTMLCanvasElement = document.querySelector('#c');
-    function getCanvasRelativePosition(event: MouseEvent) {
-        const rect = canvas.getBoundingClientRect();
-        return {
-            x: (event.clientX - rect.left) * canvas.width / rect.width,
-            y: (event.clientY - rect.top) * canvas.height / rect.height,
-        };
-    }
-
-    function setPickPosition(event: MouseEvent) {
-        const pos = getCanvasRelativePosition(event);
-        position.x = (pos.x / canvas.width) * 2 - 1;
-        position.y = (pos.y / canvas.height) * -2 + 1;
-    }
-
-    function clearPickPosition() {
-        position.x = -Infinity;
-        position.y = -Infinity;
-    }
-
-    const pickHelper = new PickHelper();
     const renderer = new THREE.WebGLRenderer({
         canvas,
         logarithmicDepthBuffer: true,
@@ -246,7 +225,6 @@ onMounted(() => {
             camera.aspect = canvas.clientWidth / canvas.clientHeight;
             camera.updateProjectionMatrix();
         }
-        // pickHelper.pick(position, scene, camera);
         renderer.render(scene, camera);
 
         requestAnimationFrame(render);
@@ -254,9 +232,6 @@ onMounted(() => {
 
     requestAnimationFrame(render);
     makeSelection();
-    // window.addEventListener('mousemove', setPickPosition);
-    // window.addEventListener('mouseout', clearPickPosition);
-    // window.addEventListener('mouseleave', clearPickPosition);
     window.addEventListener('keydown', keyListener);
 });
 
