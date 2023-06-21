@@ -19,19 +19,21 @@ Use [q, w] to make [-1] and [1] direction spins
 Highlight the selection area
  */
 
+let queue = false;
+
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
 
-function verticalHandler(x: number, direction: number) {
-    rotateVertical(scene, cubes, x, Math.PI / 2 * direction);
+async function verticalHandler(x: number, direction: number) {
+    await rotateVertical(scene, cubes, x, Math.PI / 2 * direction);
 }
 
-function horizontalHandler(y: number, direction: number) {
-    rotateHorizontal(scene, cubes, y, Math.PI / 2 * direction)
+async function horizontalHandler(y: number, direction: number) {
+    await rotateHorizontal(scene, cubes, y, Math.PI / 2 * direction)
 }
 
-function zHandler(z: number, direction: number) {
-    rotateZ(scene, cubes, z, Math.PI / 2 * direction);
+async function zHandler(z: number, direction: number) {
+    await rotateZ(scene, cubes, z, Math.PI / 2 * direction);
 }
 
 function getRandomInt(min, max) {
@@ -59,13 +61,14 @@ function randomHandler() {
     return handlers[getRandomInt(0, handlers.length)];
 }
 
-function randomize() {
+async function randomize() {
+    deselect();
     const iterations = 100;
     for (let i = 0; i < iterations; i++) {
         const index = randomIndex();
         const direction = randomDirection();
         const handler = randomHandler();
-        handler(index, direction);
+        await handler(index, direction);
     }
     makeSelection();
 }
@@ -82,17 +85,20 @@ const settings = {
     handler: 0,
 };
 
-
-function makeSelection() {
-    // @ts-ignore
-    const axis: 'x' | 'y' | 'z' = settings.handlers[settings.handler];
-    const selection = select(cubes, settings.index, axis);
+function deselect() {
     for (const cube of settings.last) {
         for (const child of cube.children) {
             child.material = new THREE.MeshBasicMaterial({ color: 'black' });
         }
     }
     settings.last = [];
+}
+
+function makeSelection() {
+    // @ts-ignore
+    const axis: 'x' | 'y' | 'z' = settings.handlers[settings.handler];
+    const selection = select(cubes, settings.index, axis);
+    deselect();
     for (const cube of selection) {
         settings.last.push(cube);
         // Iterate over all outlining meshes
@@ -103,47 +109,52 @@ function makeSelection() {
     }
 }
 
-function keyListener(evt) {
-    const { key } = evt;
-    if (key === 'q') {
-        settings.axis[settings.handlers[settings.handler]](settings.index, -1);
+async function keyListener(evt) {
+    if (!queue) {
+        const { key } = evt;
+        if (key === 'q') {
+            queue = true;
+            await settings.axis[settings.handlers[settings.handler]](settings.index, -1);
+        }
+        else if (key === 'w') {
+            queue = true;
+            await settings.axis[settings.handlers[settings.handler]](settings.index, 1);
+        }
+        else if (key === 'ArrowLeft') {
+            if (settings.index === -1) {
+                settings.index = 1;
+            }
+            else {
+                settings.index -= 1;
+            }
+        }
+        else if (key === 'ArrowRight') {
+            if (settings.index === 1) {
+                settings.index = -1;
+            }
+            else {
+                settings.index += 1;
+            }
+        }
+        else if (key === 'ArrowUp') {
+            if (settings.handler === 2) {
+                settings.handler = 0;
+            }
+            else {
+                settings.handler += 1;
+            }
+        }
+        else if (key === 'ArrowDown') {
+            if (settings.handler === 0) {
+                settings.handler = 2;
+            }
+            else {
+                settings.handler -= 1;
+            }
+        }
+        makeSelection();
+        queue = false;
     }
-    else if (key === 'w') {
-        settings.axis[settings.handlers[settings.handler]](settings.index, 1);
-    }
-    else if (key === 'ArrowLeft') {
-        if (settings.index === -1) {
-            settings.index = 1;
-        }
-        else {
-            settings.index -= 1;
-        }
-    }
-    else if (key === 'ArrowRight') {
-        if (settings.index === 1) {
-            settings.index = -1;
-        }
-        else {
-            settings.index += 1;
-        }
-    }
-    else if (key === 'ArrowUp') {
-        if (settings.handler === 2) {
-            settings.handler = 0;
-        }
-        else {
-            settings.handler += 1;
-        }
-    }
-    else if (key === 'ArrowDown') {
-        if (settings.handler === 0) {
-            settings.handler = 2;
-        }
-        else {
-            settings.handler -= 1;
-        }
-    }
-    makeSelection();
 }
 
 onMounted(() => {
