@@ -2,6 +2,43 @@
     <canvas id="c"></canvas>
     <div class="menu">
         <button @click="randomize">Randomize</button>
+        <div>
+            <h3>Controls</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Q</td>
+                    <td>Rotate -90 degrees</td>
+                </tr>
+                <tr>
+                    <td>W</td>
+                    <td>Rotate 90 degrees</td>
+                </tr>
+                <tr>
+                    <td>&uarr;</td>
+                    <td>Cycle Axis of rotation</td>
+                </tr>
+                <tr>
+                    <td>&darr;</td>
+                    <td>Cycle Axis of rotation</td>
+                </tr>
+                <tr>
+                    <td>&larr;</td>
+                    <td>Cycle index of axis</td>
+                </tr>
+                <tr>
+                    <td>&rarr;</td>
+                    <td>Cycle index of axis</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -266,9 +303,10 @@ html, body {
 }
 .menu {
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 1em;
+    right: 1em;
     padding: 1rem;
+    background-color: white;
 }
 
 </style>
