@@ -21,19 +21,11 @@
                     <td>Rotate 90 degrees</td>
                 </tr>
                 <tr>
-                    <td>&uarr;</td>
+                    <td>&udarr;</td>
                     <td>Cycle Axis of rotation</td>
                 </tr>
                 <tr>
-                    <td>&darr;</td>
-                    <td>Cycle Axis of rotation</td>
-                </tr>
-                <tr>
-                    <td>&larr;</td>
-                    <td>Cycle index of axis</td>
-                </tr>
-                <tr>
-                    <td>&rarr;</td>
+                    <td>&lrarr;</td>
                     <td>Cycle index of axis</td>
                 </tr>
                 </tbody>
@@ -141,7 +133,7 @@ function makeSelection() {
         // Iterate over all outlining meshes
         for (const child of cube.children) {
             // @ts-ignore
-            child.material = new THREE.MeshBasicMaterial({ color: 'white' });
+            child.material = new THREE.MeshBasicMaterial({ color: 'silver' });
         }
     }
 }
