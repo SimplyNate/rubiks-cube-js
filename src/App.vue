@@ -150,21 +150,29 @@ async function randomize() {
     makeSelection();
 }
 
+interface AxisHandlers {
+    [index: string]: (index: number, direction: number) => Promise<void>;
+    x: (index: number, direction: number) => Promise<void>;
+    y: (index: number, direction: number) => Promise<void>;
+    z: (index: number, direction: number) => Promise<void>;
+}
+
 const settings = {
-    last: [],
+    last: [] as THREE.Object3D[],
     index: 0,
     handlers: ['x', 'y', 'z'],
     axis: {
         x: verticalHandler,
         y: horizontalHandler,
         z: zHandler,
-    },
+    } as AxisHandlers,
     handler: 0,
 };
 
 function deselect() {
     for (const cube of settings.last) {
         for (const child of cube.children) {
+            // @ts-ignore
             child.material = new THREE.MeshBasicMaterial({ color: 'black' });
         }
     }
@@ -186,7 +194,7 @@ function makeSelection() {
     }
 }
 
-async function keyListener(evt) {
+async function keyListener(evt: KeyboardEvent) {
     if (!queue) {
         const { key } = evt;
         if (key === 'q') {
@@ -235,7 +243,7 @@ async function keyListener(evt) {
 }
 
 onMounted(() => {
-    const canvas: HTMLCanvasElement = document.querySelector('#c');
+    const canvas = <HTMLCanvasElement>document.querySelector('#c');
     const renderer = new THREE.WebGLRenderer({
         canvas,
         logarithmicDepthBuffer: true,
@@ -296,7 +304,7 @@ onMounted(() => {
     light.position.set(15, 5, 5);
     scene.add(light);
 
-    function resizeRendererToDisplaySize(renderer) {
+    function resizeRendererToDisplaySize(renderer: THREE.WebGLRenderer) {
         const canvas: HTMLCanvasElement = renderer.domElement;
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
