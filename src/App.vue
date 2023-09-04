@@ -53,6 +53,54 @@ let queue = false;
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
 
+async function F() {
+    await zHandler(-1, 1);
+}
+
+async function R() {
+    await verticalHandler(1, 1);
+}
+
+async function U() {
+    await horizontalHandler(1, -1);
+}
+
+async function L() {
+    await verticalHandler(-1, -1);
+}
+
+async function D() {
+    await horizontalHandler(-1, 1);
+}
+
+async function B() {
+    await zHandler(1, -1);
+}
+
+async function cF() {
+    await zHandler(-1, -1);
+}
+
+async function cR() {
+    await verticalHandler(1, -1);
+}
+
+async function cU() {
+    await horizontalHandler(1, 1);
+}
+
+async function cL() {
+    await verticalHandler(-1, 1);
+}
+
+async function cD() {
+    await horizontalHandler(-1, -1);
+}
+
+async function cB() {
+    await zHandler(1, 1);
+}
+
 async function verticalHandler(x: number, direction: number) {
     await rotateVertical(scene, cubes, x, Math.PI / 2 * direction);
 }
@@ -65,7 +113,7 @@ async function zHandler(z: number, direction: number) {
     await rotateZ(scene, cubes, z, Math.PI / 2 * direction);
 }
 
-function getRandomInt(min, max) {
+function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
