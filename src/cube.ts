@@ -10,6 +10,10 @@ interface CubePositions {
     d: string[];
 }
 
+function getRandomInt(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
 export class Cube {
     cube: CubePositions;
     constructor() {
@@ -39,6 +43,28 @@ export class Cube {
                 'w', 'w', 'w',
                 'w', 'w', 'w'],
         };
+    }
+
+    scramble() {
+        const steps = 20;
+        const options = [
+            this.L,
+            this.l,
+            this.R,
+            this.r,
+            this.U,
+            this.u,
+            this.D,
+            this.d,
+            this.F,
+            this.f,
+            this.B,
+            this.b,
+        ];
+        for (let i = 0; i < steps; i++) {
+            options[getRandomInt(0, options.length)]();
+        }
+        return this;
     }
 
     private clockwiseRotation(face: string) {
