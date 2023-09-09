@@ -66,6 +66,7 @@ export class Cube {
         this.cube.l[6] = lBeforeRotation[8];
         this.cube.l[7] = lBeforeRotation[5];
         this.cube.l[8] = lBeforeRotation[2];
+        return this;
     }
     l() {
         const firstCopy = [...this.cube.f];
@@ -92,6 +93,7 @@ export class Cube {
         this.cube.l[6] = lBeforeRotation[0];
         this.cube.l[7] = lBeforeRotation[3];
         this.cube.l[8] = lBeforeRotation[6];
+        return this;
     }
 
     R() {
@@ -119,6 +121,7 @@ export class Cube {
         this.cube.r[6] = lBeforeRotation[8];
         this.cube.r[7] = lBeforeRotation[5];
         this.cube.r[8] = lBeforeRotation[2];
+        return this;
     }
     r() {
         const firstCopy = [...this.cube.f];
@@ -145,6 +148,7 @@ export class Cube {
         this.cube.r[6] = lBeforeRotation[0];
         this.cube.r[7] = lBeforeRotation[3];
         this.cube.r[8] = lBeforeRotation[6];
+        return this;
     }
 
     U() {}
