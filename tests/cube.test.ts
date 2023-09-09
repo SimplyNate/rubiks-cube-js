@@ -2,6 +2,35 @@ import { expect, test } from 'vitest';
 
 import { Cube } from '../src/cube';
 
+function setKnownScramble(cube: Cube) {
+    cube.cube = {
+        // front
+        f: ['b', 'w', 'w',
+            'o', 'o', 'r',
+            'y', 'w', 'o'],
+        // left
+        l: ['b', 'y', 'o',
+            'r', 'g', 'b',
+            'y', 'w', 'g'],
+        // right
+        r: ['g', 'g', 'b',
+            'b', 'b', 'y',
+            'w', 'o', 'y'],
+        // back
+        b: ['w', 'g', 'w',
+            'o', 'r', 'y',
+            'g', 'o', 'b'],
+        // up
+        u: ['o', 'r', 'r',
+            'b', 'y', 'y',
+            'y', 'r', 'r'],
+        // down
+        d: ['o', 'b', 'g',
+            'g', 'w', 'w',
+            'r', 'g', 'r'],
+    };
+}
+
 test('L rotates correctly', () => {
     const cube = new Cube();
     cube.L().L().L();
