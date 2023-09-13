@@ -202,8 +202,38 @@ export class Cube {
         this.counterClockwiseRotation('u');
     }
 
-    D() {}
-    d() {}
+    D() {
+        const firstCopy = [...this.cube.f];
+        this.cube.f[6] = this.cube.l[6];
+        this.cube.f[7] = this.cube.l[7];
+        this.cube.f[8] = this.cube.l[8];
+        this.cube.l[6] = this.cube.b[6];
+        this.cube.l[7] = this.cube.b[7];
+        this.cube.l[8] = this.cube.b[8];
+        this.cube.b[6] = this.cube.r[6];
+        this.cube.b[7] = this.cube.r[7];
+        this.cube.b[8] = this.cube.r[8];
+        this.cube.r[6] = firstCopy[6];
+        this.cube.r[7] = firstCopy[7];
+        this.cube.r[8] = firstCopy[8];
+        this.clockwiseRotation('d');
+    }
+    d() {
+        const firstCopy = [...this.cube.f];
+        this.cube.f[6] = this.cube.r[6];
+        this.cube.f[7] = this.cube.r[7];
+        this.cube.f[8] = this.cube.r[8];
+        this.cube.l[6] = firstCopy[6];
+        this.cube.l[7] = firstCopy[7];
+        this.cube.l[8] = firstCopy[8];
+        this.cube.b[6] = this.cube.l[6];
+        this.cube.b[7] = this.cube.l[7];
+        this.cube.b[8] = this.cube.l[8];
+        this.cube.r[6] = this.cube.b[6];
+        this.cube.r[7] = this.cube.b[7];
+        this.cube.r[8] = this.cube.b[8];
+        this.counterClockwiseRotation('d');
+    }
 
     F() {}
     f() {}
