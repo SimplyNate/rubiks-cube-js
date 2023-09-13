@@ -235,9 +235,21 @@ export class Cube {
         this.counterClockwiseRotation('d');
     }
 
-    F() {}
-    f() {}
+    F() {
 
-    B() {}
-    b() {}
+        this.clockwiseRotation('f');
+    }
+    f() {
+
+        this.counterClockwiseRotation('f');
+    }
+
+    B() {
+
+        this.clockwiseRotation('b');
+    }
+    b() {
+
+        this.counterClockwiseRotation('b');
+    }
 }
