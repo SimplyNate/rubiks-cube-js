@@ -236,7 +236,19 @@ export class Cube {
     }
 
     F() {
-
+        const copy = [...this.cube.u];
+        this.cube.u[6] = this.cube.l[8];
+        this.cube.u[7] = this.cube.l[5];
+        this.cube.u[8] = this.cube.l[2];
+        this.cube.l[2] = this.cube.d[0];
+        this.cube.l[5] = this.cube.d[1];
+        this.cube.l[8] = this.cube.d[2];
+        this.cube.d[0] = this.cube.r[6];
+        this.cube.d[1] = this.cube.r[3];
+        this.cube.d[2] = this.cube.r[0];
+        this.cube.r[0] = copy[6];
+        this.cube.r[3] = copy[7];
+        this.cube.r[6] = copy[8];
         this.clockwiseRotation('f');
     }
     f() {
