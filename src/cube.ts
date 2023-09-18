@@ -304,4 +304,13 @@ export class Cube {
         this.counterClockwiseRotation('b');
         return this;
     }
+
+    toString() {
+        // TODO: Implement
+        return '';
+    }
+
+    print() {
+        console.log(this.toString());
+    }
 }
