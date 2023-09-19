@@ -310,7 +310,12 @@ export class Cube {
                [face[6], face[7], face[8]].join(' ') + '\n';
     }
     toString() {
-        return '';
+        return this.cube.u.join('') + '/' +
+               this.cube.l.join('') + '/' +
+               this.cube.f.join('') + '/' +
+               this.cube.r.join('') + '/' +
+               this.cube.b.join('') + '/' +
+               this.cube.d.join('');
     }
     print() {
         console.log(this.toString());
