@@ -304,12 +304,14 @@ export class Cube {
         this.counterClockwiseRotation('b');
         return this;
     }
-
+    private stringifyFace(face: string[]) {
+        return [face[0], face[1], face[2]].join(' ') + '\n' +
+               [face[3], face[4], face[5]].join(' ') + '\n' +
+               [face[6], face[7], face[8]].join(' ') + '\n';
+    }
     toString() {
-        // TODO: Implement
         return '';
     }
-
     print() {
         console.log(this.toString());
     }
