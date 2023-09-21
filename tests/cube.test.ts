@@ -59,3 +59,17 @@ test('R rotates correctly', () => {
 test('r rotates correctly', () => {
 
 });
+
+test('Cube prints correctly', () => {
+    const cube = new Cube();
+    console.log('Validate the output below');
+    cube.print();
+});
+
+test('scrambles randomly', () => {
+    const cube = new Cube();
+    const neExpectation = cube.toString();
+    cube.scramble();
+    const computed = cube.toString();
+    expect(computed !== neExpectation).toBeTruthy();
+});
