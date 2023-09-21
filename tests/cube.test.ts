@@ -60,6 +60,40 @@ test('r rotates correctly', () => {
 
 });
 
+test('U rotates correctly', () => {
+
+});
+
+test('u rotates correctly', () => {
+
+});
+
+test('D rotates correctly', () => {
+
+});
+
+test('d rotates correctly', () => {
+
+});
+
+test('F rotates correctly', () => {
+
+});
+
+test('f rotates correctly', () => {
+
+});
+
+test('B rotates correctly', () => {
+
+});
+
+test('b rotates correctly', () => {
+
+});
+
+test('toString', () => {});
+
 test('Cube prints correctly', () => {
     const cube = new Cube();
     console.log('Validate the output below');
