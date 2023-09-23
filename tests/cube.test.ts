@@ -92,7 +92,12 @@ test('b rotates correctly', () => {
 
 });
 
-test('toString', () => {});
+test('toString', () => {
+    const cube = new Cube();
+    const string = cube.toString();
+    const expectation = 'yyyyyyyyy/ggggggggg/ooooooooo/bbbbbbbbb/rrrrrrrrr/wwwwwwwww';
+    expect(string).toEqual(expectation);
+});
 
 test('Cube prints correctly', () => {
     const cube = new Cube();
