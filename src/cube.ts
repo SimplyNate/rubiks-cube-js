@@ -85,7 +85,7 @@ export class Cube {
             this.cube[face][2],
             this.cube[face][5],
             this.cube[face][8],
-            this.cube[face][2],
+            this.cube[face][1],
             this.cube[face][4],
             this.cube[face][7],
             this.cube[face][0],
