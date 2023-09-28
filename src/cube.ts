@@ -169,15 +169,15 @@ export class Cube {
         this.cube.f[0] = this.cube.r[0];
         this.cube.f[1] = this.cube.r[1];
         this.cube.f[2] = this.cube.r[2];
-        this.cube.l[0] = firstCopy[0];
-        this.cube.l[1] = firstCopy[1];
-        this.cube.l[2] = firstCopy[2];
-        this.cube.b[0] = this.cube.l[0];
-        this.cube.b[1] = this.cube.l[1];
-        this.cube.b[2] = this.cube.l[2];
         this.cube.r[0] = this.cube.b[0];
         this.cube.r[1] = this.cube.b[1];
         this.cube.r[2] = this.cube.b[2];
+        this.cube.b[0] = this.cube.l[0];
+        this.cube.b[1] = this.cube.l[1];
+        this.cube.b[2] = this.cube.l[2];
+        this.cube.l[0] = firstCopy[0];
+        this.cube.l[1] = firstCopy[1];
+        this.cube.l[2] = firstCopy[2];
         this.clockwiseRotation('u');
         return this;
     }
@@ -186,15 +186,15 @@ export class Cube {
         this.cube.f[0] = this.cube.l[0];
         this.cube.f[1] = this.cube.l[1];
         this.cube.f[2] = this.cube.l[2];
-        this.cube.r[0] = firstCopy[0];
-        this.cube.r[1] = firstCopy[1];
-        this.cube.r[2] = firstCopy[2];
-        this.cube.b[0] = this.cube.r[0];
-        this.cube.b[1] = this.cube.r[1];
-        this.cube.b[2] = this.cube.r[2];
         this.cube.l[0] = this.cube.b[0];
         this.cube.l[1] = this.cube.b[1];
         this.cube.l[2] = this.cube.b[2];
+        this.cube.b[0] = this.cube.r[0];
+        this.cube.b[1] = this.cube.r[1];
+        this.cube.b[2] = this.cube.r[2];
+        this.cube.r[0] = firstCopy[0];
+        this.cube.r[1] = firstCopy[1];
+        this.cube.r[2] = firstCopy[2];
         this.counterClockwiseRotation('u');
         return this;
     }
