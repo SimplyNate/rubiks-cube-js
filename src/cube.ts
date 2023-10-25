@@ -44,7 +44,6 @@ export class Cube {
                 'w', 'w', 'w'],
         };
     }
-
     scramble(steps: number = 20) {
         for (let i = 0; i < steps; i++) {
             const num = getRandomInt(0, 11);
@@ -87,7 +86,6 @@ export class Cube {
         }
         return this;
     }
-
     private clockwiseRotation(face: string) {
         this.cube[face] = [
             this.cube[face][6],
@@ -101,7 +99,6 @@ export class Cube {
             this.cube[face][2],
         ];
     }
-
     private counterClockwiseRotation(face: string) {
         this.cube[face] = [
             this.cube[face][2],
@@ -115,7 +112,6 @@ export class Cube {
             this.cube[face][6],
         ];
     }
-
     L() {
         const firstCopy = [...this.cube.f];
         this.cube.f[0] = this.cube.u[0];
@@ -150,7 +146,6 @@ export class Cube {
         this.counterClockwiseRotation('l');
         return this;
     }
-
     R() {
         const firstCopy = [...this.cube.f];
         this.cube.f[2] = this.cube.d[2];
@@ -185,7 +180,6 @@ export class Cube {
         this.counterClockwiseRotation('r');
         return this;
     }
-
     U() {
         const firstCopy = [...this.cube.f];
         this.cube.f[0] = this.cube.r[0];
@@ -220,7 +214,6 @@ export class Cube {
         this.counterClockwiseRotation('u');
         return this;
     }
-
     D() {
         const firstCopy = [...this.cube.f];
         this.cube.f[6] = this.cube.l[6];
@@ -255,7 +248,6 @@ export class Cube {
         this.counterClockwiseRotation('d');
         return this;
     }
-
     F() {
         const copy = [...this.cube.u];
         this.cube.u[6] = this.cube.l[8];
@@ -290,7 +282,6 @@ export class Cube {
         this.counterClockwiseRotation('f');
         return this;
     }
-
     B() {
         const copy = [...this.cube.r];
         this.cube.r[2] = this.cube.d[8];
