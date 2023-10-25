@@ -33,7 +33,7 @@ function setKnownScramble(cube: Cube) {
 
 test('L rotates correctly', () => {
     const cube = new Cube();
-    cube.L().L().L();
+    cube.l().l().l();
     expect(cube.cube.f[0]).toBe('w');
     expect(cube.cube.f[3]).toBe('w');
     expect(cube.cube.f[6]).toBe('w');
