@@ -46,22 +46,44 @@ export class Cube {
     }
 
     scramble(steps: number = 20) {
-        const options = [
-            this.L,
-            this.l,
-            this.R,
-            this.r,
-            this.U,
-            this.u,
-            this.D,
-            this.d,
-            this.F,
-            this.f,
-            this.B,
-            this.b,
-        ];
         for (let i = 0; i < steps; i++) {
-            options[getRandomInt(0, options.length)]();
+            const num = getRandomInt(0, 11);
+            if (num === 0) {
+                this.F();
+            }
+            else if (num === 1) {
+                this.f();
+            }
+            else if (num === 2) {
+                this.L();
+            }
+            else if (num === 3) {
+                this.l();
+            }
+            else if (num === 4) {
+                this.R();
+            }
+            else if (num === 5) {
+                this.r();
+            }
+            else if (num === 6) {
+                this.B();
+            }
+            else if (num === 7) {
+                this.b();
+            }
+            else if (num === 8) {
+                this.U();
+            }
+            else if (num === 9) {
+                this.u();
+            }
+            else if (num === 10) {
+                this.D();
+            }
+            else {
+                this.d();
+            }
         }
         return this;
     }
