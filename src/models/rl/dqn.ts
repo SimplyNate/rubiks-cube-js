@@ -40,7 +40,7 @@ export function createDQN(h: number, w: number, numActions: number): tf.Sequenti
 }
 
 export function copyWeights(destNetwork: tf.LayersModel, srcNetwork: tf.LayersModel) {
-    let originalDestNetworkTrainable: boolean;
+    let originalDestNetworkTrainable: boolean | null = null;
     if (destNetwork.trainable !== srcNetwork.trainable) {
         originalDestNetworkTrainable = destNetwork.trainable;
         destNetwork.trainable = srcNetwork.trainable;
