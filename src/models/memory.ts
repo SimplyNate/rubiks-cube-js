@@ -5,7 +5,7 @@ export class ReplayMemory {
     buffer: any[];
     index: number;
     length: number;
-    bufferIndices_: number[];
+    private bufferIndices: number[];
 
     constructor(maxLen: number) {
         this.maxLen = maxLen;
@@ -15,9 +15,9 @@ export class ReplayMemory {
         }
         this.index = 0;
         this.length = 0;
-        this.bufferIndices_ = [];
+        this.bufferIndices = [];
         for (let i = 0; i < maxLen; i++) {
-            this.bufferIndices_.push(i);
+            this.bufferIndices.push(i);
         }
     }
     append(item: any): void {
@@ -29,10 +29,10 @@ export class ReplayMemory {
         if (batchSize > this.maxLen) {
             throw new Error(`batchSize ${batchSize} exceeds buffer length ${this.maxLen}`);
         }
-        tf.util.shuffle(this.bufferIndices_);
+        tf.util.shuffle(this.bufferIndices);
         const out = [];
         for (let i = 0; i < batchSize; i++) {
-            out.push(this.buffer[this.bufferIndices_[i]]);
+            out.push(this.buffer[this.bufferIndices[i]]);
         }
         return out;
     }
