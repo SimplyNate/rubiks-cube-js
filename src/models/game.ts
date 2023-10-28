@@ -5,6 +5,7 @@ import { assertPositiveInteger, getRandomInteger } from './utils';
 export const UNSOLVED_REWARD = -0.1;
 export const SOLVE_FACE_REWARD = 2;
 export const FAIL_REWARD = -100;
+export const WIN_REWARD = 1000;
 
 export const ACTION_F = 0;
 export const ACTION_COUNTER_F = 1;
@@ -33,5 +34,12 @@ export function getRandomAction(): number {
 }
 
 export class CubeGame {
-
+    constructor() {}
+    reset() {}
+    step() {}
+    private update() {}
+    private initialize() {}
+    getState() {}
 }
+
+export function getStateTensor(state: object | object[]) {}
