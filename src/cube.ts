@@ -10,9 +10,25 @@ interface CubePositions {
     d: string[];
 }
 
+// min is inclusive, max is exclusive
 function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
 }
+
+const disallowedRandom = [
+    1,
+    0,
+    3,
+    2,
+    5,
+    4,
+    7,
+    6,
+    9,
+    8,
+    11,
+    10
+];
 
 export class Cube {
     cube: CubePositions;
@@ -66,8 +82,13 @@ export class Cube {
         return cube;
     }
     scramble(steps: number = 20) {
-        for (let i = 0; i < steps; i++) {
-            const num = getRandomInt(0, 11);
+        let i = 0;
+        let last;
+        while (i < steps) {
+            const num = getRandomInt(0, 12);
+            if (last && num === disallowedRandom[last]) {
+                continue;
+            }
             if (num === 0) {
                 this.f();
             }
@@ -104,6 +125,8 @@ export class Cube {
             else {
                 this.counter_d();
             }
+            last = num;
+            i++;
         }
         return this;
     }
