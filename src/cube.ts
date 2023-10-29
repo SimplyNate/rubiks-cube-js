@@ -60,6 +60,11 @@ export class Cube {
         }
         return cube;
     }
+    static scrambled(steps: number = 20): Cube {
+        const cube = new Cube();
+        cube.scramble(steps);
+        return cube;
+    }
     scramble(steps: number = 20) {
         for (let i = 0; i < steps; i++) {
             const num = getRandomInt(0, 11);
