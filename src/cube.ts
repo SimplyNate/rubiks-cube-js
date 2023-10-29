@@ -44,6 +44,22 @@ export class Cube {
                 'w', 'w', 'w'],
         };
     }
+    static fromString(str: string): Cube {
+        const faceOrder = ['u', 'l', 'f', 'r', 'b', 'd'];
+        const split = str.split('/');
+        if (split.length !== 6) {
+            throw new Error(`Invalid Cube string. Got ${str}`);
+        }
+        const cube = new Cube();
+        for (let i = 0; i < split.length; i++) {
+            const face = split[i];
+            if (face.length !== 9) {
+                throw new Error(`Invalid face string. Got ${face}`);
+            }
+            cube.cube[faceOrder[i]] = face.split('');
+        }
+        return cube;
+    }
     scramble(steps: number = 20) {
         for (let i = 0; i < steps; i++) {
             const num = getRandomInt(0, 11);
