@@ -29,6 +29,7 @@ const disallowedRandom = [
     11,
     10
 ];
+const solvedCube = 'yyyyyyyyy/ggggggggg/ooooooooo/bbbbbbbbb/rrrrrrrrr/wwwwwwwww';
 
 export class Cube {
     cube: CubePositions;
@@ -380,5 +381,8 @@ export class Cube {
             `${' '} ${' '} ${' '} ${this.cube.d[3]} ${this.cube.d[4]} ${this.cube.d[5]} ${' '} ${' '} ${' '} ${' '} ${' '} ${' '}\n` +
             `${' '} ${' '} ${' '} ${this.cube.d[6]} ${this.cube.d[7]} ${this.cube.d[8]} ${' '} ${' '} ${' '} ${' '} ${' '} ${' '}\n`
         );
+    }
+    isSolved(): boolean {
+        return this.toString() === solvedCube;
     }
 }
