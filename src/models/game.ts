@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 
 import { assertPositiveInteger, getRandomInteger } from './utils';
+import { Cube } from '../cube.js';
 
 export const UNSOLVED_REWARD = -0.1;
 export const SOLVE_FACE_REWARD = 2;
@@ -33,12 +34,30 @@ export function getRandomAction(): number {
     return getRandomInteger(0, NUM_ACTIONS);
 }
 
+interface GameArgs {
+    difficulty: number;
+    gameType: 'randomLevels' | 'provided';
+}
+
 export class CubeGame {
-    constructor() {}
-    reset() {}
-    step() {}
+    cube: Cube;
+    difficulty: number;
+    gameType: string;
+    constructor(args: GameArgs) {
+        this.cube = new Cube();
+        this.difficulty = args.difficulty;
+        this.gameType = args.gameType;
+    }
+    reset() {
+        this.initialize();
+    }
+    step() {
+        this.update();
+    }
     private update() {}
-    private initialize() {}
+    private initialize() {
+        this.cube = Cube.scrambled();
+    }
     getState() {}
 }
 
