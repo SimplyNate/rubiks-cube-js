@@ -48,6 +48,10 @@ interface Step {
     done: boolean;
 }
 
+function isFaceSolved(face: string[]): boolean {
+    return face.every(color => color === face[0]);
+}
+
 export class CubeGame {
     maxMoves: number;
     cube: Cube;
@@ -71,7 +75,7 @@ export class CubeGame {
         return this.getState();
     }
     step(action: number): Step {
-        const previousState = this.cube.toString();
+        const previousState = this.cube.toString().split('/');
         if (action === ACTION_F) {
             this.cube.f();
         }
@@ -118,14 +122,31 @@ export class CubeGame {
             done = true;
             return {reward: FAIL_REWARD, done};
         }
-        const currentState = this.cube.toString();
+        const currentState = this.cube.toString().split('/');
         let reward = UNSOLVED_REWARD;
-        // Check if current move solved a face
+        // Check if current move solved a face or destroyed a face
+        for (let i = 0; i < currentState.length; i++) {
+            const currentFace = currentState[i];
+            const isCurrentSolved = isFaceSolved(currentFace.split(''));
+            const previousFace = previousState[i];
+            const isPreviousSolved = isFaceSolved(previousFace.split(''));
+            if (isPreviousSolved && isCurrentSolved) {
+                reward += 0;
+            }
+            else if (isPreviousSolved && !isCurrentSolved) {
+                reward -= UNSOLVED_REWARD;
+            }
+            else if (!isPreviousSolved && isCurrentSolved) {
+                reward += SOLVE_FACE_REWARD;
+            }
+        }
+        const state = this.getState();
+        return { reward, state, done };
     }
     private initialize() {
         this.cube = Cube.scrambled(this.difficulty);
     }
-    getState() {}
+    getState(): GameState {}
 }
 
 export function getStateTensor(state: object | object[]) {}
