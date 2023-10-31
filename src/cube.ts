@@ -31,6 +31,8 @@ const disallowedRandom = [
 ];
 const solvedCube = 'yyyyyyyyy/ggggggggg/ooooooooo/bbbbbbbbb/rrrrrrrrr/wwwwwwwww';
 
+// TODO: Create cube as 20 enumerated and unique colored pieces of the cube
+// TODO: Calculate entropy of cube as distance from starting point each 20 cube pieces are
 export class Cube {
     cube: CubePositions;
     constructor() {
