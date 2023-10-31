@@ -124,6 +124,8 @@ export class CubeGame {
         }
         const currentState = this.cube.toString().split('/');
         let reward = UNSOLVED_REWARD;
+        let solvedFaces = 0;
+        let unsolvedFaces = 0;
         // Check if current move solved a face or destroyed a face
         for (let i = 0; i < currentState.length; i++) {
             const currentFace = currentState[i];
@@ -134,10 +136,12 @@ export class CubeGame {
                 reward += 0;
             }
             else if (isPreviousSolved && !isCurrentSolved) {
-                reward -= UNSOLVED_REWARD;
+                unsolvedFaces += 1;
+                reward -= UNSOLVED_REWARD * unsolvedFaces;
             }
             else if (!isPreviousSolved && isCurrentSolved) {
-                reward += SOLVE_FACE_REWARD;
+                solvedFaces += 1;
+                reward += SOLVE_FACE_REWARD * solvedFaces;
             }
         }
         const state = this.getState();
