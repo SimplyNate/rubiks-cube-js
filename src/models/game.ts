@@ -40,7 +40,14 @@ interface GameArgs {
     maxMoves?: number;
 }
 
-interface GameState {}
+interface GameState {
+    f: string[],
+    l: string[],
+    r: string[],
+    b: string[],
+    u: string[],
+    d: string[]
+}
 
 interface Step {
     reward: number;
@@ -150,7 +157,9 @@ export class CubeGame {
     private initialize() {
         this.cube = Cube.scrambled(this.difficulty);
     }
-    getState(): GameState {}
+    getState(): GameState {
+        return { ...this.cube.cube };
+    }
 }
 
 export function getStateTensor(state: object | object[]) {}
