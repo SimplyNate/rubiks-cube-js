@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 
-import { assertPositiveInteger, getRandomInteger } from './utils';
+import { getRandomInteger } from './utils';
 import { Cube } from '../cube.js';
 
 export const UNSOLVED_REWARD = -0.1;
@@ -162,4 +162,68 @@ export class CubeGame {
     }
 }
 
-export function getStateTensor(state: object | object[]) {}
+function translateColor(color: string): number {
+    if (color === 'o') {
+        return 0;
+    }
+    else if (color === 'g') {
+        return 1;
+    }
+    else if (color === 'b') {
+        return 2;
+    }
+    else if (color === 'r') {
+        return 3;
+    }
+    else if (color === 'y') {
+        return 4;
+    }
+    else {
+        return 5;
+    }
+}
+
+function translateFace(face: string): number {
+    if (face === 'u') {
+        return 0;
+    }
+    else if (face === 'l') {
+        return 1;
+    }
+    else if (face === 'f') {
+        return 2;
+    }
+    else if (face === 'r') {
+        return 3;
+    }
+    else if (face === 'b') {
+        return 4;
+    }
+    else {
+        return 5;
+    }
+}
+
+export function getStateTensor(state: GameState | GameState[]): tf.Tensor<tf.Rank> {
+    if (!Array.isArray(state)) {
+        state = [state];
+    }
+    const numExamples = state.length;
+    const buffer = tf.buffer([numExamples, 6, 9]);
+    for (let n = 0; n < numExamples; n++) {
+        if (!state[n]) {
+            continue;
+        }
+        const faces = Object.keys(state[n]);
+        for (const face of faces) {
+            const faceValue = translateFace(face);
+            let i = 0;
+            for (const color of face.split('')) {
+                const colorValue = translateColor(color);
+                buffer.set(colorValue, n, faceValue, i);
+                i += 1;
+            }
+        }
+    }
+    return buffer.toTensor();
+}
