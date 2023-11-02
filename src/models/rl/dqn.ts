@@ -1,11 +1,11 @@
 import * as tf from '@tensorflow/tfjs';
 
-export function createDQN(h: number, w: number, numActions: number): tf.Sequential {
-    if (!(Number.isInteger(h) && h > 0)) {
-        throw new Error(`Expected height to be a positive integer. Got ${h}`);
+export function createDQN(faces: number, area: number, numActions: number): tf.Sequential {
+    if (!(Number.isInteger(faces) && faces > 0)) {
+        throw new Error(`Expected faces to be a positive integer. Got ${faces}`);
     }
-    if (!(Number.isInteger(w) && w > 0)) {
-        throw new Error(`Expected width to be a positive integer. Got ${w}`);
+    if (!(Number.isInteger(area) && area > 0)) {
+        throw new Error(`Expected area to be a positive integer. Got ${area}`);
     }
     if (!(Number.isInteger(numActions) && numActions > 1)) {
         throw new Error(`Expected numActions to be positive integer > 1. Got ${numActions}`);
@@ -16,7 +16,7 @@ export function createDQN(h: number, w: number, numActions: number): tf.Sequenti
         kernelSize: 3,
         strides: 1,
         activation: 'relu',
-        inputShape: [h, w, 2],
+        inputShape: [faces, area],
     }));
     model.add(tf.layers.batchNormalization());
     model.add(tf.layers.conv2d({
