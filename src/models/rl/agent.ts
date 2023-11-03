@@ -1,0 +1,112 @@
+import * as tf from '@tensorflow/tfjs';
+
+import { createDQN } from './dqn.js';
+import { getRandomAction, CubeGame, NUM_ACTIONS, ALL_ACTIONS, getStateTensor } from '../game.js';
+import { ReplayMemory } from '../memory.js';
+
+interface AgentConfig {
+    replayBufferSize: number;
+    learningRate: number;
+    epsilonInit: number;
+    epsilonFinal: number;
+    epsilonDecayFrames: number;
+}
+
+export class CubeAgent {
+    game: CubeGame;
+    replayBufferSize: number;
+    replayMemory: ReplayMemory;
+    onlineNetwork: tf.Sequential;
+    targetNetwork: tf.Sequential;
+    optimizer: tf.Optimizer;
+    frameCount: number;
+    epsilonInit: number;
+    epsilonFinal: number;
+    epsilonDecayFrames: number;
+    epsilon: number;
+
+    private cumulativeReward: number;
+    private epsilonIncrement: number;
+
+
+    constructor(game: CubeGame, config: AgentConfig) {
+        this.game = game;
+        this.onlineNetwork = createDQN(6, 9, NUM_ACTIONS);
+        this.targetNetwork = createDQN(6, 9, NUM_ACTIONS);
+        this.targetNetwork.trainable = false;
+        this.optimizer = tf.train.adam(config.learningRate);
+        this.replayBufferSize = config.replayBufferSize;
+        this.epsilonInit = config.epsilonInit;
+        this.epsilonFinal = config.epsilonFinal;
+        this.epsilonDecayFrames = config.epsilonDecayFrames;
+        this.epsilonIncrement = (this.epsilonFinal - this.epsilonInit) / this.epsilonDecayFrames;
+        this.replayMemory = new ReplayMemory(config.replayBufferSize);
+        this.frameCount = 0;
+        this.cumulativeReward = 0;
+        this.epsilon = 0;
+        this.reset();
+    }
+
+    reset() {
+        this.cumulativeReward = 0;
+        this.game.reset();
+    }
+    playStep() {
+        if (this.frameCount >= this.epsilonDecayFrames) {
+            this.epsilon = this.epsilonFinal;
+        }
+        else {
+            this.epsilon = this.epsilonInit + this.epsilonIncrement * this.frameCount;
+        }
+        this.frameCount += 1;
+        let action = 0;
+        const state = this.game.getState();
+        if (Math.random() < this.epsilon) {
+            action = getRandomAction();
+        }
+        else {
+            tf.tidy(() => {
+                const stateTensor = getStateTensor(state);
+                // @ts-ignore
+                action = ALL_ACTIONS[this.onlineNetwork.predict(stateTensor).argMax(-1).dataSync()[0]];
+            });
+        }
+        const {state: nextState, reward, done} = this.game.step(action);
+        this.replayMemory.append([state, action, reward, done, nextState]);
+        this.cumulativeReward += reward;
+        const output = {
+            action,
+            cumulativeReward: this.cumulativeReward,
+            done,
+        }
+        if (done) {
+            this.reset();
+        }
+        return output;
+    }
+    trainOnReplayBatch(batchSize: number, gamma: number, optimizer: tf.Optimizer) {
+        const batch = this.replayMemory.sample(batchSize);
+        const lossFunction = () => tf.tidy(() => {
+            const stateTensor = getStateTensor(
+                batch.map(example => example[0]));
+            const actionTensor = tf.tensor1d(
+                batch.map(example => example[1]), 'int32');
+            const qs = this.onlineNetwork.apply(stateTensor, {training: true})
+                // @ts-ignore
+                .mul(tf.oneHot(actionTensor, NUM_ACTIONS)).sum(-1);
+            const rewardTensor = tf.tensor1d(batch.map(example => example[2]));
+            const nextStateTensor = getStateTensor(
+                batch.map(example => example[4]));
+            // @ts-ignore
+            const nextMaxQTensor = this.targetNetwork.predict(nextStateTensor).max(-1);
+            const doneMask = tf.scalar(1).sub(
+                tf.tensor1d(batch.map(example => example[3])).asType('float32'));
+            const targetQs = rewardTensor.add(nextMaxQTensor.mul(doneMask).mul(gamma));
+            return tf.losses.meanSquaredError(targetQs, qs);
+        });
+        // @ts-ignore
+        const grads = tf.variableGrads(lossFunction);
+        optimizer.applyGradients(grads.grads);
+        tf.dispose(grads);
+    }
+}
