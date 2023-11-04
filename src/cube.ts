@@ -35,6 +35,7 @@ const solvedCube = 'yyyyyyyyy/ggggggggg/ooooooooo/bbbbbbbbb/rrrrrrrrr/wwwwwwwww'
 // TODO: Calculate entropy of cube as distance from starting point each 20 cube pieces are
 export class Cube {
     cube: CubePositions;
+
     constructor() {
         this.cube = {
             // front
@@ -386,6 +387,20 @@ export class Cube {
     }
     isSolved(): boolean {
         return this.toString() === solvedCube;
+    }
+    get entropy(): number {
+        let entropy = 0;
+        const index = 4;
+        const keys = Object.keys(this.cube)
+        for (const key of keys) {
+            let total = 0;
+            for (let i = 0; i < this.cube[key].length; i++) {
+                total += this.cube[key][i].charCodeAt(0);
+            }
+            total /= this.cube[key].length;
+            entropy += Math.abs(total - this.cube[key][index].charCodeAt(0));
+        }
+        return entropy;
     }
 }
 
