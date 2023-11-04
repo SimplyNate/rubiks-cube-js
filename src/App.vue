@@ -6,6 +6,9 @@
             <input type="checkbox" v-model="useAnimation"> Animate
         </div>
         <div>
+            <input type="checkbox" v-model="showAxes" @change="toggleAxes"> Show Axes
+        </div>
+        <div>
             <h3>Controls</h3>
             <table>
                 <thead>
@@ -57,6 +60,7 @@ const cubes = new THREE.Group();
 let scene: THREE.Scene;
 
 const useAnimation = ref<boolean>(false);
+const showAxes = ref<boolean>(false);
 
 async function F() {
     await zHandler(-1, 1);
@@ -247,6 +251,47 @@ async function keyListener(evt: KeyboardEvent) {
     }
 }
 
+interface AxesTracker {
+    x: null | THREE.Object3D;
+    y: null | THREE.Object3D;
+    z: null | THREE.Object3D;
+}
+
+const axesTracker: AxesTracker = {
+    x: null,
+    y: null,
+    z: null,
+};
+
+function toggleAxes() {
+    if (showAxes.value) {
+        const x = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(20, 0, 0),
+        ]);
+        const xMesh = new THREE.Line(x, new THREE.LineBasicMaterial({ color: 'red' }));
+        scene.add(xMesh);
+        axesTracker.x = xMesh;
+        const y = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 20, 0),
+        ]);
+        const yMesh = new THREE.Line(y, new THREE.LineBasicMaterial({ color: 'green' }));
+        scene.add(yMesh);
+        axesTracker.y = yMesh;
+        const z = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, 20),
+        ]);
+        const zMesh = new THREE.Line(z, new THREE.LineBasicMaterial({ color: 'blue' }));
+        scene.add(zMesh);
+        axesTracker.z = zMesh;
+    }
+    else if (axesTracker.x && axesTracker.y && axesTracker.z) {
+        scene.remove(axesTracker.x, axesTracker.y, axesTracker.z);
+    }
+}
+
 onMounted(() => {
     const canvas = <HTMLCanvasElement>document.querySelector('#c');
     const renderer = new THREE.WebGLRenderer({
@@ -268,26 +313,6 @@ onMounted(() => {
     controls.update();
 
     scene = new THREE.Scene();
-    {
-        const x = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(0, 0, 0),
-            new THREE.Vector3(20, 0, 0),
-        ]);
-        const xMesh = new THREE.Line(x, new THREE.LineBasicMaterial({ color: 'red' }));
-        scene.add(xMesh);
-        const y = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(0, 0, 0),
-            new THREE.Vector3(0, 20, 0),
-        ]);
-        const yMesh = new THREE.Line(y, new THREE.LineBasicMaterial({ color: 'green' }));
-        scene.add(yMesh);
-        const z = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(0, 0, 0),
-            new THREE.Vector3(0, 0, 20),
-        ]);
-        const zMesh = new THREE.Line(z, new THREE.LineBasicMaterial({ color: 'blue' }));
-        scene.add(zMesh);
-    }
     scene.background = new THREE.Color('#add8e6');
     {
         for (let x = 0; x < 3; x++) {
