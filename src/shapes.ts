@@ -4,10 +4,10 @@ const cubeSize = 0.97;
 const colors = [
     '#0046ad', // blue
     '#009b48', // green
-    '#fefefe', // white
     '#ffd500', // yellow
-    '#b71234', // red
+    '#fefefe', // white
     '#ff5800', // orange
+    '#b71234', // red
 ];
 const materials = colors.map(c => new THREE.MeshBasicMaterial({ color: c }));
 const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
