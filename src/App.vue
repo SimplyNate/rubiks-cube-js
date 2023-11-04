@@ -37,6 +37,9 @@
                 </tbody>
             </table>
         </div>
+        <div style="margin-top: 1rem;">
+            <h3>Train</h3>
+        </div>
     </div>
 </template>
 
@@ -45,7 +48,8 @@ import {onMounted, ref} from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCube } from './shapes';
-import {rotateHorizontal, rotateVertical, rotateZ, select} from './animate';
+import {select, performRotation} from './animate';
+import { CubeAgent } from './models/rl/agent.js';
 
 /*
 Use [up, down] to cycle through [x, y, z] rotation
@@ -111,15 +115,15 @@ async function cB() {
 }
 
 async function verticalHandler(x: number, direction: number) {
-    await rotateVertical(scene, cubes, x, Math.PI / 2 * direction, useAnimation.value);
+    await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value);
 }
 
 async function horizontalHandler(y: number, direction: number) {
-    await rotateHorizontal(scene, cubes, y, Math.PI / 2 * direction, useAnimation.value)
+    await performRotation(scene, cubes, y, Math.PI / 2 * direction, 'y', useAnimation.value)
 }
 
 async function zHandler(z: number, direction: number) {
-    await rotateZ(scene, cubes, z, Math.PI / 2 * direction, useAnimation.value);
+    await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value);
 }
 
 function getRandomInt(min: number, max: number) {
@@ -129,7 +133,7 @@ function getRandomInt(min: number, max: number) {
 }
 
 function randomIndex() {
-    const indexes = [-1, 0, 1];
+    const indexes = [-1, 1];
     return indexes[getRandomInt(0, indexes.length)];
 }
 
