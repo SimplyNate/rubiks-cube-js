@@ -41,59 +41,43 @@ function deselectCubes(scene: THREE.Scene, cubes: THREE.Group, selectedCubes: TH
     scene.remove(rotationGroup);
 }
 
-export async function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number) {
+async function performAnimation(rotationGroup: THREE.Group, axis: 'X' | 'Y' | 'Z', angle: number, animate: boolean): Promise<void> {
+    return new Promise((resolve) => {
+        if (animate) {
+            const increment = angle / iterations;
+            let counter = 0;
+            const interval = setInterval(() => {
+                if (counter < iterations) {
+                    rotationGroup[`rotate${axis}`](increment);
+                    counter += 1;
+                }
+                else {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 1);
+        }
+        else {
+            rotationGroup[`rotate${axis}`](angle);
+            resolve();
+        }
+    });
+}
+
+export async function rotateVertical(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number, animate: boolean) {
     const { rotationGroup, selectedCubes } = selectCubes(scene, cubes, layerIndex, 'x');
-    const increment = angle / iterations;
-    let counter = 0;
-    return new Promise((resolve) => {
-        const interval = setInterval(() => {
-            if (counter < iterations) {
-                rotationGroup.rotateX(increment);
-                counter += 1;
-            }
-            else {
-                clearInterval(interval);
-                deselectCubes(scene, cubes, selectedCubes, rotationGroup);
-                resolve(undefined);
-            }
-        }, 1);
-    });
+    await performAnimation(rotationGroup, 'X', angle, animate);
+    deselectCubes(scene, cubes, selectedCubes, rotationGroup);
 }
 
-export function rotateHorizontal(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number) {
+export async function rotateHorizontal(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number, animate: boolean) {
     const { rotationGroup, selectedCubes } = selectCubes(scene, cubes, layerIndex, 'y');
-    const increment = angle / iterations;
-    let counter = 0;
-    return new Promise((resolve) => {
-        const interval = setInterval(() => {
-            if (counter < iterations) {
-                rotationGroup.rotateY(increment);
-                counter += 1;
-            }
-            else {
-                clearInterval(interval);
-                deselectCubes(scene, cubes, selectedCubes, rotationGroup);
-                resolve(undefined);
-            }
-        }, 1);
-    });
+    await performAnimation(rotationGroup, 'Y', angle, animate);
+    deselectCubes(scene, cubes, selectedCubes, rotationGroup);
 }
 
-export function rotateZ(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number) {
+export async function rotateZ(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number, angle: number, animate: boolean) {
     const { rotationGroup, selectedCubes } = selectCubes(scene, cubes, layerIndex, 'z');
-    const increment = angle / iterations;
-    let counter = 0;
-    return new Promise((resolve) => {
-        const interval = setInterval(() => {
-            if (counter < iterations) {
-                rotationGroup.rotateZ(increment);
-                counter += 1;
-            }
-            else {
-                clearInterval(interval);
-                deselectCubes(scene, cubes, selectedCubes, rotationGroup);
-                resolve(undefined);
-            }
-        }, 1);
-    });
+    await performAnimation(rotationGroup, 'Z', angle, animate);
+    deselectCubes(scene, cubes, selectedCubes, rotationGroup);
 }

@@ -3,7 +3,6 @@ import '@tensorflow/tfjs-backend-webgl';
 
 import { CubeAgent } from './agent.js';
 import { copyWeights } from './dqn.js';
-import { CubeGame } from '../game.js';
 
 
 class MovingAverager {

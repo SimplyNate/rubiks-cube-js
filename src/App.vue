@@ -1,7 +1,10 @@
 <template>
     <canvas id="c"></canvas>
     <div class="menu">
-        <button @click="randomize">Randomize</button>
+        <button style="display: block; margin-bottom: 0.5rem;" @click="randomize">Randomize</button>
+        <div>
+            <input type="checkbox" v-model="useAnimation"> Animate
+        </div>
         <div>
             <h3>Controls</h3>
             <table>
@@ -35,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCube } from './shapes';
@@ -52,6 +55,8 @@ let queue = false;
 
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
+
+const useAnimation = ref<boolean>(false);
 
 async function F() {
     await zHandler(-1, 1);
@@ -102,15 +107,15 @@ async function cB() {
 }
 
 async function verticalHandler(x: number, direction: number) {
-    await rotateVertical(scene, cubes, x, Math.PI / 2 * direction);
+    await rotateVertical(scene, cubes, x, Math.PI / 2 * direction, useAnimation.value);
 }
 
 async function horizontalHandler(y: number, direction: number) {
-    await rotateHorizontal(scene, cubes, y, Math.PI / 2 * direction)
+    await rotateHorizontal(scene, cubes, y, Math.PI / 2 * direction, useAnimation.value)
 }
 
 async function zHandler(z: number, direction: number) {
-    await rotateZ(scene, cubes, z, Math.PI / 2 * direction);
+    await rotateZ(scene, cubes, z, Math.PI / 2 * direction, useAnimation.value);
 }
 
 function getRandomInt(min: number, max: number) {
