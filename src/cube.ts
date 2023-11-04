@@ -388,3 +388,99 @@ export class Cube {
         return this.toString() === solvedCube;
     }
 }
+
+enum Cubes {
+    WRG,
+    WG,
+    WGO,
+    WO,
+    WOB,
+    WB,
+    WBR,
+    WR,
+    RG,
+    GO,
+    OB,
+    BR,
+    RGY,
+    GY,
+    GOY,
+    OY,
+    OBY,
+    BY,
+    BRY,
+    RY,
+}
+
+export class EntropyCube {
+    cube: Cubes[];
+    entropy: number;
+
+    constructor() {
+        this.cube = [
+            Cubes.WRG,
+            Cubes.WG,
+            Cubes.WGO,
+            Cubes.WO,
+            Cubes.WOB,
+            Cubes.WB,
+            Cubes.WBR,
+            Cubes.WR,
+            Cubes.RG,
+            Cubes.GO,
+            Cubes.OB,
+            Cubes.BR,
+            Cubes.RGY,
+            Cubes.GY,
+            Cubes.GOY,
+            Cubes.OY,
+            Cubes.OBY,
+            Cubes.BY,
+            Cubes.BRY,
+            Cubes.RY
+        ];
+        this.entropy = 0;
+    }
+    private calculateEntropy() {
+        this.entropy = 0;
+        for (let i = 0; i < this.cube.length; i++) {
+            this.entropy += Math.abs(this.cube[i] - i);
+        }
+    }
+    u() {
+        this.calculateEntropy();
+    }
+    counter_u() {
+        this.calculateEntropy();
+    }
+    l() {
+        this.calculateEntropy();
+    }
+    counter_l() {
+        this.calculateEntropy();
+    }
+    f() {
+        this.calculateEntropy();
+    }
+    counter_f() {
+        this.calculateEntropy();
+    }
+    r() {
+        this.calculateEntropy();
+    }
+    counter_r() {
+        this.calculateEntropy();
+    }
+    b() {
+        this.calculateEntropy();
+    }
+    counter_b() {
+        this.calculateEntropy();
+    }
+    d() {
+        this.calculateEntropy();
+    }
+    counter_d() {
+        this.calculateEntropy();
+    }
+}
