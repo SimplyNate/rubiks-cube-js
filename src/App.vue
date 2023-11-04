@@ -74,31 +74,31 @@ async function cF() {
 }
 
 async function R() {
-    await verticalHandler(1, -1);
+    await xHandler(1, -1);
 }
 async function cR() {
-    await verticalHandler(1, 1);
+    await xHandler(1, 1);
 }
 
 async function U() {
-    await horizontalHandler(1, -1);
+    await yHandler(1, -1);
 }
 async function cU() {
-    await horizontalHandler(1, 1);
+    await yHandler(1, 1);
 }
 
 async function L() {
-    await verticalHandler(-1, 1);
+    await xHandler(-1, 1);
 }
 async function cL() {
-    await verticalHandler(-1, -1);
+    await xHandler(-1, -1);
 }
 
 async function D() {
-    await horizontalHandler(-1, 1);
+    await yHandler(-1, 1);
 }
 async function cD() {
-    await horizontalHandler(-1, -1);
+    await yHandler(-1, -1);
 }
 
 async function B() {
@@ -108,11 +108,11 @@ async function cB() {
     await zHandler(-1, 1);
 }
 
-async function verticalHandler(x: number, direction: number) {
+async function xHandler(x: number, direction: number) {
     await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value);
 }
 
-async function horizontalHandler(y: number, direction: number) {
+async function yHandler(y: number, direction: number) {
     await performRotation(scene, cubes, y, Math.PI / 2 * direction, 'y', useAnimation.value)
 }
 
@@ -138,8 +138,8 @@ function randomDirection() {
 
 function randomHandler() {
     const handlers = [
-        verticalHandler,
-        horizontalHandler,
+        xHandler,
+        yHandler,
         zHandler,
     ];
     return handlers[getRandomInt(0, handlers.length)];
@@ -153,13 +153,6 @@ async function randomize() {
         const handler = randomHandler();
         await handler(index, direction);
     }
-}
-
-interface AxisHandlers {
-    [index: string]: (index: number, direction: number) => Promise<void>;
-    x: (index: number, direction: number) => Promise<void>;
-    y: (index: number, direction: number) => Promise<void>;
-    z: (index: number, direction: number) => Promise<void>;
 }
 
 async function keyListener(evt: KeyboardEvent) {
