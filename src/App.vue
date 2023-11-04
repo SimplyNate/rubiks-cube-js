@@ -48,7 +48,7 @@ import {onMounted, ref} from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCube } from './shapes';
-import {select, performRotation} from './animate';
+import {performRotation} from './animate';
 import { CubeAgent } from './models/rl/agent.js';
 
 /*
@@ -67,51 +67,45 @@ const useAnimation = ref<boolean>(false);
 const showAxes = ref<boolean>(false);
 
 async function F() {
-    await zHandler(-1, 1);
+    await zHandler(1, -1);
+}
+async function cF() {
+    await zHandler(1, 1);
 }
 
 async function R() {
+    await verticalHandler(1, -1);
+}
+async function cR() {
     await verticalHandler(1, 1);
 }
 
 async function U() {
     await horizontalHandler(1, -1);
 }
+async function cU() {
+    await horizontalHandler(1, 1);
+}
 
 async function L() {
+    await verticalHandler(-1, 1);
+}
+async function cL() {
     await verticalHandler(-1, -1);
 }
 
 async function D() {
     await horizontalHandler(-1, 1);
 }
-
-async function B() {
-    await zHandler(1, -1);
-}
-
-async function cF() {
-    await zHandler(-1, -1);
-}
-
-async function cR() {
-    await verticalHandler(1, -1);
-}
-
-async function cU() {
-    await horizontalHandler(1, 1);
-}
-
-async function cL() {
-    await verticalHandler(-1, 1);
-}
-
 async function cD() {
     await horizontalHandler(-1, -1);
 }
 
+async function B() {
+    await zHandler(-1, -1);
+}
 async function cB() {
-    await zHandler(1, 1);
+    await zHandler(-1, 1);
 }
 
 async function verticalHandler(x: number, direction: number) {
@@ -152,7 +146,6 @@ function randomHandler() {
 }
 
 async function randomize() {
-    deselect();
     const iterations = 100;
     for (let i = 0; i < iterations; i++) {
         const index = randomIndex();
@@ -160,7 +153,6 @@ async function randomize() {
         const handler = randomHandler();
         await handler(index, direction);
     }
-    makeSelection();
 }
 
 interface AxisHandlers {
@@ -170,87 +162,46 @@ interface AxisHandlers {
     z: (index: number, direction: number) => Promise<void>;
 }
 
-const settings = {
-    last: [] as THREE.Object3D[],
-    index: 0,
-    handlers: ['x', 'y', 'z'],
-    axis: {
-        x: verticalHandler,
-        y: horizontalHandler,
-        z: zHandler,
-    } as AxisHandlers,
-    handler: 0,
-};
-
-function deselect() {
-    for (const cube of settings.last) {
-        for (const child of cube.children) {
-            // @ts-ignore
-            child.material = new THREE.MeshBasicMaterial({ color: 'black' });
-        }
-    }
-    settings.last = [];
-}
-
-function makeSelection() {
-    // @ts-ignore
-    const axis: 'x' | 'y' | 'z' = settings.handlers[settings.handler];
-    const selection = select(cubes, settings.index, axis);
-    deselect();
-    for (const cube of selection) {
-        settings.last.push(cube);
-        // Iterate over all outlining meshes
-        for (const child of cube.children) {
-            // @ts-ignore
-            child.material = new THREE.MeshBasicMaterial({ color: 'silver' });
-        }
-    }
-}
-
 async function keyListener(evt: KeyboardEvent) {
     if (!queue) {
+        queue = true;
         const { key } = evt;
-        if (key === 'q') {
-            queue = true;
-            await settings.axis[settings.handlers[settings.handler]](settings.index, -1);
+        if (key === 'u') {
+            await U();
         }
-        else if (key === 'w') {
-            queue = true;
-            await settings.axis[settings.handlers[settings.handler]](settings.index, 1);
+        else if (key === 'U') {
+            await cU();
         }
-        else if (key === 'ArrowLeft') {
-            if (settings.index === -1) {
-                settings.index = 1;
-            }
-            else {
-                settings.index -= 1;
-            }
+        if (key === 'l') {
+            await L();
         }
-        else if (key === 'ArrowRight') {
-            if (settings.index === 1) {
-                settings.index = -1;
-            }
-            else {
-                settings.index += 1;
-            }
+        else if (key === 'L') {
+            await cL();
         }
-        else if (key === 'ArrowUp') {
-            if (settings.handler === 2) {
-                settings.handler = 0;
-            }
-            else {
-                settings.handler += 1;
-            }
+        if (key === 'f') {
+            await F();
         }
-        else if (key === 'ArrowDown') {
-            if (settings.handler === 0) {
-                settings.handler = 2;
-            }
-            else {
-                settings.handler -= 1;
-            }
+        else if (key === 'F') {
+            await cF();
         }
-        makeSelection();
+        if (key === 'r') {
+            await R();
+        }
+        else if (key === 'R') {
+            await cR();
+        }
+        if (key === 'b') {
+            await B();
+        }
+        else if (key === 'B') {
+            await cB();
+        }
+        if (key === 'd') {
+            await D();
+        }
+        else if (key === 'D') {
+            await cD();
+        }
         queue = false;
     }
 }
@@ -361,7 +312,6 @@ onMounted(() => {
     }
 
     requestAnimationFrame(render);
-    makeSelection();
     window.addEventListener('keydown', keyListener);
 });
 
