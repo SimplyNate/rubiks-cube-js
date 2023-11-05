@@ -8,37 +8,9 @@
         <div>
             <input type="checkbox" v-model="showAxes" @change="toggleAxes"> Show Axes
         </div>
-        <div>
-            <h3>Controls</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Key</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Q</td>
-                    <td>Rotate -90 degrees</td>
-                </tr>
-                <tr>
-                    <td>W</td>
-                    <td>Rotate 90 degrees</td>
-                </tr>
-                <tr>
-                    <td>&udarr;</td>
-                    <td>Cycle Axis of rotation</td>
-                </tr>
-                <tr>
-                    <td>&lrarr;</td>
-                    <td>Cycle index of axis</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
         <div style="margin-top: 1rem;">
             <h3>Train</h3>
+            <button>Create Agent</button>
         </div>
     </div>
 </template>
@@ -49,14 +21,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCube } from './shapes';
 import {performRotation} from './animate';
-import { CubeAgent } from './models/rl/agent.js';
+import { CubeAgent, AgentConfig } from './models/rl/agent.js';
+import { CubeGame, GameArgs } from './models/game.js';
+import { TrainingParams } from './models/rl/train.js';
 
-/*
-Use [up, down] to cycle through [x, y, z] rotation
-Use [left, right] to cycle through the indexes for that axis
-Use [q, w] to make [-1] and [1] direction spins
-Highlight the selection area
- */
 
 let queue = false;
 
@@ -65,6 +33,26 @@ let scene: THREE.Scene;
 
 const useAnimation = ref<boolean>(false);
 const showAxes = ref<boolean>(false);
+const gameArgs = ref<GameArgs>({
+    difficulty: 1,
+    gameType: 'randomLevels',
+});
+const agentConfig = ref<AgentConfig>({
+    replayBufferSize: 1e4,
+    learningRate: 1e-3,
+    epsilonInit: 0.5,
+    epsilonFinal: 0.01,
+    epsilonDecayFrames: 1e5,
+});
+const agent = ref<CubeAgent>(new CubeAgent(new CubeGame(gameArgs.value), agentConfig.value));
+const trainingConfig = ref<TrainingParams>({
+    batchSize: 64,
+    gamma: 0.99,
+    learningRate: 1e-3,
+    cumulativeRewardThreshold: 100,
+    maxNumFrames: 1e6,
+    syncEveryFrames: 1e3,
+});
 
 async function F() {
     await zHandler(1, -1);
@@ -332,6 +320,7 @@ html, body {
     right: 1em;
     padding: 1rem;
     background-color: white;
+    max-width: 250px;
 }
 
 </style>

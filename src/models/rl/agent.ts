@@ -4,7 +4,7 @@ import { createDQN } from './dqn.js';
 import { getRandomAction, CubeGame, NUM_ACTIONS, ALL_ACTIONS, getStateTensor } from '../game.js';
 import { ReplayMemory } from '../memory.js';
 
-interface AgentConfig {
+export interface AgentConfig {
     replayBufferSize: number;
     learningRate: number;
     epsilonInit: number;

@@ -34,7 +34,7 @@ export function getRandomAction(): number {
     return getRandomInteger(0, NUM_ACTIONS);
 }
 
-interface GameArgs {
+export interface GameArgs {
     difficulty: number;
     gameType: 'randomLevels' | 'provided';
     maxMoves?: number;

@@ -23,6 +23,15 @@ class MovingAverager {
     }
 }
 
+export interface TrainingParams {
+    batchSize: number;
+    gamma: number;
+    learningRate: number;
+    cumulativeRewardThreshold: number;
+    maxNumFrames: number;
+    syncEveryFrames: number;
+}
+
 export async function train(
     agent: CubeAgent,
     batchSize: number,
