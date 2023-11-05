@@ -14,33 +14,56 @@ export interface AgentConfig {
 
 export class CubeAgent {
     game: CubeGame;
-    replayBufferSize: number;
+    replayBufferSize: number = 1e4;
     replayMemory: ReplayMemory;
     onlineNetwork: tf.Sequential;
     targetNetwork: tf.Sequential;
     optimizer: tf.Optimizer;
     frameCount: number;
-    epsilonInit: number;
-    epsilonFinal: number;
-    epsilonDecayFrames: number;
+    epsilonInit: number = 0.5;
+    epsilonFinal: number = 0.01;
+    epsilonDecayFrames: number = 1e5;
     epsilon: number;
 
-    cumulativeReward: number;
+    private cumulativeReward: number;
     private readonly epsilonIncrement: number;
 
 
-    constructor(game: CubeGame, config: AgentConfig) {
-        this.game = game;
+    constructor(game?: CubeGame,
+                replayBufferSize?: number,
+                learningRate?: number,
+                epsilonInit?: number,
+                epsilonFinal?: number,
+                epsilonDecayFrames?: number) {
+        if (game) {
+            this.game = game;
+        }
+        else {
+            this.game = new CubeGame();
+        }
         this.onlineNetwork = createDQN(6, 9, NUM_ACTIONS);
         this.targetNetwork = createDQN(6, 9, NUM_ACTIONS);
         this.targetNetwork.trainable = false;
-        this.optimizer = tf.train.adam(config.learningRate);
-        this.replayBufferSize = config.replayBufferSize;
-        this.epsilonInit = config.epsilonInit;
-        this.epsilonFinal = config.epsilonFinal;
-        this.epsilonDecayFrames = config.epsilonDecayFrames;
+        if (learningRate) {
+            this.optimizer = tf.train.adam(learningRate);
+        }
+        else {
+            this.optimizer = tf.train.adam(1e-3);
+        }
+        if (replayBufferSize) {
+            this.replayBufferSize = replayBufferSize;
+        }
+        if (epsilonInit) {
+            this.epsilonInit = epsilonInit;
+        }
+        if (epsilonFinal) {
+            this.epsilonFinal = epsilonFinal;
+        }
+        if (epsilonDecayFrames) {
+            this.epsilonDecayFrames = epsilonDecayFrames;
+        }
         this.epsilonIncrement = (this.epsilonFinal - this.epsilonInit) / this.epsilonDecayFrames;
-        this.replayMemory = new ReplayMemory(config.replayBufferSize);
+        this.replayMemory = new ReplayMemory(this.replayBufferSize);
         this.frameCount = 0;
         this.cumulativeReward = 0;
         this.epsilon = 0;
@@ -108,5 +131,8 @@ export class CubeAgent {
         const grads = tf.variableGrads(lossFunction);
         optimizer.applyGradients(grads.grads);
         tf.dispose(grads);
+    }
+    get currentReward() {
+        return this.cumulativeReward;
     }
 }

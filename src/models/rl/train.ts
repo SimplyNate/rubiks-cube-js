@@ -32,6 +32,34 @@ export interface TrainingParams {
     syncEveryFrames: number;
 }
 
+export class Trainer {
+    agent: CubeAgent;
+    batchSize: number;
+    gamma: number;
+    learningRate: number;
+    cumulativeRewardThreshold: number;
+    maxNumFrames: number;
+    syncEveryFrames: number;
+    currentReward: number;
+    bestReward: number;
+    currentIteration: number;
+
+    constructor(agent?: CubeAgent,
+                batchSize?: number,
+                gamma?: number,
+                learningRate?: number,
+                cumulativeRewardThreshold: number,
+                maxNumFrames: number,
+                syncEveryFrames: number) {
+        if (agent) {
+            this.agent = agent;
+        }
+        else {
+            this.agent = new CubeAgent()
+        }
+    }
+}
+
 export async function train(
     agent: CubeAgent,
     batchSize: number,

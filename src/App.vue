@@ -45,7 +45,7 @@
             </div>
             <h3>Learn</h3>
             <div>
-                <div>Current Reward: {{ agent.cumulativeReward }}</div>
+                <div>Current Reward: {{ agent.currentReward }}</div>
                 <div>Best Reward: {{ bestReward }}</div>
                 <div>Iteration: {{ iteration }}</div>
             </div>

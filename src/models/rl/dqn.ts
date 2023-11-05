@@ -16,7 +16,7 @@ export function createDQN(faces: number, area: number, numActions: number): tf.S
         kernelSize: 3,
         strides: 1,
         activation: 'relu',
-        inputShape: [faces, area, 2],
+        inputShape: [faces, area, faces],
     }));
     model.add(tf.layers.batchNormalization());
     model.add(tf.layers.conv2d({

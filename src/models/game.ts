@@ -63,18 +63,16 @@ export class CubeGame {
     maxMoves: number;
     cube: Cube;
     difficulty: number;
-    gameType: string;
     currentMove: number;
-    constructor(args: GameArgs) {
+    constructor(difficulty?: number) {
         this.cube = new Cube();
-        this.difficulty = args.difficulty;
-        this.gameType = args.gameType;
-        if (args.maxMoves) {
-            this.maxMoves = args.maxMoves;
+        if (difficulty) {
+            this.difficulty = difficulty;
         }
         else {
-            this.maxMoves = Math.max(75 - this.difficulty, 25);
+            this.difficulty = 1;
         }
+        this.maxMoves = Math.max(75 - this.difficulty, 25);
         this.currentMove = 0;
     }
     reset() {
