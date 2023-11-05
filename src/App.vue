@@ -10,13 +10,13 @@
         </div>
         <div style="margin-top: 1rem;">
             <h3>Config</h3>
-            <div>
-                <h4>Game</h4>
+            <div style="margin-bottom: 1rem;">
+                <div style="font-weight: bold;">Game</div>
                 <div>Difficulty</div>
                 <input type="number" v-model="gameArgs.difficulty">
             </div>
-            <div>
-                <h4>Agent</h4>
+            <div style="margin-bottom: 1rem;">
+                <div style="font-weight: bold;">Agent</div>
                 <div>Replay Buffer Size</div>
                 <input type="number" v-model="agentConfig.replayBufferSize">
                 <div>Learning Rate</div>
@@ -28,8 +28,8 @@
                 <div>Epsilon Decay Frames</div>
                 <input type="number" v-model="agentConfig.epsilonDecayFrames">
             </div>
-            <div>
-                <h4>Train</h4>
+            <div style="margin-bottom: 1rem;">
+                <div style="font-weight: bold;">Train</div>
                 <div>Batch Size</div>
                 <input type="number" v-model="trainingConfig.batchSize">
                 <div>Gamma</div>
