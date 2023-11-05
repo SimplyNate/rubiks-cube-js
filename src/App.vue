@@ -43,8 +43,33 @@
                 <div>Sync Every Frames</div>
                 <input type="number" v-model="trainingConfig.maxNumFrames">
             </div>
-            <h3>Train</h3>
-            <button>Create Agent</button>
+            <h3>Learn</h3>
+            <div>
+                <div>Current Reward: {{ agent.cumulativeReward }}</div>
+                <div>Best Reward: {{ bestReward }}</div>
+                <div>Iteration: {{ iteration }}</div>
+            </div>
+            <div>
+                <button @click="createNewAgent">Create New Agent</button>
+            </div>
+            <div>
+                <button>Step</button>
+            </div>
+            <div>
+                <button>Train</button>
+            </div>
+            <div>
+                <button>Export Current Model</button>
+            </div>
+            <div>
+                <button>Load Model</button>
+            </div>
+            <div>
+                <button>Export Configuration</button>
+            </div>
+            <div>
+                <button>Load Configuration</button>
+            </div>
         </div>
     </div>
 </template>
@@ -87,6 +112,11 @@ const trainingConfig = ref<TrainingParams>({
     maxNumFrames: 1e6,
     syncEveryFrames: 1e3,
 });
+function createNewAgent() {
+    agent.value = new CubeAgent(new CubeGame(gameArgs.value), agentConfig.value);
+}
+const bestReward = ref<number>(0);
+const iteration = ref<number>(0);
 
 async function F() {
     await zHandler(1, -1);
@@ -94,54 +124,45 @@ async function F() {
 async function cF() {
     await zHandler(1, 1);
 }
-
 async function R() {
     await xHandler(1, -1);
 }
 async function cR() {
     await xHandler(1, 1);
 }
-
 async function U() {
     await yHandler(1, -1);
 }
 async function cU() {
     await yHandler(1, 1);
 }
-
 async function L() {
     await xHandler(-1, 1);
 }
 async function cL() {
     await xHandler(-1, -1);
 }
-
 async function D() {
     await yHandler(-1, 1);
 }
 async function cD() {
     await yHandler(-1, -1);
 }
-
 async function B() {
     await zHandler(-1, -1);
 }
 async function cB() {
     await zHandler(-1, 1);
 }
-
 async function xHandler(x: number, direction: number) {
     await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value);
 }
-
 async function yHandler(y: number, direction: number) {
     await performRotation(scene, cubes, y, Math.PI / 2 * direction, 'y', useAnimation.value)
 }
-
 async function zHandler(z: number, direction: number) {
     await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value);
 }
-
 function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);

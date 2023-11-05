@@ -25,8 +25,8 @@ export class CubeAgent {
     epsilonDecayFrames: number;
     epsilon: number;
 
-    private cumulativeReward: number;
-    private epsilonIncrement: number;
+    cumulativeReward: number;
+    private readonly epsilonIncrement: number;
 
 
     constructor(game: CubeGame, config: AgentConfig) {
