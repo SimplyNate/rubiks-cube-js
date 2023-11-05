@@ -9,6 +9,40 @@
             <input type="checkbox" v-model="showAxes" @change="toggleAxes"> Show Axes
         </div>
         <div style="margin-top: 1rem;">
+            <h3>Config</h3>
+            <div>
+                <h4>Game</h4>
+                <div>Difficulty</div>
+                <input type="number" v-model="gameArgs.difficulty">
+            </div>
+            <div>
+                <h4>Agent</h4>
+                <div>Replay Buffer Size</div>
+                <input type="number" v-model="agentConfig.replayBufferSize">
+                <div>Learning Rate</div>
+                <input type="number" v-model="agentConfig.learningRate">
+                <div>Epsilon Init</div>
+                <input type="number" v-model="agentConfig.epsilonInit">
+                <div>Epsilon Final</div>
+                <input type="number" v-model="agentConfig.epsilonFinal">
+                <div>Epsilon Decay Frames</div>
+                <input type="number" v-model="agentConfig.epsilonDecayFrames">
+            </div>
+            <div>
+                <h4>Train</h4>
+                <div>Batch Size</div>
+                <input type="number" v-model="trainingConfig.batchSize">
+                <div>Gamma</div>
+                <input type="number" v-model="trainingConfig.gamma">
+                <div>Learning Rate</div>
+                <input type="number" v-model="trainingConfig.learningRate">
+                <div>Cumulative Reward Threshold</div>
+                <input type="number" v-model="trainingConfig.cumulativeRewardThreshold">
+                <div>Max Num Frames</div>
+                <input type="number" v-model="trainingConfig.maxNumFrames">
+                <div>Sync Every Frames</div>
+                <input type="number" v-model="trainingConfig.maxNumFrames">
+            </div>
             <h3>Train</h3>
             <button>Create Agent</button>
         </div>
