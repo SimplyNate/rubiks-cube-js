@@ -11,29 +11,22 @@ export function createDQN(faces: number, area: number, numActions: number): tf.S
         throw new Error(`Expected numActions to be positive integer > 1. Got ${numActions}`);
     }
     const model = tf.sequential();
-    model.add(tf.layers.conv2d({
-        filters: 128,
-        kernelSize: 3,
-        strides: 1,
-        activation: 'relu',
-        inputShape: [faces, area, faces],
+    model.add(tf.layers.dense({
+        units: 54,
+        inputShape: [faces, area],
     }));
     model.add(tf.layers.batchNormalization());
-    model.add(tf.layers.conv2d({
-        filters: 256,
-        kernelSize: 3,
-        strides: 1,
+    model.add(tf.layers.dense({
+        units: 216,
         activation: 'relu',
     }));
     model.add(tf.layers.batchNormalization());
-    model.add(tf.layers.conv2d({
-        filters: 256,
-        kernelSize: 3,
-        strides: 1,
-        activation: 'relu',
+    model.add(tf.layers.dense({
+        units: 216,
+        activation: 'relu'
     }));
     model.add(tf.layers.flatten());
-    model.add(tf.layers.dense({units: 100, activation: 'relu'}))
+    model.add(tf.layers.dense({units: 108, activation: 'relu'}))
     model.add(tf.layers.dropout({rate: 0.25}));
     model.add(tf.layers.dense({units: numActions}));
     return model;
