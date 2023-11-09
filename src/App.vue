@@ -45,12 +45,12 @@
             </div>
             <h3>Learn</h3>
             <div>
-                <div>Current Reward: {{ agent.currentReward }}</div>
+                <button @click="createNewTrainer">Create New Trainer</button>
+            </div>
+            <div v-if="trainer">
+                <div>Current Reward: {{ trainer.currentReward }}</div>
                 <div>Best Reward: {{ bestReward }}</div>
                 <div>Iteration: {{ iteration }}</div>
-            </div>
-            <div>
-                <button @click="createNewAgent">Create New Agent</button>
             </div>
             <div>
                 <button>Step</button>
@@ -82,7 +82,7 @@ import { createCube } from './shapes';
 import {performRotation} from './animate';
 import { CubeAgent, AgentConfig } from './models/rl/agent.js';
 import { CubeGame, GameArgs } from './models/game.js';
-import { TrainingParams } from './models/rl/train.js';
+import { TrainingParams, Trainer } from './models/rl/train.js';
 
 
 let queue = false;
@@ -103,7 +103,6 @@ const agentConfig = ref<AgentConfig>({
     epsilonFinal: 0.01,
     epsilonDecayFrames: 1e5,
 });
-const agent = ref<CubeAgent>(new CubeAgent(new CubeGame(gameArgs.value), agentConfig.value));
 const trainingConfig = ref<TrainingParams>({
     batchSize: 64,
     gamma: 0.99,
@@ -112,8 +111,28 @@ const trainingConfig = ref<TrainingParams>({
     maxNumFrames: 1e6,
     syncEveryFrames: 1e3,
 });
-function createNewAgent() {
-    agent.value = new CubeAgent(new CubeGame(gameArgs.value), agentConfig.value);
+
+const trainer = ref<Trainer>();
+
+function createNewTrainer() {
+    trainer.value = new Trainer(
+        new CubeAgent(
+            new CubeGame(
+                gameArgs.value.difficulty
+            ),
+            agentConfig.value.replayBufferSize,
+            agentConfig.value.learningRate,
+            agentConfig.value.epsilonInit,
+            agentConfig.value.epsilonFinal,
+            agentConfig.value.epsilonDecayFrames
+        ),
+        trainingConfig.value.batchSize,
+        trainingConfig.value.gamma,
+        trainingConfig.value.learningRate,
+        trainingConfig.value.cumulativeRewardThreshold,
+        trainingConfig.value.maxNumFrames,
+        trainingConfig.value.syncEveryFrames
+    );
 }
 const bestReward = ref<number>(0);
 const iteration = ref<number>(0);
