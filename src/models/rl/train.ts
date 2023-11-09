@@ -79,6 +79,45 @@ export class Trainer {
         this.bestReward = 0;
         this.currentIteration = 0;
     }
+
+    train() {
+        for (let i = 0; i < this.agent.replayBufferSize; i++) {
+            this.agent.playStep();
+        }
+        const rewardAverager100 = new MovingAverager(100);
+        const optimizer = tf.train.adam(this.learningRate);
+        let tPrev = new Date().getTime();
+        let frameCountPrev = this.agent.frameCount;
+        let averageReward100Best = -Infinity;
+        while (true) {
+            this.agent.trainOnReplayBatch(this.batchSize, this.gamma, optimizer);
+            const { cumulativeReward, done } = this.agent.playStep();
+            if (done) {
+                const t = new Date().getTime();
+                const framesPerSecond = (this.agent.frameCount - frameCountPrev) / (t - tPrev) * 1e3;
+                tPrev = t;
+                frameCountPrev = this.agent.frameCount;
+                rewardAverager100.append(cumulativeReward);
+                const averageReward100 = rewardAverager100.average();
+
+                console.log(
+                    `Frame #${this.agent.frameCount}: ` +
+                    `cumulativeReward100=${averageReward100.toFixed(1)}; ` +
+                    `(epsilon=${this.agent.epsilon.toFixed(3)}) ` +
+                    `(${framesPerSecond.toFixed(1)} frames/s)`);
+                if (averageReward100 >= this.cumulativeRewardThreshold || this.agent.frameCount >= this.maxNumFrames) {
+                    break;
+                }
+                if (averageReward100 > averageReward100Best) {
+                    averageReward100Best = averageReward100;
+                }
+            }
+            if (this.agent.frameCount % this.syncEveryFrames === 0) {
+                copyWeights(this.agent.targetNetwork, this.agent.onlineNetwork);
+                console.log('Synced weights from online network to target network');
+            }
+        }
+    }
 }
 
 export async function train(
