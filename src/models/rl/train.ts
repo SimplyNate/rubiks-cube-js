@@ -34,12 +34,12 @@ export interface TrainingParams {
 
 export class Trainer {
     agent: CubeAgent;
-    batchSize: number;
-    gamma: number;
-    learningRate: number;
-    cumulativeRewardThreshold: number;
-    maxNumFrames: number;
-    syncEveryFrames: number;
+    batchSize: number = 64;
+    gamma: number = 0.99;
+    learningRate: number = 1e-3;
+    cumulativeRewardThreshold: number = 100;
+    maxNumFrames: number = 1e6;
+    syncEveryFrames: number = 1e3;
     currentReward: number;
     bestReward: number;
     currentIteration: number;
@@ -48,15 +48,36 @@ export class Trainer {
                 batchSize?: number,
                 gamma?: number,
                 learningRate?: number,
-                cumulativeRewardThreshold: number,
-                maxNumFrames: number,
-                syncEveryFrames: number) {
+                cumulativeRewardThreshold?: number,
+                maxNumFrames?: number,
+                syncEveryFrames?: number) {
+        if (learningRate) {
+            this.learningRate = learningRate;
+        }
         if (agent) {
             this.agent = agent;
         }
         else {
-            this.agent = new CubeAgent()
+            this.agent = new CubeAgent(undefined, undefined, this.learningRate);
         }
+        if (batchSize) {
+            this.batchSize = batchSize;
+        }
+        if (gamma) {
+            this.gamma = gamma;
+        }
+        if (cumulativeRewardThreshold) {
+            this.cumulativeRewardThreshold = cumulativeRewardThreshold;
+        }
+        if (maxNumFrames) {
+            this.maxNumFrames = maxNumFrames;
+        }
+        if (syncEveryFrames) {
+            this.syncEveryFrames = syncEveryFrames;
+        }
+        this.currentReward = 0;
+        this.bestReward = 0;
+        this.currentIteration = 0;
     }
 }
 
