@@ -13,6 +13,7 @@ export function createDQN(faces: number, area: number, numActions: number): tf.S
     const model = tf.sequential();
     model.add(tf.layers.dense({
         units: 54,
+        activation: 'relu',
         inputShape: [faces, area],
     }));
     model.add(tf.layers.batchNormalization());
@@ -23,7 +24,7 @@ export function createDQN(faces: number, area: number, numActions: number): tf.S
     model.add(tf.layers.batchNormalization());
     model.add(tf.layers.dense({
         units: 216,
-        activation: 'relu'
+        activation: 'relu',
     }));
     model.add(tf.layers.flatten());
     model.add(tf.layers.dense({units: 108, activation: 'relu'}))

@@ -56,7 +56,7 @@
                 <button>Step</button>
             </div>
             <div>
-                <button>Train</button>
+                <button @click="startTraining">Train</button>
             </div>
             <div>
                 <button>Export Current Model</button>
@@ -136,6 +136,10 @@ function createNewTrainer() {
 }
 const bestReward = ref<number>(0);
 const iteration = ref<number>(0);
+
+async function startTraining() {
+    await trainer.value?.train();
+}
 
 async function F() {
     await zHandler(1, -1);
