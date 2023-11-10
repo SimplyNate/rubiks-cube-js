@@ -8,6 +8,9 @@
         <div>
             <input type="checkbox" v-model="showAxes" @change="toggleAxes"> Show Axes
         </div>
+        <div>
+            <input type="checkbox" v-model="syncWithTraining" @change="toggleSync"> Sync With Training
+        </div>
         <div style="margin-top: 1rem;">
             <h3>Config</h3>
             <div style="margin-bottom: 1rem;">
@@ -83,6 +86,7 @@ import {performRotation} from './animate';
 import { CubeAgent, AgentConfig } from './models/rl/agent.js';
 import { CubeGame, GameArgs } from './models/game.js';
 import { TrainingParams, Trainer } from './models/rl/train.js';
+import { Cube } from './cube.js';
 
 
 let queue = false;
@@ -92,6 +96,7 @@ let scene: THREE.Scene;
 
 const useAnimation = ref<boolean>(false);
 const showAxes = ref<boolean>(false);
+const syncWithTraining = ref<boolean>(true);
 const gameArgs = ref<GameArgs>({
     difficulty: 1,
     gameType: 'randomLevels',
@@ -112,7 +117,7 @@ const trainingConfig = ref<TrainingParams>({
     syncEveryFrames: 1e3,
 });
 
-const trainer = ref<Trainer>();
+const trainer = ref<Trainer>(new Trainer());
 
 function createNewTrainer() {
     trainer.value = new Trainer(
@@ -133,12 +138,25 @@ function createNewTrainer() {
         trainingConfig.value.maxNumFrames,
         trainingConfig.value.syncEveryFrames
     );
+    if (syncWithTraining.value) {
+        cube.value = trainer.value.agent.game.cube;
+    }
 }
 const bestReward = ref<number>(0);
 const iteration = ref<number>(0);
 
 async function startTraining() {
     await trainer.value?.train();
+}
+
+const cube = ref<Cube>(new Cube());
+function toggleSync() {
+    if (syncWithTraining.value) {
+        cube.value = trainer.value.agent.game.cube;
+    }
+    else {
+        cube.value = new Cube();
+    }
 }
 
 async function F() {
