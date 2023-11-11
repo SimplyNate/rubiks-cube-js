@@ -1,9 +1,11 @@
 <template>
-    <rubiks-trainer />
+    <!-- <rubiks-trainer /> -->
+    <testing/>
 </template>
 
 <script lang="ts" setup>
-import RubiksTrainer from "./components/RubiksTrainer.vue";
+// import RubiksTrainer from './components/RubiksTrainer.vue';
+import Testing from './components/Testing.vue';
 
 </script>
 <style>

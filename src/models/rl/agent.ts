@@ -91,10 +91,14 @@ export class CubeAgent {
             tf.tidy(() => {
                 const stateTensor = getStateTensor(state);
                 const prediction = this.onlineNetwork.predict(stateTensor);
-                // @ts-ignore
-                const value = prediction.argMax(-1).dataSync()[0];
-                // @ts-ignore
-                action = ALL_ACTIONS[value];
+                if (Array.isArray(prediction)) {
+                    const value = prediction[0].argMax(-1).dataSync()[0];
+                    action = ALL_ACTIONS[value];
+                }
+                else {
+                    const value = prediction.argMax(-1).dataSync()[0];
+                    action = ALL_ACTIONS[value];
+                }
             });
         }
         const {state: nextState, reward, done} = this.game.step(action);

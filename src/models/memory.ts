@@ -10,20 +10,25 @@ export class ReplayMemory {
     constructor(maxLen: number) {
         this.maxLen = maxLen;
         this.buffer = [];
-        for (let i = 0; i < maxLen; i++) {
-            this.buffer.push(null);
-        }
         this.index = 0;
         this.length = 0;
         this.bufferIndices = [];
-        for (let i = 0; i < maxLen; i++) {
-            this.bufferIndices.push(i);
-        }
     }
     append(item: any): void {
-        this.buffer[this.index] = item;
-        this.length = Math.min(this.length + 1, this.maxLen);
-        this.index = (this.index + 1) % this.maxLen;
+        if (this.index === this.buffer.length && this.index < this.maxLen) {
+            this.bufferIndices.push(this.index);
+            this.buffer.push(item);
+        }
+        else {
+            this.buffer[this.index] = item;
+        }
+        this.length = this.buffer.length;
+        if (this.index === this.maxLen) {
+            this.index = 0;
+        }
+        else {
+            this.index += 1;
+        }
     }
     sample(batchSize: number): any[] {
         if (batchSize > this.maxLen) {
