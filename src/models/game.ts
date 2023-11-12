@@ -80,6 +80,7 @@ export class CubeGame {
         return this.getState();
     }
     step(action: number): Step {
+        this.currentMove += 1;
         const previousState = this.cube.toString().split('/');
         if (action === ACTION_F) {
             this.cube.f();
