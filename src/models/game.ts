@@ -4,7 +4,7 @@ import { getRandomInteger } from './utils';
 import { Cube } from '../cube.js';
 
 export const UNSOLVED_REWARD = -0.1;
-export const SOLVE_FACE_REWARD = 2;
+export const SOLVE_FACE_REWARD = 10;
 export const FAIL_REWARD = -100;
 export const WIN_REWARD = 150;
 
@@ -41,12 +41,13 @@ export interface GameArgs {
 }
 
 interface GameState {
-    f: string[],
-    l: string[],
-    r: string[],
-    b: string[],
-    u: string[],
-    d: string[]
+    [index: string]: string[];
+    f: string[];
+    l: string[];
+    r: string[];
+    b: string[];
+    u: string[];
+    d: string[];
 }
 
 interface Step {
@@ -75,6 +76,7 @@ export class CubeGame {
     difficulty: number;
     currentMove: number;
     solved: SolvedFaceTracker;
+    solvedFaces: number;
     constructor(difficulty?: number) {
         this.cube = new Cube();
         if (difficulty) {
@@ -93,6 +95,7 @@ export class CubeGame {
             b: true,
             d: true,
         }
+        this.solvedFaces = 6;
     }
     reset() {
         this.initialize();
@@ -100,7 +103,6 @@ export class CubeGame {
     }
     step(action: number): Step {
         this.currentMove += 1;
-        const previousState = this.cube.toString().split('/');
         if (action === ACTION_F) {
             this.cube.f();
         }
@@ -147,35 +149,30 @@ export class CubeGame {
             done = true;
             return {reward: FAIL_REWARD, done};
         }
-        const currentState = this.cube.toString().split('/');
+        const state = this.getState();
         let reward = UNSOLVED_REWARD;
-        let solvedFaces = 0;
-        let unsolvedFaces = 0;
         // Check if current move solved a face or destroyed a face
-        for (let i = 0; i < currentState.length; i++) {
-            const currentFace = currentState[i];
-            const isCurrentSolved = isFaceSolved(currentFace.split(''));
-            const previousFace = previousState[i];
-            const isPreviousSolved = isFaceSolved(previousFace.split(''));
-            if (isPreviousSolved && isCurrentSolved) {
-                reward += 0;
-            }
-            else if (isPreviousSolved && !isCurrentSolved) {
-                unsolvedFaces += 1;
-                reward -= UNSOLVED_REWARD * unsolvedFaces;
-            }
-            else if (!isPreviousSolved && isCurrentSolved) {
-                solvedFaces += 1;
-                reward += SOLVE_FACE_REWARD * solvedFaces;
+        for (const key of Object.keys(state)) {
+            const currentFace = state[key];
+            const isCurrentSolved = isFaceSolved(currentFace);
+            // If this face is solved and we haven't solved it before
+            if (isCurrentSolved && !this.solved[key]) {
+                this.solved[key] = true;
+                this.solvedFaces += 1;
+                reward += SOLVE_FACE_REWARD * this.solvedFaces;
             }
         }
-        const state = this.getState();
         return { reward, state, done };
     }
     private initialize() {
+        this.currentMove = 0;
         this.cube = Cube.scrambled(this.difficulty);
+        this.solvedFaces = 0;
         for (const key of Object.keys(this.solved)) {
             this.solved[key] = isFaceSolved(this.cube.cube[key]);
+            if (this.solved[key]) {
+                this.solvedFaces += 1;
+            }
         }
     }
     getState(): GameState {
