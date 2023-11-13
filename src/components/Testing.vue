@@ -5,6 +5,7 @@ import { createDQN } from '../models/rl/dqn.js';
 import { NUM_ACTIONS, CubeGame, getStateTensor } from '../models/game.js';
 import { CubeAgent } from '../models/rl/agent.js';
 import { Trainer } from '../models/rl/train.js';
+import { Cube } from "../cube.js";
 
 /*
 const dqn = createDQN(6, 9, NUM_ACTIONS);
@@ -32,11 +33,12 @@ console.log(value2);
 const trainer = new Trainer();
 trainer.train();
  */
-const game = new CubeGame();
-const state = ref(game.reset());
-
-console.log(state);
-console.log(game.cube.toString());
+const cube = new Cube();
+console.log(cube.isSolved());
+cube.f();
+console.log(cube.isSolved());
+cube.counter_f();
+console.log(cube.isSolved());
 
 </script>
 

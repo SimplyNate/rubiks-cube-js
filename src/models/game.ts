@@ -6,7 +6,7 @@ import { Cube } from '../cube.js';
 export const UNSOLVED_REWARD = -0.1;
 export const SOLVE_FACE_REWARD = 2;
 export const FAIL_REWARD = -100;
-export const WIN_REWARD = 1000;
+export const WIN_REWARD = 150;
 
 export const ACTION_F = 0;
 export const ACTION_COUNTER_F = 1;
@@ -59,11 +59,22 @@ function isFaceSolved(face: string[]): boolean {
     return face.every(color => color === face[0]);
 }
 
+interface SolvedFaceTracker {
+    [index: string]: boolean;
+    u: boolean;
+    l: boolean;
+    f: boolean;
+    r: boolean;
+    b: boolean;
+    d: boolean;
+}
+
 export class CubeGame {
     maxMoves: number;
     cube: Cube;
     difficulty: number;
     currentMove: number;
+    solved: SolvedFaceTracker;
     constructor(difficulty?: number) {
         this.cube = new Cube();
         if (difficulty) {
@@ -74,6 +85,14 @@ export class CubeGame {
         }
         this.maxMoves = Math.max(75 - this.difficulty, 25);
         this.currentMove = 0;
+        this.solved = {
+            u: true,
+            l: true,
+            f: true,
+            r: true,
+            b: true,
+            d: true,
+        }
     }
     reset() {
         this.initialize();
@@ -155,6 +174,9 @@ export class CubeGame {
     }
     private initialize() {
         this.cube = Cube.scrambled(this.difficulty);
+        for (const key of Object.keys(this.solved)) {
+            this.solved[key] = isFaceSolved(this.cube.cube[key]);
+        }
     }
     getState(): GameState {
         return { ...this.cube.cube };

@@ -37,12 +37,13 @@ export class Trainer {
     batchSize: number = 64;
     gamma: number = 0.99;
     learningRate: number = 1e-3;
-    cumulativeRewardThreshold: number = 100;
+    cumulativeRewardThreshold: number = 150;
     maxNumFrames: number = 1e6;
     syncEveryFrames: number = 1e3;
     currentReward: number;
     bestReward: number;
     currentIteration: number;
+    totalFrames: number;
 
     constructor(agent?: CubeAgent,
                 batchSize?: number,
@@ -78,6 +79,7 @@ export class Trainer {
         this.currentReward = 0;
         this.bestReward = 0;
         this.currentIteration = 0;
+        this.totalFrames = 0;
     }
 
     async train(): Promise<void> {
@@ -91,6 +93,7 @@ export class Trainer {
                 const optimizer = tf.train.adam(this.learningRate);
                 let tPrev = new Date().getTime();
                 let frameCountPrev = this.agent.frameCount;
+                this.totalFrames = this.agent.frameCount;
                 let averageReward100Best = -Infinity;
                 while (true) {
                     this.agent.trainOnReplayBatch(this.batchSize, this.gamma, optimizer);
@@ -120,6 +123,7 @@ export class Trainer {
                         console.log('Synced weights from online network to target network');
                     }
                 }
+                this.agent.targetNetwork.save('downloads://cube-model');
                 resolve();
             }
             catch (e) {
