@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import * as tf from '@tensorflow/tfjs';
 import { createDQN } from '../models/rl/dqn.js';
 import { NUM_ACTIONS, CubeGame, getStateTensor } from '../models/game.js';
@@ -30,16 +30,18 @@ const output2: tf.Tensor<tf.Rank> = dqn.predict(stateTensor);
 const value2 = output2.argMax(-1).dataSync()[0];
 console.log(value2);
 
-const trainer = new Trainer();
-trainer.train();
- */
 const cube = new Cube();
 console.log(cube.isSolved());
 cube.f();
 console.log(cube.isSolved());
 cube.counter_f();
 console.log(cube.isSolved());
+ */
 
+onMounted(() => {
+    const trainer = new Trainer();
+    trainer.train();
+});
 </script>
 
 <template>

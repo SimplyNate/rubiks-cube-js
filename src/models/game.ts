@@ -83,7 +83,7 @@ export class CubeGame {
             this.difficulty = difficulty;
         }
         else {
-            this.difficulty = 1;
+            this.difficulty = 10;
         }
         this.maxMoves = Math.max(75 - this.difficulty, 25);
         this.currentMove = 0;
@@ -102,6 +102,7 @@ export class CubeGame {
         return this.getState();
     }
     step(action: number): Step {
+        const startEntropy = this.cube.entropy;
         this.currentMove += 1;
         if (action === ACTION_F) {
             this.cube.f();
@@ -150,7 +151,7 @@ export class CubeGame {
             return {reward: FAIL_REWARD, done};
         }
         const state = this.getState();
-        let reward = UNSOLVED_REWARD;
+        let reward = 0;
         // Check if current move solved a face or destroyed a face
         for (const key of Object.keys(state)) {
             const currentFace = state[key];
@@ -161,6 +162,9 @@ export class CubeGame {
                 this.solvedFaces += 1;
                 reward += SOLVE_FACE_REWARD * this.solvedFaces;
             }
+        }
+        if (reward === 0) {
+            reward = UNSOLVED_REWARD + ((this.cube.entropy - startEntropy) * 10);
         }
         return { reward, state, done };
     }
