@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import * as tf from '@tensorflow/tfjs';
 import { createDQN } from '../models/rl/dqn.js';
 import { NUM_ACTIONS, CubeGame, getStateTensor } from '../models/game.js';
@@ -36,16 +36,44 @@ cube.f();
 console.log(cube.isSolved());
 cube.counter_f();
 console.log(cube.isSolved());
+worker.onmessage = (event) => {
+    console.log('Received message');
+    totalFrames.value = event.data.totalFrames;
+    averageReward100.value = event.data.averageReward100;
+    bestReward100.value = event.data.bestReward100;
+    epsilon.value = event.data.epsilon;
+    fps.value = event.data.fps;
+};
  */
-
-onMounted(() => {
-    const trainer = new Trainer();
+const trainer = new Trainer();
+const totalFrames = ref(0);
+const averageReward100 = ref(0);
+const bestReward100 = ref(-Infinity);
+const epsilon = ref(0);
+const fps = ref(0);
+function startTraining() {
+    console.log('Starting worker');
     trainer.train();
-});
+}
+
+function endTraining() {
+}
+
 </script>
 
 <template>
     <div>
+        <div>
+            <button @click="startTraining">Start</button>
+            <button @click="endTraining">End</button>
+        </div>
+        <div>
+            <div>Frame: {{ totalFrames }}</div>
+            <div>Average Reward 100: {{ averageReward100 }}</div>
+            <div>Best Reward 100: {{ bestReward100 }}</div>
+            <div>Epsilon: {{ epsilon }}</div>
+            <div>Steps per second: {{ fps }}</div>
+        </div>
     </div>
 </template>
 
