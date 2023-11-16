@@ -83,9 +83,9 @@ export class CubeGame {
             this.difficulty = difficulty;
         }
         else {
-            this.difficulty = 10;
+            this.difficulty = 1;
         }
-        this.maxMoves = Math.max(75 - this.difficulty, 25);
+        this.maxMoves = this.difficulty;
         this.currentMove = 0;
         this.solved = {
             u: true,
