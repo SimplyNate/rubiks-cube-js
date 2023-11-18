@@ -3,6 +3,11 @@ import { CubeGame } from '../models/game.js';
 import { ref } from 'vue';
 
 const game = ref(new CubeGame);
+const reward = ref(0);
+
+function reset() {
+    game.value.reset();
+}
 
 </script>
 
@@ -148,6 +153,16 @@ const game = ref(new CubeGame);
                 <div :class="`cube ${game.cube.cube.d[8]}`"></div>
             </div>
         </div>
+    </div>
+    <div style="margin-top: 2em;">
+        <div>
+            <button @click="reset">Reset</button>
+        </div>
+        <div>Entropy: {{ game.cube.entropy }}</div>
+        <div>Solved: {{ game.solved }}</div>
+        <div>Max Moves: {{ game.maxMoves }}</div>
+        <div>Difficulty: {{ game.difficulty }}</div>
+        <div>Reward: {{ reward }}</div>
     </div>
 </template>
 
