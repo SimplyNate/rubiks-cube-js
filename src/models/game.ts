@@ -164,7 +164,7 @@ export class CubeGame {
             }
         }
         if (reward === 0) {
-            reward = UNSOLVED_REWARD + (1 / (startEntropy - this.cube.entropy));
+            reward = UNSOLVED_REWARD + ((startEntropy - this.cube.entropy) / 100);
         }
         return { reward, state, done };
     }
