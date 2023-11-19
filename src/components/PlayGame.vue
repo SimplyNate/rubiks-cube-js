@@ -225,7 +225,6 @@ onMounted(() => {
             <button @click="reset">Reset</button>
         </div>
         <div>Entropy: {{ game.cube.entropy }}</div>
-        <div>Solved: {{ game.solved }}</div>
         <div>Moves: {{ game.currentMove }} / {{ game.maxMoves }}</div>
         <div>Difficulty: {{ game.difficulty }}</div>
         <div>Reward: {{ reward }}</div>

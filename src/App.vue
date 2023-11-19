@@ -1,13 +1,13 @@
 <template>
     <!-- <rubiks-trainer /> -->
-    <!-- <testing/> -->
-    <play-game />
+    <testing/>
+    <!-- <play-game /> -->
 </template>
 
 <script lang="ts" setup>
 // import RubiksTrainer from './components/RubiksTrainer.vue';
-// import Testing from './components/Testing.vue';
-import PlayGame from './components/PlayGame.vue';
+import Testing from './components/Testing.vue';
+// import PlayGame from './components/PlayGame.vue';
 
 </script>
 <style>

@@ -3,7 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 import { getRandomInteger } from './utils';
 import { Cube } from '../cube.js';
 
-export const UNSOLVED_REWARD = -0.1;
+export const UNSOLVED_REWARD = 1;
 export const SOLVE_FACE_REWARD = 10;
 export const FAIL_REWARD = -100;
 export const WIN_REWARD = 150;
@@ -56,27 +56,11 @@ interface Step {
     done: boolean;
 }
 
-function isFaceSolved(face: string[]): boolean {
-    return face.every(color => color === face[0]);
-}
-
-interface SolvedFaceTracker {
-    [index: string]: boolean;
-    u: boolean;
-    l: boolean;
-    f: boolean;
-    r: boolean;
-    b: boolean;
-    d: boolean;
-}
-
 export class CubeGame {
     maxMoves: number;
     cube: Cube;
     difficulty: number;
     currentMove: number;
-    solved: SolvedFaceTracker;
-    solvedFaces: number;
     constructor(difficulty?: number) {
         this.cube = new Cube();
         if (difficulty) {
@@ -87,15 +71,6 @@ export class CubeGame {
         }
         this.maxMoves = this.difficulty;
         this.currentMove = 0;
-        this.solved = {
-            u: true,
-            l: true,
-            f: true,
-            r: true,
-            b: true,
-            d: true,
-        }
-        this.solvedFaces = 6;
     }
     reset() {
         this.initialize();
@@ -152,17 +127,6 @@ export class CubeGame {
         }
         const state = this.getState();
         let reward = 0;
-        // Check if current move solved a face or destroyed a face
-        for (const key of Object.keys(state)) {
-            const currentFace = state[key];
-            const isCurrentSolved = isFaceSolved(currentFace);
-            // If this face is solved and we haven't solved it before
-            if (isCurrentSolved && !this.solved[key]) {
-                this.solved[key] = true;
-                this.solvedFaces += 1;
-                reward += SOLVE_FACE_REWARD * this.solvedFaces;
-            }
-        }
         if (reward === 0) {
             reward = UNSOLVED_REWARD + ((startEntropy - this.cube.entropy) / 100);
         }
@@ -171,13 +135,6 @@ export class CubeGame {
     private initialize() {
         this.currentMove = 0;
         this.cube = Cube.scrambled(this.difficulty);
-        this.solvedFaces = 0;
-        for (const key of Object.keys(this.solved)) {
-            this.solved[key] = isFaceSolved(this.cube.cube[key]);
-            if (this.solved[key]) {
-                this.solvedFaces += 1;
-            }
-        }
     }
     getState(): GameState {
         return { ...this.cube.cube };
