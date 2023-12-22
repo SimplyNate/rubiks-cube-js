@@ -1,8 +1,6 @@
-import * as tf from '@tensorflow/tfjs';
-import '@tensorflow/tfjs-backend-webgl';
+import { Cube } from './cube.js';
 
-export function model() {
-    const m = tf.sequential();
-    m.add(tf.layers.dense({units: 1, inputShape: [1]}));
-    m.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
-}
+const cube = new Cube();
+
+cube.scramble(30);
+

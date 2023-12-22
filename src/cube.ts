@@ -388,6 +388,7 @@ export class Cube {
     isSolved(): boolean {
         return this.toString() === solvedCube;
     }
+    reorient(front: string, up: string) {}
     get entropy(): number {
         let entropy = 0;
         const index = 4;
@@ -402,100 +403,29 @@ export class Cube {
         }
         return entropy;
     }
-}
-
-enum Cubes {
-    WRG,
-    WG,
-    WGO,
-    WO,
-    WOB,
-    WB,
-    WBR,
-    WR,
-    RG,
-    GO,
-    OB,
-    BR,
-    RGY,
-    GY,
-    GOY,
-    OY,
-    OBY,
-    BY,
-    BRY,
-    RY,
-}
-
-export class EntropyCube {
-    cube: Cubes[];
-    entropy: number;
-
-    constructor() {
-        this.cube = [
-            Cubes.WRG,
-            Cubes.WG,
-            Cubes.WGO,
-            Cubes.WO,
-            Cubes.WOB,
-            Cubes.WB,
-            Cubes.WBR,
-            Cubes.WR,
-            Cubes.RG,
-            Cubes.GO,
-            Cubes.OB,
-            Cubes.BR,
-            Cubes.RGY,
-            Cubes.GY,
-            Cubes.GOY,
-            Cubes.OY,
-            Cubes.OBY,
-            Cubes.BY,
-            Cubes.BRY,
-            Cubes.RY
-        ];
-        this.entropy = 0;
+    get up(): string {
+        return this.cube.u[4];
     }
-    private calculateEntropy() {
-        this.entropy = 0;
-        for (let i = 0; i < this.cube.length; i++) {
-            this.entropy += Math.abs(this.cube[i] - i);
+    get left(): string {
+        return this.cube.l[4];
+    }
+    get front(): string {
+        return this.cube.f[4];
+    }
+    get right(): string {
+        return this.cube.r[4];
+    }
+    get back(): string {
+        return this.cube.b[4];
+    }
+    get down(): string {
+        return this.cube.d[4];
+    }
+    findColor(color: string) {
+        for (const key of Object.keys(this.cube)) {
+            if (color === this.cube[key][4]) {
+                return key;
+            }
         }
-    }
-    u() {
-        this.calculateEntropy();
-    }
-    counter_u() {
-        this.calculateEntropy();
-    }
-    l() {
-        this.calculateEntropy();
-    }
-    counter_l() {
-        this.calculateEntropy();
-    }
-    f() {
-        this.calculateEntropy();
-    }
-    counter_f() {
-        this.calculateEntropy();
-    }
-    r() {
-        this.calculateEntropy();
-    }
-    counter_r() {
-        this.calculateEntropy();
-    }
-    b() {
-        this.calculateEntropy();
-    }
-    counter_b() {
-        this.calculateEntropy();
-    }
-    d() {
-        this.calculateEntropy();
-    }
-    counter_d() {
-        this.calculateEntropy();
     }
 }
