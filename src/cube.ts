@@ -30,6 +30,40 @@ const disallowedRandom = [
     10
 ];
 const solvedCube = 'yyyyyyyyy/ggggggggg/ooooooooo/bbbbbbbbb/rrrrrrrrr/wwwwwwwww';
+/*
+Orientation is defined as:
+Key: UpFront
+Value: [Up, Left, Front, Right, Back, Down]
+ */
+interface CubeOrientations {
+    [index: string]: string;
+}
+const cubeOrientations: CubeOrientations = {
+    wo: 'wbogry',
+    wb: 'wrbogy',
+    wr: 'wrbogy',
+    wg: 'wogrby',
+    bw: 'bowryg',
+    bo: 'byowrg',
+    by: 'bryowg',
+    br: 'bwryog',
+    ow: 'ogwbyr',
+    og: 'oygwbr',
+    oy: 'obygwr',
+    ob: 'owbygr',
+    gw: 'grwoyb',
+    gr: 'gyrwob',
+    gy: 'goyrwb',
+    go: 'gwoyrb',
+    rw: 'rbwgyo',
+    rb: 'rybwgo',
+    ry: 'rgybwo',
+    rg: 'rwgybo',
+    yo: 'ygobrw',
+    yg: 'yrgobw',
+    yr: 'ybrgow',
+    yb: 'yobrgw',
+}
 
 // TODO: Create cube as 20 enumerated and unique colored pieces of the cube
 // TODO: Calculate entropy of cube as distance from starting point each 20 cube pieces are
@@ -388,7 +422,23 @@ export class Cube {
     isSolved(): boolean {
         return this.toString() === solvedCube;
     }
-    reorient(front: string, up: string) {}
+    reorient(up: string, front: string) {
+        let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
+        const newU = this.copyByColor(u);
+        const newL = this.copyByColor(l);
+        const newF = this.copyByColor(f);
+        const newR = this.copyByColor(r);
+        const newB = this.copyByColor(b);
+        const newD = this.copyByColor(d);
+        if (newU && newL && newF && newR && newB && newD) {
+            this.cube.u = newU;
+            this.cube.l = newL;
+            this.cube.f = newF;
+            this.cube.r = newR;
+            this.cube.b = newB;
+            this.cube.d = newD;
+        }
+    }
     get entropy(): number {
         let entropy = 0;
         const index = 4;
@@ -426,6 +476,12 @@ export class Cube {
             if (color === this.cube[key][4]) {
                 return key;
             }
+        }
+    }
+    copyByColor(color: string) {
+        const key = this.findColor(color);
+        if (key) {
+            return [...this.cube[key]];
         }
     }
 }
