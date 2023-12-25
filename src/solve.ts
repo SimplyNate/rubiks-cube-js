@@ -155,3 +155,58 @@ export function permute_u(cube: Cube) {
     return cube;
 }
 
+interface AdjacencyMap {
+    [index: string]: string;
+}
+
+const adjacencies: AdjacencyMap = {
+    'u1': 'b1',
+    'u3': 'l1',
+    'u5': 'r1',
+    'u7': 'f1',
+    'l1': 'u3',
+    'l3': 'b5',
+    'l5': 'f3',
+    'l7': 'd3',
+    'f1': 'u7',
+    'f3': 'l5',
+    'f5': 'r3',
+    'f7': 'd1',
+    'r1': 'u5',
+    'r3': 'f5',
+    'r5': 'b3',
+    'r7': 'd5',
+    'b1': 'u1',
+    'b3': 'r5',
+    'b5': 'l3',
+    'b7': 'd7',
+    'd1': 'f7',
+    'd3': 'l7',
+    'd5': 'r7',
+    'd7': 'b7',
+}
+
+function findEdges(cube: Cube, color: string) {
+    const edges = [];
+    for (const face of Object.keys(cube.cube)) {
+        for (const index of [1, 3, 5, 7]) {
+            const square = cube.cube[face][index];
+            if (square === color) {
+                const adjacency = adjacencies[`${face}${index}`];
+                edges.push({
+                    face,
+                    index,
+                    adjacentFace: adjacency[0],
+                    adjacentIndex: adjacency[1],
+                });
+            }
+        }
+    }
+    return edges;
+}
+
+export function solveWhiteCross(cube: Cube) {
+    // step 1: Find 4 white edge positions
+    cube.reorient('w', 'o');
+    const whiteEdges = findEdges(cube, 'w');
+}

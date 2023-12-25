@@ -471,6 +471,9 @@ export class Cube {
     get down(): string {
         return this.cube.d[4];
     }
+    colorOf(face: string) {
+        return this.cube[face][4];
+    }
     findColor(color: string) {
         for (const key of Object.keys(this.cube)) {
             if (color === this.cube[key][4]) {
