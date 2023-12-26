@@ -209,4 +209,12 @@ export function solveWhiteCross(cube: Cube) {
     // step 1: Find 4 white edge positions
     cube.reorient('w', 'o');
     const whiteEdges = findEdges(cube, 'w');
+    // if edge is in correct position, continue
+    // if edge is in up face but in incorrect position, perform correction algorithm
+    // if edge is in top layer, reorient so white is in front and perform algorithm
+    // if edge is in middle layer, reorient so white is in front and perform
+    // -- if in index 3 (left), do algorithm a
+    // -- else, do algorithm b
+    // if edge is in bottom layer, reorient so white is in front and perform algorithm
+    // if edge is in d, reorient so adjacent square is facing front and perform algorithm
 }
