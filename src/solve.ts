@@ -160,30 +160,30 @@ interface AdjacencyMap {
 }
 
 const adjacencies: AdjacencyMap = {
-    'u1': 'b1',
-    'u3': 'l1',
-    'u5': 'r1',
-    'u7': 'f1',
-    'l1': 'u3',
-    'l3': 'b5',
-    'l5': 'f3',
-    'l7': 'd3',
-    'f1': 'u7',
-    'f3': 'l5',
-    'f5': 'r3',
-    'f7': 'd1',
-    'r1': 'u5',
-    'r3': 'f5',
-    'r5': 'b3',
-    'r7': 'd5',
-    'b1': 'u1',
-    'b3': 'r5',
-    'b5': 'l3',
-    'b7': 'd7',
-    'd1': 'f7',
-    'd3': 'l7',
-    'd5': 'r7',
-    'd7': 'b7',
+    u1: 'b1',
+    u3: 'l1',
+    u5: 'r1',
+    u7: 'f1',
+    l1: 'u3',
+    l3: 'b5',
+    l5: 'f3',
+    l7: 'd3',
+    f1: 'u7',
+    f3: 'l5',
+    f5: 'r3',
+    f7: 'd1',
+    r1: 'u5',
+    r3: 'f5',
+    r5: 'b3',
+    r7: 'd5',
+    b1: 'u1',
+    b3: 'r5',
+    b5: 'l3',
+    b7: 'd7',
+    d1: 'f7',
+    d3: 'l7',
+    d5: 'r7',
+    d7: 'b7',
 }
 
 interface Edge {
@@ -191,6 +191,11 @@ interface Edge {
     index: number;
     adjacentFace: string;
     adjacentIndex: number;
+}
+
+interface Corner extends Edge {
+    adjacentFace2: string;
+    adjacentIndex2: number;
 }
 
 function findEdges(cube: Cube, color: string): Edge[] {
@@ -212,12 +217,66 @@ function findEdges(cube: Cube, color: string): Edge[] {
     return edges;
 }
 
+const cornerAdjacencies: AdjacencyMap = {
+    u0: 'l0b2',
+    u2: 'r2b0',
+    u6: 'l2f0',
+    u8: 'f2r0',
+    l0: 'u0b2',
+    l2: 'u6f0',
+    l6: 'b8d6',
+    l8: 'f6d0',
+    f0: 'u6l2',
+    f2: 'u8r0',
+    f6: 'l8d0',
+    f8: 'r6d2',
+    r0: 'u8f2',
+    r2: 'u2b0',
+    r6: 'f8d2',
+    r8: 'b6d8',
+    b0: 'u2r2',
+    b2: 'u0f0',
+    b6: 'r8d8',
+    b8: 'l6d6',
+    d0: 'l8f6',
+    d2: 'f8r6',
+    d6: 'b8l6',
+    d8: 'r8b6',
+};
+
+function findCorners(cube: Cube, color: string): Corner[] {
+    const corners: Corner[] = [];
+    for (const face of Object.keys(cube.cube)) {
+        for (const index of [0, 2, 6, 8]) {
+            const square = cube.cube[face][index];
+            if (square === color) {
+                const adjacency = cornerAdjacencies[`${face}${index}`];
+                corners.push({
+                    face,
+                    index,
+                    adjacentFace: adjacency[0],
+                    adjacentIndex: Number(adjacency[1]),
+                    adjacentFace2: adjacency[2],
+                    adjacentIndex2: Number(adjacency[3]),
+                });
+            }
+        }
+    }
+    return corners;
+}
+
 function isEdgeInCorrectPosition(cube: Cube, edge: Edge): boolean {
     const color = cube.cube[edge.face][edge.index];
     const faceColor = cube.colorOf(edge.face);
     const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
     const adjacentFaceColor = cube.colorOf(edge.adjacentFace);
     return color === faceColor && adjacentColor === adjacentFaceColor;
+}
+
+function isCornerInCorrectPosition(cube: Cube, corner: Corner): boolean {
+    const adjacentColor2 = cube.cube[corner.adjacentFace2][corner.adjacentIndex2];
+    const adjacentFaceColor2 = cube.colorOf(corner.adjacentFace2);
+    return isEdgeInCorrectPosition(cube, corner) && adjacentColor2 === adjacentFaceColor2;
 }
 
 export function solveWhiteCross(cube: Cube) {
