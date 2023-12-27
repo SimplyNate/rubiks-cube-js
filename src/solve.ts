@@ -186,8 +186,15 @@ const adjacencies: AdjacencyMap = {
     'd7': 'b7',
 }
 
-function findEdges(cube: Cube, color: string) {
-    const edges = [];
+interface Edge {
+    face: string;
+    index: number;
+    adjacentFace: string;
+    adjacentIndex: number;
+}
+
+function findEdges(cube: Cube, color: string): Edge[] {
+    const edges: Edge[] = [];
     for (const face of Object.keys(cube.cube)) {
         for (const index of [1, 3, 5, 7]) {
             const square = cube.cube[face][index];
@@ -197,7 +204,7 @@ function findEdges(cube: Cube, color: string) {
                     face,
                     index,
                     adjacentFace: adjacency[0],
-                    adjacentIndex: adjacency[1],
+                    adjacentIndex: Number(adjacency[1]),
                 });
             }
         }
@@ -205,10 +212,23 @@ function findEdges(cube: Cube, color: string) {
     return edges;
 }
 
+function isEdgeInCorrectPosition(cube: Cube, edge: Edge): boolean {
+    const color = cube.cube[edge.face][edge.index];
+    const faceColor = cube.colorOf(edge.face);
+    const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
+    const adjacentFaceColor = cube.colorOf(edge.adjacentFace);
+    return color === faceColor && adjacentColor === adjacentFaceColor;
+}
+
 export function solveWhiteCross(cube: Cube) {
     // step 1: Find 4 white edge positions
     cube.reorient('w', 'o');
     const whiteEdges = findEdges(cube, 'w');
+    for (const edge of whiteEdges) {
+        if (isEdgeInCorrectPosition(cube, edge)) {
+            continue;
+        }
+    }
     // if edge is in correct position, continue
     // if edge is in up face but in incorrect position, perform correction algorithm
     // if edge is in top layer, reorient so white is in front and perform algorithm
