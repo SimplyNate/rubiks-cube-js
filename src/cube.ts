@@ -68,6 +68,7 @@ const cubeOrientations: CubeOrientations = {
 // TODO: Create cube as 20 enumerated and unique colored pieces of the cube
 // TODO: Calculate entropy of cube as distance from starting point each 20 cube pieces are
 export class Cube {
+    [index: string]: any;
     cube: CubePositions;
 
     constructor() {
@@ -396,6 +397,12 @@ export class Cube {
         this.cube.d[7] = copy[5];
         this.cube.d[8] = copy[2];
         this.counterClockwiseRotation('b');
+        return this;
+    }
+    performRotation(face: string, counter_clockwise: boolean = false) {
+        if (this.cube[face]) {
+            return (<() => this>this[`${counter_clockwise ? 'counter_' : ''}${face}`])();
+        }
         return this;
     }
     toString() {
