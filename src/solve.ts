@@ -279,15 +279,53 @@ function isCornerInCorrectPosition(cube: Cube, corner: Corner): boolean {
     return isEdgeInCorrectPosition(cube, corner) && adjacentColor2 === adjacentFaceColor2;
 }
 
+const oppositeColors = {
+    b: 'g',
+    g: 'b',
+    o: 'r',
+    r: 'o',
+    w: 'y',
+    y: 'w',
+} as {[index: string]: string};
+
+function areOppositeColors(color1: string, color2: string): boolean {
+    return oppositeColors[color1] === color2;
+}
+
+const oppositeFaces = {
+    u: 'd',
+    d: 'u',
+    l: 'r',
+    r: 'l',
+    f: 'b',
+    b: 'f',
+} as {[index: string]: string};
+
+function areOppositeFaces(face1: string, face2: string): boolean {
+    return oppositeFaces[face1] === face2;
+}
+
+function solveInTopLayerCorrectFace(cube: Cube, edge: Edge) {
+    const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
+    const currentAdjacentFace = edge.adjacentFace;
+    const targetFace = <string>cube.findColor(adjacentColor);
+    const currentPositionFaceColor = cube.colorOf(edge.adjacentFace);
+    if (areOppositeFaces(currentAdjacentFace, targetFace)) {
+        cube.u().u();
+    }
+}
+
 export function solveWhiteCross(cube: Cube) {
     // step 1: Find 4 white edge positions
     cube.reorient('w', 'o');
     const whiteEdges = findEdges(cube, 'w');
+    // filter out correct positions
     for (const edge of whiteEdges) {
-        if (isEdgeInCorrectPosition(cube, edge)) {
-            continue;
+        if (!isEdgeInCorrectPosition(cube, edge)) {
+
         }
     }
+    if ()
     // if edge is in correct position, continue
     // if edge is in up face but in incorrect position, perform correction algorithm
     // if edge is in top layer, reorient so white is in front and perform algorithm
