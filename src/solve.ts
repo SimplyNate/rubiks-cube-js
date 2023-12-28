@@ -305,14 +305,47 @@ function areOppositeFaces(face1: string, face2: string): boolean {
     return oppositeFaces[face1] === face2;
 }
 
+const clockwiseFaces = {
+    f: 'l',
+    l: 'b',
+    b: 'r',
+    r: 'l',
+} as {[index: string]: string};
+
+const counterClockwiseFaces = {
+    f: 'r',
+    r: 'b',
+    b: 'l',
+    l: 'f',
+} as {[index: string]: string};
+
+function targetFaceIsClockwise(sourceFace: string, targetFace: string): boolean {
+    return clockwiseFaces[sourceFace] === targetFace;
+}
+
+function targetFaceIsCounterClockwise(sourceFace: string, targetFace: string): boolean {
+    return counterClockwiseFaces[sourceFace] === targetFace;
+}
+
 function solveInTopLayerCorrectFace(cube: Cube, edge: Edge) {
     const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
     const currentAdjacentFace = edge.adjacentFace;
     const targetFace = <string>cube.findColor(adjacentColor);
-    const currentPositionFaceColor = cube.colorOf(edge.adjacentFace);
+    cube
+        .performRotation(currentAdjacentFace)
+        .performRotation(currentAdjacentFace);
     if (areOppositeFaces(currentAdjacentFace, targetFace)) {
-        cube.u().u();
+        cube.d().d();
     }
+    else if (targetFaceIsClockwise(currentAdjacentFace, targetFace)) {
+        cube.d();
+    }
+    else if (targetFaceIsCounterClockwise(currentAdjacentFace, targetFace)) {
+        cube.counter_d();
+    }
+    cube
+        .performRotation(targetFace)
+        .performRotation(targetFace);
 }
 
 export function solveWhiteCross(cube: Cube) {
@@ -322,10 +355,9 @@ export function solveWhiteCross(cube: Cube) {
     // filter out correct positions
     for (const edge of whiteEdges) {
         if (!isEdgeInCorrectPosition(cube, edge)) {
-
+            if ()
         }
     }
-    if ()
     // if edge is in correct position, continue
     // if edge is in up face but in incorrect position, perform correction algorithm
     // if edge is in top layer, reorient so white is in front and perform algorithm
