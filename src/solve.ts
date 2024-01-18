@@ -328,24 +328,74 @@ function targetFaceIsCounterClockwise(sourceFace: string, targetFace: string): b
 }
 
 function solveInTopLayerCorrectFace(cube: Cube, edge: Edge) {
-    const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
     const currentAdjacentFace = edge.adjacentFace;
-    const targetFace = <string>cube.findColor(adjacentColor);
     cube
         .performRotation(currentAdjacentFace)
         .performRotation(currentAdjacentFace);
-    if (areOppositeFaces(currentAdjacentFace, targetFace)) {
+    solveInBottomLayerDown(cube, edge);
+}
+
+function solveInBottomLayerDown(cube: Cube, edge: Edge) {
+    const adjacentFace = edge.adjacentFace;
+    const adjacentColor = cube.cube[adjacentFace][edge.adjacentIndex];
+    const targetFace = <string>cube.findColor(adjacentColor);
+    if (areOppositeFaces(adjacentFace, targetFace)) {
         cube.d().d();
     }
-    else if (targetFaceIsClockwise(currentAdjacentFace, targetFace)) {
+    else if (targetFaceIsClockwise(adjacentFace, targetFace)) {
         cube.d();
     }
-    else if (targetFaceIsCounterClockwise(currentAdjacentFace, targetFace)) {
+    else if (targetFaceIsCounterClockwise(adjacentFace, targetFace)) {
         cube.counter_d();
     }
     cube
         .performRotation(targetFace)
         .performRotation(targetFace);
+}
+function solveInBottomLayerMiddle(cube: Cube, edge: Edge) {
+    const currentFace = edge.face;
+    const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
+    const targetFace = <string>cube.findColor(adjacentColor);
+    if (areOppositeFaces(currentFace, targetFace)) {
+        cube.d().d();
+    }
+    else if (targetFaceIsClockwise(currentFace, targetFace)) {
+        cube.d();
+    }
+    else if (targetFaceIsCounterClockwise(currentFace, targetFace)) {
+        cube.counter_d();
+    }
+    cube.performRotation(targetFace)
+        .u()
+        .performRotation(clockwiseFaces[targetFace], true)
+        .counter_u();
+}
+
+function solveInMiddleLayer(cube: Cube, edge: Edge) {
+    // If adjacent face is correct, perform targetFace rotation
+    const adjacentFace = edge.adjacentFace;
+    const adjacentColor = cube.cube[adjacentFace][edge.adjacentIndex];
+    const targetFace = <string>cube.findColor(adjacentColor);
+    const counterClockwise = edge.index === 3;
+    if (areOppositeFaces(adjacentFace, targetFace)) {
+        cube
+            .u().u()
+            .performRotation(adjacentFace, counterClockwise)
+            .u().u();
+    }
+    else if (targetFaceIsClockwise(adjacentFace, targetFace)) {
+        cube.u()
+            .performRotation(adjacentFace, counterClockwise)
+            .u();
+    }
+    else if (targetFaceIsCounterClockwise(adjacentFace, targetFace)) {
+        cube.counter_u()
+            .performRotation(adjacentFace, counterClockwise)
+            .counter_u();
+    }
+    else {
+        cube.performRotation(adjacentFace, counterClockwise)
+    }
 }
 
 export function solveWhiteCross(cube: Cube) {
@@ -353,17 +403,28 @@ export function solveWhiteCross(cube: Cube) {
     cube.reorient('w', 'o');
     const whiteEdges = findEdges(cube, 'w');
     // filter out correct positions
+    let solved = 0;
     for (const edge of whiteEdges) {
         if (!isEdgeInCorrectPosition(cube, edge)) {
-            if ()
+            if (edge.face === cube.colorOf('u')) {
+                solveInTopLayerCorrectFace(cube, edge);
+            }
+            else if (edge.face === cube.colorOf('y')) {
+                solveInBottomLayerDown(cube, edge);
+            }
+            // if the edge is in the bottom row but not on down face
+            else if (edge.index === 7) {
+                solveInBottomLayerMiddle(cube, edge);
+            }
+            else {
+                solveInMiddleLayer(cube, edge);
+            }
+        }
+        else {
+            solved += 1;
         }
     }
-    // if edge is in correct position, continue
-    // if edge is in up face but in incorrect position, perform correction algorithm
-    // if edge is in top layer, reorient so white is in front and perform algorithm
-    // if edge is in middle layer, reorient so white is in front and perform
-    // -- if in index 3 (left), do algorithm a
-    // -- else, do algorithm b
-    // if edge is in bottom layer, reorient so white is in front and perform algorithm
-    // if edge is in d, reorient so adjacent square is facing front and perform algorithm
+    if (solved !== 4) {
+        solveWhiteCross(cube);
+    }
 }
