@@ -35,6 +35,61 @@ test('Finds edges', () => {
     expect(sEdges).toHaveLength(4);
 });
 
+test('solveInTopLayerCorrectFace', () => {
+    let cube = new Cube();
+    cube.reorient('w', 'o');
+    cube.u();
+    let whiteEdges = findEdges(cube, 'w');
+    solveInTopLayerCorrectFace(cube, whiteEdges[0]);
+    let isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 3, adjacentIndex: 1, adjacentFace: 'l'});
+    expect(isSolved).toBeTruthy();
+    cube = new Cube();
+    cube.reorient('w', 'o');
+    cube.u();
+    whiteEdges = findEdges(cube, 'w');
+    solveInTopLayerCorrectFace(cube, whiteEdges[1]);
+    isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 7, adjacentIndex: 1, adjacentFace: 'f'});
+    expect(isSolved).toBeTruthy();
+    cube = new Cube();
+    cube.reorient('w', 'o');
+    cube.u();
+    whiteEdges = findEdges(cube, 'w');
+    solveInTopLayerCorrectFace(cube, whiteEdges[2]);
+    isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 1, adjacentIndex: 1, adjacentFace: 'b'});
+    expect(isSolved).toBeTruthy();
+    cube = new Cube();
+    cube.reorient('w', 'o');
+    cube.u();
+    whiteEdges = findEdges(cube, 'w');
+    solveInTopLayerCorrectFace(cube, whiteEdges[3]);
+    isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 5, adjacentIndex: 1, adjacentFace: 'r'});
+    expect(isSolved).toBeTruthy();
+});
+test('solveInTopLayerIncorrectFace', () => {
+    const cube = new Cube();
+    cube.reorient('w', 'o');
+
+    const whiteEdges = findEdges(cube, 'w');
+});
+test('solveInBottomLayerDown', () => {
+    const cube = new Cube();
+    cube.reorient('w', 'o');
+
+    const whiteEdges = findEdges(cube, 'w');
+});
+test('solveinBottomLayerMiddle', () => {
+    const cube = new Cube();
+    cube.reorient('w', 'o');
+
+    const whiteEdges = findEdges(cube, 'w');
+});
+test('solveInMiddleLayer', () => {
+    const cube = new Cube();
+    cube.reorient('w', 'o');
+
+    const whiteEdges = findEdges(cube, 'w');
+});
+
 test('Solves White Cross from Scrambled', () => {
     const cube = Cube.scrambled();
     solveWhiteCross(cube);
