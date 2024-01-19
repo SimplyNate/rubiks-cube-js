@@ -70,6 +70,7 @@ const cubeOrientations: CubeOrientations = {
 export class Cube {
     [index: string]: any;
     cube: CubePositions;
+    history: string[];
 
     constructor() {
         this.cube = {
@@ -98,6 +99,7 @@ export class Cube {
                 'w', 'w', 'w',
                 'w', 'w', 'w'],
         };
+        this.history = [];
     }
     static fromString(str: string): Cube {
         const faceOrder = ['u', 'l', 'f', 'r', 'b', 'd'];
@@ -167,6 +169,7 @@ export class Cube {
             last = num;
             i++;
         }
+        this.history = [];
         return this;
     }
     private clockwiseRotation(face: string) {
@@ -196,6 +199,7 @@ export class Cube {
         ];
     }
     l() {
+        this.history.push('l');
         const firstCopy = [...this.cube.f];
         this.cube.f[0] = this.cube.u[0];
         this.cube.f[3] = this.cube.u[3];
@@ -213,6 +217,7 @@ export class Cube {
         return this;
     }
     counter_l() {
+        this.history.push('counter_l');
         const firstCopy = [...this.cube.f];
         this.cube.f[0] = this.cube.d[0];
         this.cube.f[3] = this.cube.d[3];
@@ -230,6 +235,7 @@ export class Cube {
         return this;
     }
     r() {
+        this.history.push('r');
         const firstCopy = [...this.cube.f];
         this.cube.f[2] = this.cube.d[2];
         this.cube.f[5] = this.cube.d[5];
@@ -247,6 +253,7 @@ export class Cube {
         return this;
     }
     counter_r() {
+        this.history.push('counter_r');
         const firstCopy = [...this.cube.f];
         this.cube.f[2] = this.cube.u[2];
         this.cube.f[5] = this.cube.u[5];
@@ -264,6 +271,7 @@ export class Cube {
         return this;
     }
     u() {
+        this.history.push('u');
         const firstCopy = [...this.cube.f];
         this.cube.f[0] = this.cube.r[0];
         this.cube.f[1] = this.cube.r[1];
@@ -281,6 +289,7 @@ export class Cube {
         return this;
     }
     counter_u() {
+        this.history.push('counter_u');
         const firstCopy = [...this.cube.f];
         this.cube.f[0] = this.cube.l[0];
         this.cube.f[1] = this.cube.l[1];
@@ -298,6 +307,7 @@ export class Cube {
         return this;
     }
     d() {
+        this.history.push('d');
         const firstCopy = [...this.cube.f];
         this.cube.f[6] = this.cube.l[6];
         this.cube.f[7] = this.cube.l[7];
@@ -315,6 +325,7 @@ export class Cube {
         return this;
     }
     counter_d() {
+        this.history.push('counter_d');
         const firstCopy = [...this.cube.f];
         this.cube.f[6] = this.cube.r[6];
         this.cube.f[7] = this.cube.r[7];
@@ -332,6 +343,7 @@ export class Cube {
         return this;
     }
     f() {
+        this.history.push('f');
         const copy = [...this.cube.u];
         this.cube.u[6] = this.cube.l[8];
         this.cube.u[7] = this.cube.l[5];
@@ -349,6 +361,7 @@ export class Cube {
         return this;
     }
     counter_f() {
+        this.history.push('counter_f');
         const copy = [...this.cube.u];
         this.cube.u[6] = this.cube.r[0];
         this.cube.u[7] = this.cube.r[3];
@@ -366,6 +379,7 @@ export class Cube {
         return this;
     }
     b() {
+        this.history.push('b');
         const copy = [...this.cube.r];
         this.cube.r[2] = this.cube.d[8];
         this.cube.r[5] = this.cube.d[7];
@@ -383,6 +397,7 @@ export class Cube {
         return this;
     }
     counter_b() {
+        this.history.push('counter_b');
         const copy = [...this.cube.r];
         this.cube.r[2] = this.cube.u[0];
         this.cube.r[5] = this.cube.u[1];
