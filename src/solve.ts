@@ -198,7 +198,7 @@ interface Corner extends Edge {
     adjacentIndex2: number;
 }
 
-function findEdges(cube: Cube, color: string): Edge[] {
+export function findEdges(cube: Cube, color: string): Edge[] {
     const edges: Edge[] = [];
     for (const face of Object.keys(cube.cube)) {
         for (const index of [1, 3, 5, 7]) {
@@ -244,7 +244,7 @@ const cornerAdjacencies: AdjacencyMap = {
     d8: 'r8b6',
 };
 
-function findCorners(cube: Cube, color: string): Corner[] {
+export function findCorners(cube: Cube, color: string): Corner[] {
     const corners: Corner[] = [];
     for (const face of Object.keys(cube.cube)) {
         for (const index of [0, 2, 6, 8]) {
@@ -265,7 +265,7 @@ function findCorners(cube: Cube, color: string): Corner[] {
     return corners;
 }
 
-function isEdgeInCorrectPosition(cube: Cube, edge: Edge): boolean {
+export function isEdgeInCorrectPosition(cube: Cube, edge: Edge): boolean {
     const color = cube.cube[edge.face][edge.index];
     const faceColor = cube.colorOf(edge.face);
     const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
@@ -273,7 +273,7 @@ function isEdgeInCorrectPosition(cube: Cube, edge: Edge): boolean {
     return color === faceColor && adjacentColor === adjacentFaceColor;
 }
 
-function isCornerInCorrectPosition(cube: Cube, corner: Corner): boolean {
+export function isCornerInCorrectPosition(cube: Cube, corner: Corner): boolean {
     const adjacentColor2 = cube.cube[corner.adjacentFace2][corner.adjacentIndex2];
     const adjacentFaceColor2 = cube.colorOf(corner.adjacentFace2);
     return isEdgeInCorrectPosition(cube, corner) && adjacentColor2 === adjacentFaceColor2;
@@ -288,7 +288,7 @@ const oppositeColors = {
     y: 'w',
 } as {[index: string]: string};
 
-function areOppositeColors(color1: string, color2: string): boolean {
+export function areOppositeColors(color1: string, color2: string): boolean {
     return oppositeColors[color1] === color2;
 }
 
@@ -301,7 +301,7 @@ const oppositeFaces = {
     b: 'f',
 } as {[index: string]: string};
 
-function areOppositeFaces(face1: string, face2: string): boolean {
+export function areOppositeFaces(face1: string, face2: string): boolean {
     return oppositeFaces[face1] === face2;
 }
 
@@ -309,7 +309,7 @@ const clockwiseFaces = {
     f: 'l',
     l: 'b',
     b: 'r',
-    r: 'l',
+    r: 'f',
 } as {[index: string]: string};
 
 const counterClockwiseFaces = {
@@ -319,23 +319,50 @@ const counterClockwiseFaces = {
     l: 'f',
 } as {[index: string]: string};
 
-function targetFaceIsClockwise(sourceFace: string, targetFace: string): boolean {
+export function targetFaceIsClockwise(sourceFace: string, targetFace: string): boolean {
     return clockwiseFaces[sourceFace] === targetFace;
 }
 
-function targetFaceIsCounterClockwise(sourceFace: string, targetFace: string): boolean {
+export function targetFaceIsCounterClockwise(sourceFace: string, targetFace: string): boolean {
     return counterClockwiseFaces[sourceFace] === targetFace;
 }
 
-function solveInTopLayerCorrectFace(cube: Cube, edge: Edge) {
+export function solveInTopLayerCorrectFace(cube: Cube, edge: Edge) {
     const currentAdjacentFace = edge.adjacentFace;
     cube
         .performRotation(currentAdjacentFace)
         .performRotation(currentAdjacentFace);
+    edge.face = 'd';
+    edge.adjacentIndex = 7;
+    if (edge.index === 1) {
+        edge.index = 7;
+    }
+    else if (edge.index === 7) {
+        edge.index = 1;
+    }
     solveInBottomLayerDown(cube, edge);
 }
 
-function solveInBottomLayerDown(cube: Cube, edge: Edge) {
+export function solveInTopLayerIncorrectFace(cube: Cube, edge: Edge) {
+    cube.performRotation(edge.face);
+    edge.index = 5;
+    edge.adjacentIndex = 3;
+    if (edge.face === 'r') {
+        edge.adjacentFace = 'b';
+    }
+    else if (edge.face === 'f') {
+        edge.adjacentFace = 'r';
+    }
+    else if (edge.face === 'l') {
+        edge.adjacentFace = 'f';
+    }
+    else {
+        edge.adjacentFace = 'l';
+    }
+    solveInMiddleLayer(cube, edge);
+}
+
+export function solveInBottomLayerDown(cube: Cube, edge: Edge) {
     const adjacentFace = edge.adjacentFace;
     const adjacentColor = cube.cube[adjacentFace][edge.adjacentIndex];
     const targetFace = <string>cube.findColor(adjacentColor);
@@ -343,16 +370,16 @@ function solveInBottomLayerDown(cube: Cube, edge: Edge) {
         cube.d().d();
     }
     else if (targetFaceIsClockwise(adjacentFace, targetFace)) {
-        cube.d();
+        cube.counter_d();
     }
     else if (targetFaceIsCounterClockwise(adjacentFace, targetFace)) {
-        cube.counter_d();
+        cube.d();
     }
     cube
         .performRotation(targetFace)
         .performRotation(targetFace);
 }
-function solveInBottomLayerMiddle(cube: Cube, edge: Edge) {
+export function solveInBottomLayerMiddle(cube: Cube, edge: Edge) {
     const currentFace = edge.face;
     const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
     const targetFace = <string>cube.findColor(adjacentColor);
@@ -360,18 +387,18 @@ function solveInBottomLayerMiddle(cube: Cube, edge: Edge) {
         cube.d().d();
     }
     else if (targetFaceIsClockwise(currentFace, targetFace)) {
-        cube.d();
-    }
-    else if (targetFaceIsCounterClockwise(currentFace, targetFace)) {
         cube.counter_d();
     }
-    cube.performRotation(targetFace)
-        .u()
-        .performRotation(clockwiseFaces[targetFace], true)
-        .counter_u();
+    else if (targetFaceIsCounterClockwise(currentFace, targetFace)) {
+        cube.d();
+    }
+    cube.performRotation(targetFace, true)
+        .counter_u()
+        .performRotation(counterClockwiseFaces[targetFace], false)
+        .u();
 }
 
-function solveInMiddleLayer(cube: Cube, edge: Edge) {
+export function solveInMiddleLayer(cube: Cube, edge: Edge) {
     // If adjacent face is correct, perform targetFace rotation
     const adjacentFace = edge.adjacentFace;
     const adjacentColor = cube.cube[adjacentFace][edge.adjacentIndex];
@@ -384,12 +411,12 @@ function solveInMiddleLayer(cube: Cube, edge: Edge) {
             .u().u();
     }
     else if (targetFaceIsClockwise(adjacentFace, targetFace)) {
-        cube.u()
+        cube.counter_u()
             .performRotation(adjacentFace, counterClockwise)
             .u();
     }
     else if (targetFaceIsCounterClockwise(adjacentFace, targetFace)) {
-        cube.counter_u()
+        cube.u()
             .performRotation(adjacentFace, counterClockwise)
             .counter_u();
     }
@@ -406,19 +433,23 @@ export function solveWhiteCross(cube: Cube) {
     let solved = 0;
     for (const edge of whiteEdges) {
         if (!isEdgeInCorrectPosition(cube, edge)) {
-            if (edge.face === cube.colorOf('u')) {
+            if (edge.face === cube.findColor('w')) {
                 solveInTopLayerCorrectFace(cube, edge);
             }
-            else if (edge.face === cube.colorOf('y')) {
+            else if (edge.face === cube.findColor('y')) {
                 solveInBottomLayerDown(cube, edge);
             }
             // if the edge is in the bottom row but not on down face
             else if (edge.index === 7) {
                 solveInBottomLayerMiddle(cube, edge);
             }
+            else if (edge.index === 1) {
+                solveInTopLayerIncorrectFace(cube, edge);
+            }
             else {
                 solveInMiddleLayer(cube, edge);
             }
+            break;
         }
         else {
             solved += 1;
