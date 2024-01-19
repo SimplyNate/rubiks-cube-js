@@ -191,6 +191,7 @@ interface Edge {
     index: number;
     adjacentFace: string;
     adjacentIndex: number;
+    correct: boolean;
 }
 
 interface Corner extends Edge {
@@ -210,7 +211,9 @@ export function findEdges(cube: Cube, color: string): Edge[] {
                     index,
                     adjacentFace: adjacency[0],
                     adjacentIndex: Number(adjacency[1]),
+                    correct: false,
                 });
+                edges[edges.length - 1].correct = isEdgeInCorrectPosition(cube, edges[edges.length - 1]);
             }
         }
     }
@@ -258,7 +261,9 @@ export function findCorners(cube: Cube, color: string): Corner[] {
                     adjacentIndex: Number(adjacency[1]),
                     adjacentFace2: adjacency[2],
                     adjacentIndex2: Number(adjacency[3]),
+                    correct: false,
                 });
+                corners[corners.length - 1].correct = isCornerInCorrectPosition(cube, corners[corners.length - 1]);
             }
         }
     }
