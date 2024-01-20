@@ -186,7 +186,7 @@ const adjacencies: AdjacencyMap = {
     d7: 'b7',
 }
 
-interface Edge {
+export interface Edge {
     face: string;
     index: number;
     adjacentFace: string;
@@ -194,7 +194,7 @@ interface Edge {
     correct: boolean;
 }
 
-interface Corner extends Edge {
+export interface Corner extends Edge {
     adjacentFace2: string;
     adjacentIndex2: number;
 }
