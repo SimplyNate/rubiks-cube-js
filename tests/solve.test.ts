@@ -151,17 +151,47 @@ test('solveInBottomLayerDown', () => {
     resultEdges = findEdges(cube, 'w');
     expect(countCorrect(resultEdges)).toEqual(4);
 });
-test('solveinBottomLayerMiddle', () => {
-    const cube = new Cube();
+test('solveInBottomLayerMiddle', () => {
+    let cube = new Cube();
     cube.reorient('w', 'o');
+    cube.l().counter_f();
+    let whiteEdges = findEdges(cube, 'w');
+    expect(countCorrect(whiteEdges)).toEqual(2);
+    solveInBottomLayerMiddle(cube, whiteEdges[0]);
+    let resultEdges = findEdges(cube, 'w');
+    expect(countCorrect(resultEdges)).toEqual(3);
 
-    const whiteEdges = findEdges(cube, 'w');
+    cube = new Cube();
+    cube.reorient('w', 'o');
+    cube.l().counter_f().counter_d();
+    whiteEdges = findEdges(cube, 'w');
+    expect(countCorrect(whiteEdges)).toEqual(2);
+    solveInBottomLayerMiddle(cube, whiteEdges[1]);
+    resultEdges = findEdges(cube, 'w');
+    expect(countCorrect(resultEdges)).toEqual(3);
+
+    cube = new Cube();
+    cube.reorient('w', 'o');
+    cube.l().counter_f().counter_d().counter_d();
+    whiteEdges = findEdges(cube, 'w');
+    expect(countCorrect(whiteEdges)).toEqual(2);
+    solveInBottomLayerMiddle(cube, whiteEdges[1]);
+    resultEdges = findEdges(cube, 'w');
+    expect(countCorrect(resultEdges)).toEqual(3);
+
+    cube = new Cube();
+    cube.reorient('w', 'o');
+    cube.l().counter_f().d();
+    whiteEdges = findEdges(cube, 'w');
+    expect(countCorrect(whiteEdges)).toEqual(2);
+    solveInBottomLayerMiddle(cube, whiteEdges[1]);
+    resultEdges = findEdges(cube, 'w');
+    expect(countCorrect(resultEdges)).toEqual(3);
 });
 test('solveInMiddleLayer', () => {
-    const cube = new Cube();
+    let cube = new Cube();
     cube.reorient('w', 'o');
-
-    const whiteEdges = findEdges(cube, 'w');
+    let whiteEdges = findEdges(cube, 'w');
 });
 
 test('Solves White Cross from Scrambled', () => {
