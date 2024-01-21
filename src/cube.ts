@@ -71,6 +71,7 @@ export class Cube {
     [index: string]: any;
     cube: CubePositions;
     history: string[];
+    scrambleHistory: string[];
 
     constructor() {
         this.cube = {
@@ -100,6 +101,7 @@ export class Cube {
                 'w', 'w', 'w'],
         };
         this.history = [];
+        this.scrambleHistory = [];
     }
     static fromString(str: string): Cube {
         const faceOrder = ['u', 'l', 'f', 'r', 'b', 'd'];
@@ -169,6 +171,7 @@ export class Cube {
             last = num;
             i++;
         }
+        this.scrambleHistory = this.history;
         this.history = [];
         return this;
     }
