@@ -297,7 +297,7 @@ export function areOppositeColors(color1: string, color2: string): boolean {
     return oppositeColors[color1] === color2;
 }
 
-const oppositeFaces = {
+export const oppositeFaces = {
     u: 'd',
     d: 'u',
     l: 'r',
@@ -310,14 +310,14 @@ export function areOppositeFaces(face1: string, face2: string): boolean {
     return oppositeFaces[face1] === face2;
 }
 
-const clockwiseFaces = {
+export const clockwiseFaces = {
     f: 'l',
     l: 'b',
     b: 'r',
     r: 'f',
 } as {[index: string]: string};
 
-const counterClockwiseFaces = {
+export const counterClockwiseFaces = {
     f: 'r',
     r: 'b',
     b: 'l',
@@ -392,10 +392,10 @@ export function solveInBottomLayerMiddle(cube: Cube, edge: Edge) {
         cube.d().d();
     }
     else if (targetFaceIsClockwise(currentFace, targetFace)) {
-        cube.counter_d();
+        cube.d();
     }
     else if (targetFaceIsCounterClockwise(currentFace, targetFace)) {
-        cube.d();
+        cube.counter_d();
     }
     cube.performRotation(targetFace, true)
         .counter_u()
@@ -433,11 +433,11 @@ export function solveInMiddleLayer(cube: Cube, edge: Edge) {
 export function solveWhiteCross(cube: Cube) {
     // step 1: Find 4 white edge positions
     cube.reorient('w', 'o');
-    const whiteEdges = findEdges(cube, 'w');
-    // filter out correct positions
-    let solved = 0;
-    for (const edge of whiteEdges) {
-        if (!isEdgeInCorrectPosition(cube, edge)) {
+    // should only need to run algorithm 4 times
+    for (let i = 0; i < 4; i++) {
+        const whiteEdges = findEdges(cube, 'w');
+        const edge = whiteEdges.find(e => !e.correct);
+        if (edge) {
             if (edge.face === cube.findColor('w')) {
                 solveInTopLayerCorrectFace(cube, edge);
             }
@@ -454,13 +454,9 @@ export function solveWhiteCross(cube: Cube) {
             else {
                 solveInMiddleLayer(cube, edge);
             }
-            break;
         }
         else {
-            solved += 1;
+            break;
         }
-    }
-    if (solved !== 4) {
-        solveWhiteCross(cube);
     }
 }
