@@ -65,6 +65,29 @@ const cubeOrientations: CubeOrientations = {
     yb: 'yobrgw',
 }
 
+const rotationGuide = {
+    wo: {
+        wb: {
+            u: ['counter_u'],
+            d: ['d'],
+        },
+        wr: {
+            u: ['counter_u', 'counter_u'],
+            d: ['d' ,'d']
+        },
+        wg: {
+            u: ['u'],
+            d: ['counter_d'],
+        },
+        ow: {
+            u: ['u', 'u'],
+            d: ['d', 'd'],
+            l: ['l'],
+            r: ['r'],
+        },
+    }
+};
+
 // TODO: Create cube as 20 enumerated and unique colored pieces of the cube
 // TODO: Calculate entropy of cube as distance from starting point each 20 cube pieces are
 export class Cube {
@@ -448,6 +471,7 @@ export class Cube {
         return this.toString() === solvedCube;
     }
     reorient(up: string, front: string) {
+        const [oldU, oldL, oldF, oldR, oldB, oldD] = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`].split('');
         let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
         const newU = this.copyByColor(u);
         const newL = this.copyByColor(l);
@@ -462,6 +486,48 @@ export class Cube {
             this.cube.r = newR;
             this.cube.b = newB;
             this.cube.d = newD;
+            if (`${oldU}${oldF}` === 'wo' && `${u}${f}` === 'wb') {
+            }
+        }
+    }
+    completeReorient(oldU: string, oldF: string) {
+        let horizontalMoves = 0;
+        let verticalMoves = 0;
+        let hCounterClockwise = false;
+        let vCounterClockwise = false;
+        const currentPositionOldU = this.findColor(oldU);
+        const currentPositionOldF = this.findColor(oldF);
+        if (currentPositionOldF === 'f') {
+            // do nothing since there's no horizontal moves
+        }
+        else if (currentPositionOldF === 'l') {
+            horizontalMoves = 1;
+        }
+        if (currentPositionOldU === 'u') {
+            // do nothing since there's no vertical moves
+        }
+        else if (currentPositionOldU === 'd') {
+            verticalMoves = 2;
+        }
+        else {
+            verticalMoves = 1;
+        }
+
+        // if up stays the same, then it's only a horizontal change
+        // else if up
+        // if move is horizontal clockwise, move u and counter_d
+        // else if move is horizontal counterclockwise, move counter_u and d by amount of horizontal move
+        // if move is vertical backward, move l clockwise and r counterclockwise by amount
+        //  - move b and u clockwise twice
+        // if move is l/r spin, move counter_f, b
+        //  - counter_r, counter_d,counter_l, counter_u
+        if (oldUF === 'wo') {
+            if (newUF === 'wb') {
+                this.counter_u().d();
+            }
+            else if (newUF === 'wr') {
+                this.counter_u().counter_u().d().d();
+            }
         }
     }
     get entropy(): number {
