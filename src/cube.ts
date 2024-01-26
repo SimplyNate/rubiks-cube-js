@@ -495,18 +495,18 @@ export class Cube {
         let verticalMoves = 0;
         let hCounterClockwise = false;
         let vCounterClockwise = false;
-        const currentPositionOldU = this.findColor(oldU);
-        const currentPositionOldF = this.findColor(oldF);
-        if (currentPositionOldF === 'f') {
+        const newU = this.findColor(oldU);
+        const newF = this.findColor(oldF);
+        if (newF === 'f') {
             // do nothing since there's no horizontal moves
         }
-        else if (currentPositionOldF === 'l') {
+        else if (newF === 'l') {
             horizontalMoves = 1;
         }
-        if (currentPositionOldU === 'u') {
+        if (newU === 'u') {
             // do nothing since there's no vertical moves
         }
-        else if (currentPositionOldU === 'd') {
+        else if (newU === 'd') {
             verticalMoves = 2;
         }
         else {
