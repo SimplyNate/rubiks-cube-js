@@ -490,6 +490,12 @@ export class Cube {
             }
         }
     }
+    reorient_clockwise() {}
+    reorient_counter_clockwise() {}
+    reorient_up() {}
+    reorient_down() {}
+    reorient_roll_left() {}
+    reorient_roll_right() {}
     completeReorient(oldU: string, oldF: string) {
         let horizontalMoves = 0;
         let verticalMoves = 0;
