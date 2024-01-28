@@ -471,7 +471,7 @@ export class Cube {
         return this.toString() === solvedCube;
     }
     reorient(up: string, front: string) {
-        const [oldU, oldL, oldF, oldR, oldB, oldD] = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`].split('');
+        const oldOrient = `${this.colorOf('u')}${this.colorOf('f')}`;
         let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
         const newU = this.copyByColor(u);
         const newL = this.copyByColor(l);
@@ -486,7 +486,7 @@ export class Cube {
             this.cube.r = newR;
             this.cube.b = newB;
             this.cube.d = newD;
-            if (`${oldU}${oldF}` === 'wo' && `${u}${f}` === 'wb') {
+            if (oldOrient === 'wo' && `${u}${f}` === 'wb') {
             }
         }
     }
@@ -531,43 +531,7 @@ export class Cube {
         this.clockwiseRotation('f');
     }
     completeReorient(oldU: string, oldF: string) {
-        let horizontalMoves = 0;
-        let verticalMoves = 0;
-        let hCounterClockwise = false;
-        let vCounterClockwise = false;
-        const newU = this.findColor(oldU);
-        const newF = this.findColor(oldF);
-        if (newF === 'f') {
-            // do nothing since there's no horizontal moves
-        }
-        else if (newF === 'l') {
-            horizontalMoves = 1;
-        }
-        if (newU === 'u') {
-            // do nothing since there's no vertical moves
-        }
-        else if (newU === 'd') {
-            verticalMoves = 2;
-        }
-        else {
-            verticalMoves = 1;
-        }
-
-        // if up stays the same, then it's only a horizontal change
-        // else if up
-        // if move is horizontal clockwise, move u and counter_d
-        // else if move is horizontal counterclockwise, move counter_u and d by amount of horizontal move
-        // if move is vertical backward, move l clockwise and r counterclockwise by amount
-        //  - move b and u clockwise twice
-        // if move is l/r spin, move counter_f, b
-        //  - counter_r, counter_d,counter_l, counter_u
-        if (oldUF === 'wo') {
-            if (newUF === 'wb') {
-            }
-            else if (newUF === 'wr') {
-                this.counter_u().counter_u().d().d();
-            }
-        }
+        // TODO: check every possible outcome since it's more straightforward
     }
     get entropy(): number {
         let entropy = 0;
