@@ -490,12 +490,46 @@ export class Cube {
             }
         }
     }
-    reorient_clockwise() {}
-    reorient_counter_clockwise() {}
-    reorient_up() {}
-    reorient_down() {}
-    reorient_roll_left() {}
-    reorient_roll_right() {}
+    private reorient_clockwise() {
+        this.counterClockwiseRotation('d');
+        this.clockwiseRotation('u');
+    }
+    private reorient_counter_clockwise() {
+        this.clockwiseRotation('d');
+        this.counterClockwiseRotation('u');
+    }
+    private reorient_forward() {
+        this.clockwiseRotation('r');
+        this.counterClockwiseRotation('l');
+        this.clockwiseRotation('b');
+        this.clockwiseRotation('b');
+        this.clockwiseRotation('u');
+        this.clockwiseRotation('u');
+    }
+    private reorient_backward() {
+        this.counterClockwiseRotation('r');
+        this.clockwiseRotation('l');
+        this.clockwiseRotation('b');
+        this.clockwiseRotation('b');
+        this.clockwiseRotation('d');
+        this.clockwiseRotation('d');
+    }
+    private reorient_roll_left() {
+        this.counterClockwiseRotation('l');
+        this.counterClockwiseRotation('u');
+        this.counterClockwiseRotation('r');
+        this.counterClockwiseRotation('d');
+        this.counterClockwiseRotation('f');
+        this.clockwiseRotation('b');
+    }
+    private reorient_roll_right() {
+        this.clockwiseRotation('l');
+        this.clockwiseRotation('u');
+        this.clockwiseRotation('r');
+        this.clockwiseRotation('d');
+        this.counterClockwiseRotation('b');
+        this.clockwiseRotation('f');
+    }
     completeReorient(oldU: string, oldF: string) {
         let horizontalMoves = 0;
         let verticalMoves = 0;
@@ -529,7 +563,6 @@ export class Cube {
         //  - counter_r, counter_d,counter_l, counter_u
         if (oldUF === 'wo') {
             if (newUF === 'wb') {
-                this.counter_u().d();
             }
             else if (newUF === 'wr') {
                 this.counter_u().counter_u().d().d();
