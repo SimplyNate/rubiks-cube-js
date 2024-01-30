@@ -447,8 +447,7 @@ export class Cube {
     isSolved(): boolean {
         return this.toString() === solvedCube;
     }
-    reorient(up: string, front: string) {
-        const oldOrient = `${this.colorOf('u')}${this.colorOf('f')}`;
+    private reorient(up: string, front: string) {
         let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
         const newU = this.copyByColor(u);
         const newL = this.copyByColor(l);
@@ -463,19 +462,20 @@ export class Cube {
             this.cube.r = newR;
             this.cube.b = newB;
             this.cube.d = newD;
-            if (oldOrient === 'wo' && `${u}${f}` === 'wb') {
-            }
         }
     }
-    private reorient_clockwise() {
+    reorient_clockwise() {
+        this.reorient(this.colorOf('u'), this.colorOf('r'));
         this.counterClockwiseRotation('d');
         this.clockwiseRotation('u');
     }
-    private reorient_counter_clockwise() {
+    reorient_counter_clockwise() {
+        this.reorient(this.colorOf('u'), this.colorOf('l'));
         this.clockwiseRotation('d');
         this.counterClockwiseRotation('u');
     }
-    private reorient_forward() {
+    reorient_forward() {
+        this.reorient(this.colorOf('f'), this.colorOf('d'));
         this.clockwiseRotation('r');
         this.counterClockwiseRotation('l');
         this.clockwiseRotation('b');
@@ -483,7 +483,8 @@ export class Cube {
         this.clockwiseRotation('u');
         this.clockwiseRotation('u');
     }
-    private reorient_backward() {
+    reorient_backward() {
+        this.reorient(this.colorOf('b'), this.colorOf('u'));
         this.counterClockwiseRotation('r');
         this.clockwiseRotation('l');
         this.clockwiseRotation('b');
@@ -491,7 +492,8 @@ export class Cube {
         this.clockwiseRotation('d');
         this.clockwiseRotation('d');
     }
-    private reorient_roll_left() {
+    reorient_roll_left() {
+        this.reorient(this.colorOf('r'), this.colorOf('f'));
         this.counterClockwiseRotation('l');
         this.counterClockwiseRotation('u');
         this.counterClockwiseRotation('r');
@@ -499,16 +501,14 @@ export class Cube {
         this.counterClockwiseRotation('f');
         this.clockwiseRotation('b');
     }
-    private reorient_roll_right() {
+    reorient_roll_right() {
+        this.reorient(this.colorOf('l'), this.colorOf('f'));
         this.clockwiseRotation('l');
         this.clockwiseRotation('u');
         this.clockwiseRotation('r');
         this.clockwiseRotation('d');
         this.counterClockwiseRotation('b');
         this.clockwiseRotation('f');
-    }
-    completeReorient(oldU: string, oldF: string) {
-        // TODO: check every possible outcome since it's more straightforward
     }
     get entropy(): number {
         let entropy = 0;
