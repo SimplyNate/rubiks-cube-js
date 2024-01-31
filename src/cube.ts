@@ -511,6 +511,22 @@ export class Cube {
         this.clockwiseRotation('f');
     }
     get entropy(): number {
+        /*
+        Better entropy calculation:
+        let entropy = 0;
+        for (const face of cube) {
+            for (const square of face) {
+                if (square !== cube.colorOf(face)) {
+                    // logic for calculating distance from natural position
+                    // Basic logic:
+                    //     if square is in adjacent face,
+                    //         entropy += 1
+                    //     else if square is in opposite face,
+                    //         entropy += 2
+                }
+            }
+        }
+         */
         let entropy = 0;
         const index = 4;
         const keys = Object.keys(this.cube)
