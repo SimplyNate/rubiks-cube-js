@@ -432,7 +432,14 @@ export function solveInMiddleLayer(cube: Cube, edge: Edge) {
 
 export function solveWhiteCross(cube: Cube) {
     // step 1: Find 4 white edge positions
-    cube.reorient('w', 'o');
+    // assume cube is in original position
+    if (cube.colorOf('u') === 'y' && cube.colorOf('f') === 'o') {
+        cube.reorient_roll_left();
+        cube.reorient_roll_left();
+    }
+    else if (cube.colorOf('u') !== 'w' || cube.colorOf('f') !== 'o') {
+        throw new Error(`Cube not provided in correct orientation. Received: ${cube.colorOf('u')}${cube.colorOf('f')}, Expected: yo`);
+    }
     // should only need to run algorithm 4 times
     for (let i = 0; i < 4; i++) {
         const whiteEdges = findEdges(cube, 'w');
