@@ -467,3 +467,13 @@ export function solveWhiteCross(cube: Cube) {
         }
     }
 }
+
+function solveWhiteCorners() {}
+
+function solveMiddleEdges() {}
+
+function solveYellowCross() {}
+
+function solveYellowFace() {}
+
+function solveTopRow() {}
