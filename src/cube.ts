@@ -447,6 +447,41 @@ export class Cube {
     isSolved(): boolean {
         return this.toString() === solvedCube;
     }
+    perform_reorientation(up: string, front: string) {
+        /*
+        Discover where up went first.
+        if new up is same as current up, do nothing
+        else if new up is equal to current bottom
+            reorient_forward()
+            reorient_forward()
+        else if old up is front
+            reorient_backward()
+        else if old up is left
+            reorient_roll_left
+        else if old up is right
+            reorient_roll_right
+        else if old up is back
+            reorient_roll_forward
+
+        Assuming old up is in the correct position, determine where current_front is in relation to where desired_front is
+        if current_front is equivalent to desired_front, do nothing
+        else if current_front needs to be left
+            reorient_clockwise
+        else if current_front needs to be right
+            reorient_counter_clockwise
+        else if current_front needs to be back
+            if old_up is left or right
+                reorient_forward
+                reorient_forward
+            else
+                reorient_clockwise
+                reorient_clockwise
+        else if current_front needs to be up
+            reorient_forward
+        else if current_front needs to be down
+            reorient_backward
+         */
+    }
     private reorient(up: string, front: string) {
         let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
         const newU = this.copyByColor(u);
