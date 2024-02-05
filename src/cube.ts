@@ -506,6 +506,31 @@ export class Cube {
         }
         const interimOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
         const [iU, iL, iF, iR, iB, iD] = interimOrientation.split('');
+        if (iF === tF) {
+            // do nothing
+        }
+        else if (iF === tL) {
+            this.reorient_clockwise();
+        }
+        else if (iF === tR) {
+            this.reorient_counter_clockwise();
+        }
+        else if (iF === tB) {
+            if (cU === iL || cU === iR) {
+                this.reorient_forward();
+                this.reorient_forward();
+            }
+            else {
+                this.reorient_clockwise();
+                this.reorient_clockwise();
+            }
+        }
+        else if (iF === tU) {
+            this.reorient_forward();
+        }
+        else if (iF === tD) {
+            this.reorient_backward();
+        }
     }
     private reorient(up: string, front: string) {
         let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
