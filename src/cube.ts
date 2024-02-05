@@ -449,7 +449,7 @@ export class Cube {
     }
     perform_reorientation(up: string, front: string) {
         const currentOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
-        const [cU, cL, cF, cR, cB, cD] = currentOrientation.split('');
+        const [cU, _cL, _cF, _cR, _cB, _cD] = currentOrientation.split('');
         const targetOrientation = cubeOrientations[`${up}${front}`];
         const [tU, tL, tF, tR, tB, tD] = targetOrientation.split('');
         /*
@@ -505,7 +505,7 @@ export class Cube {
             this.reorient_forward();
         }
         const interimOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
-        const [iU, iL, iF, iR, iB, iD] = interimOrientation.split('');
+        const [_iU, iL, iF, iR, _iB, _iD] = interimOrientation.split('');
         if (iF === tF) {
             // do nothing
         }
