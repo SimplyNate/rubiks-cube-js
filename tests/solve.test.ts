@@ -42,35 +42,35 @@ test('Finds edges', () => {
     expect(edges[3].face).toBe('d');
     expect(edges[3].index).toBe(7);
     const scrambled = Cube.scrambled();
-    scrambled.reorient('w', 'o');
+    scrambled.perform_reorientation('w', 'o');
     const sEdges = findEdges(scrambled, 'w');
     expect(sEdges).toHaveLength(4);
 });
 
 test('solveInTopLayerCorrectFace', () => {
     let cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.u();
     let whiteEdges = findEdges(cube, 'w');
     solveInTopLayerCorrectFace(cube, whiteEdges[0]);
     let isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 3, adjacentIndex: 1, adjacentFace: 'l', correct: false });
     expect(isSolved).toBeTruthy();
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.u();
     whiteEdges = findEdges(cube, 'w');
     solveInTopLayerCorrectFace(cube, whiteEdges[1]);
     isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 7, adjacentIndex: 1, adjacentFace: 'f', correct: false });
     expect(isSolved).toBeTruthy();
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.u();
     whiteEdges = findEdges(cube, 'w');
     solveInTopLayerCorrectFace(cube, whiteEdges[2]);
     isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 1, adjacentIndex: 1, adjacentFace: 'b', correct: false });
     expect(isSolved).toBeTruthy();
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.u();
     whiteEdges = findEdges(cube, 'w');
     solveInTopLayerCorrectFace(cube, whiteEdges[3]);
@@ -79,7 +79,7 @@ test('solveInTopLayerCorrectFace', () => {
 });
 test('solveInTopLayerIncorrectFace', () => {
     let cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().f();
     let whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -88,7 +88,7 @@ test('solveInTopLayerIncorrectFace', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.f().r();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -97,7 +97,7 @@ test('solveInTopLayerIncorrectFace', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.r().b();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -106,7 +106,7 @@ test('solveInTopLayerIncorrectFace', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.b().l();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -116,7 +116,7 @@ test('solveInTopLayerIncorrectFace', () => {
 });
 test('solveInBottomLayerDown', () => {
     let cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().l();
     let whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(3);
@@ -125,7 +125,7 @@ test('solveInBottomLayerDown', () => {
     expect(countCorrect(resultEdges)).toEqual(4);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().l().d();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(3);
@@ -134,7 +134,7 @@ test('solveInBottomLayerDown', () => {
     expect(countCorrect(resultEdges)).toEqual(4);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().l().d().d();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(3);
@@ -143,7 +143,7 @@ test('solveInBottomLayerDown', () => {
     expect(countCorrect(resultEdges)).toEqual(4);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().l().counter_d();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(3);
@@ -153,7 +153,7 @@ test('solveInBottomLayerDown', () => {
 });
 test('solveInBottomLayerMiddle', () => {
     let cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().counter_f();
     let whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -162,7 +162,7 @@ test('solveInBottomLayerMiddle', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().counter_f().counter_d();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -171,7 +171,7 @@ test('solveInBottomLayerMiddle', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().counter_f().counter_d().counter_d();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -180,7 +180,7 @@ test('solveInBottomLayerMiddle', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().counter_f().d();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -190,7 +190,7 @@ test('solveInBottomLayerMiddle', () => {
 });
 test('solveInMiddleLayer', () => {
     let cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l();
     let whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(3);
@@ -199,7 +199,7 @@ test('solveInMiddleLayer', () => {
     expect(countCorrect(resultEdges)).toEqual(4);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().f().f();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -208,7 +208,7 @@ test('solveInMiddleLayer', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.counter_l();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(3);
@@ -217,7 +217,7 @@ test('solveInMiddleLayer', () => {
     expect(countCorrect(resultEdges)).toEqual(4);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.counter_l().b().b();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(2);
@@ -226,7 +226,7 @@ test('solveInMiddleLayer', () => {
     expect(countCorrect(resultEdges)).toEqual(3);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().counter_f().d().r();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(1);
@@ -235,7 +235,7 @@ test('solveInMiddleLayer', () => {
     expect(countCorrect(resultEdges)).toEqual(2);
 
     cube = new Cube();
-    cube.reorient('w', 'o');
+    cube.perform_reorientation('w', 'o');
     cube.l().counter_f().d().counter_r();
     whiteEdges = findEdges(cube, 'w');
     expect(countCorrect(whiteEdges)).toEqual(1);

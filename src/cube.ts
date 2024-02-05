@@ -448,6 +448,10 @@ export class Cube {
         return this.toString() === solvedCube;
     }
     perform_reorientation(up: string, front: string) {
+        const currentOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
+        const [cU, cL, cF, cR, cB, cD] = currentOrientation.split('');
+        const targetOrientation = cubeOrientations[`${up}${front}`];
+        const [tU, tL, tF, tR, tB, tD] = targetOrientation.split('');
         /*
         Discover where up went first.
         if new up is same as current up, do nothing
@@ -461,7 +465,7 @@ export class Cube {
         else if old up is right
             reorient_roll_right
         else if old up is back
-            reorient_roll_forward
+            reorient_forward
 
         Assuming old up is in the correct position, determine where current_front is in relation to where desired_front is
         if current_front is equivalent to desired_front, do nothing
@@ -481,6 +485,27 @@ export class Cube {
         else if current_front needs to be down
             reorient_backward
          */
+        if (cU === tU) {
+            // do nothing
+        }
+        else if (cU === tB) {
+            this.reorient_forward();
+            this.reorient_forward();
+        }
+        else if (cU === tF) {
+            this.reorient_backward();
+        }
+        else if (cU === tL) {
+            this.reorient_roll_left();
+        }
+        else if (cU === tR) {
+            this.reorient_roll_right();
+        }
+        else if (cU === tB) {
+            this.reorient_forward();
+        }
+        const interimOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
+        const [iU, iL, iF, iR, iB, iD] = interimOrientation.split('');
     }
     private reorient(up: string, front: string) {
         let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
