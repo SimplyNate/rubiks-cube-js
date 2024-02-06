@@ -485,10 +485,7 @@ export class Cube {
         else if current_front needs to be down
             reorient_backward
          */
-        if (cU === tU) {
-            // do nothing
-        }
-        else if (cU === tB) {
+        if (cU === tB) {
             this.reorient_forward();
             this.reorient_forward();
         }
@@ -506,10 +503,7 @@ export class Cube {
         }
         const interimOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
         const [_iU, iL, iF, iR, _iB, _iD] = interimOrientation.split('');
-        if (iF === tF) {
-            // do nothing
-        }
-        else if (iF === tL) {
+        if (iF === tL) {
             this.reorient_clockwise();
         }
         else if (iF === tR) {
