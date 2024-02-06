@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test, describe } from 'vitest';
 
 import { Cube } from '../src/cube';
 
@@ -111,4 +111,62 @@ test('scrambles randomly', () => {
     cube.scramble();
     const computed = cube.toString();
     expect(computed !== neExpectation).toBeTruthy();
+});
+
+
+describe('reorient', () => {
+    function knownCube() {
+        const cube = new Cube();
+        cube.l().counter_d().r().u();
+        expect(cube.toString()).toBe('rrryyyboo/yowgggyoo/rbbyowbbo/yrwrbbwbb/gggyrwygg/wwgwwroor');
+        return cube;
+    }
+    test('reorient_clockwise', () => {
+        const cube = new Cube();
+        cube.reorient_clockwise();
+        const computed = cube.toString();
+        expect(computed).toBe('yyyyyyyyy/ooooooooo/bbbbbbbbb/rrrrrrrrr/ggggggggg/wwwwwwwww');
+
+        const known = new Cube();
+        known.l().counter_d().r().u();
+        known.reorient_clockwise();
+        const knownComputed = known.toString();
+        expect(knownComputed).toBe('byroyroyr/rbbyowbbo/yrwrbbwbb/gggyrwygg/yowgggyoo/grrwwowwo');
+    });
+    test('reorient_counter_clockwise', () => {
+        const known = knownCube();
+        known.reorient_counter_clockwise();
+        const knownComputed = known.toString();
+        expect(knownComputed).toBe('ryoryoryb/gggyrwygg/yowgggyoo/rbbyowbbo/yrwrbbwbb/owwowwrrg');
+    });
+    test('reorient_forward', () => {
+        const known = knownCube();
+        known.reorient_forward();
+        const knownComputed = known.toString();
+        expect(knownComputed).toBe('rbbyowbbo/wgoogoygy/wwgwwroor/wrybbrbbw/oobyyyrrr/ggywryggg');
+    });
+    test('reorient_backward', () => {
+        const known = knownCube();
+        known.reorient_backward();
+        const knownComputed = known.toString();
+        expect(knownComputed).toBe('ggywryggg/ygyogoogw/rrryyyboo/wbbrbbyrw/roorwwgww/rbbyowbbo');
+    });
+    test('reorient_roll_left', () => {
+        const known = knownCube();
+        known.reorient_roll_left();
+        const knownComputed = known.toString();
+        expect(knownComputed).toBe('wbbrbbyrw/ryoryoryb/bwobobryb/grrwwowwo/yyggrggwg/wgoogoygy');
+    });
+    test('reorient_roll_right', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        const knownComputed = known.toString();
+        expect(knownComputed).toBe('ygyogoogw/owwowwrrg/byrbobowb/byroyroyr/gwggrggyy/wrybbrbbw');
+    });
+});
+
+describe('perform_reorientation', () => {
+    test('Performs reorientation correctly', () => {
+
+    });
 });
