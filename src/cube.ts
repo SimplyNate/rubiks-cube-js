@@ -559,8 +559,8 @@ export class Cube {
         this.counterClockwiseRotation('l');
         this.clockwiseRotation('b');
         this.clockwiseRotation('b');
-        this.clockwiseRotation('u');
-        this.clockwiseRotation('u');
+        this.clockwiseRotation('d');
+        this.clockwiseRotation('d');
     }
     reorient_backward() {
         this.reorient(this.colorOf('b'), this.colorOf('u'));
@@ -568,8 +568,8 @@ export class Cube {
         this.clockwiseRotation('l');
         this.clockwiseRotation('b');
         this.clockwiseRotation('b');
-        this.clockwiseRotation('d');
-        this.clockwiseRotation('d');
+        this.clockwiseRotation('u');
+        this.clockwiseRotation('u');
     }
     reorient_roll_left() {
         this.reorient(this.colorOf('r'), this.colorOf('f'));
