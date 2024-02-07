@@ -256,7 +256,12 @@ test('Solves White Cross from Scrambled', () => {
         .r().counter_u();
     solveWhiteCross(cube);
     const resultEdges = findEdges(cube, 'w');
-    console.log(cube.scrambleHistory);
-    console.log(cube.history);
     expect(countCorrect(resultEdges)).toEqual(4);
+    // if it can solve 100 random scrambles, we can reasonably assume the function works as intended
+    for (let i = 0; i < 100; i++) {
+        const scrambled = Cube.scrambled();
+        solveWhiteCross(scrambled);
+        const scrambledEdges = findEdges(scrambled, 'w');
+        expect(countCorrect(scrambledEdges)).toEqual(4);
+    }
 });
