@@ -392,10 +392,10 @@ export function solveInBottomLayerMiddle(cube: Cube, edge: Edge) {
         cube.d().d();
     }
     else if (targetFaceIsClockwise(currentFace, targetFace)) {
-        cube.d();
+        cube.counter_d();
     }
     else if (targetFaceIsCounterClockwise(currentFace, targetFace)) {
-        cube.counter_d();
+        cube.d();
     }
     cube.performRotation(targetFace, true)
         .counter_u()
