@@ -449,9 +449,9 @@ export class Cube {
     }
     perform_reorientation(up: string, front: string) {
         const currentOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
-        const [cU, _cL, _cF, _cR, _cB, _cD] = currentOrientation.split('');
+        const [_cU, cL, cF, cR, cB, cD] = currentOrientation.split('');
         const targetOrientation = cubeOrientations[`${up}${front}`];
-        const [tU, tL, tF, tR, tB, tD] = targetOrientation.split('');
+        const [tU, _tL, tF, _tR, _tB, _tD] = targetOrientation.split('');
         /*
         Discover where up went first.
         if new up is same as current up, do nothing
@@ -485,45 +485,33 @@ export class Cube {
         else if current_front needs to be down
             reorient_backward
          */
-        if (cU === tD) {
+        if (tU === cD) {
             this.reorient_forward();
             this.reorient_forward();
         }
-        else if (cU === tF) {
-            this.reorient_backward();
+        else if (tU === cF) {
+            this.reorient_forward();
         }
-        else if (cU === tL) {
-            this.reorient_roll_left();
-        }
-        else if (cU === tR) {
+        else if (tU === cL) {
             this.reorient_roll_right();
         }
-        else if (cU === tB) {
-            this.reorient_forward();
+        else if (tU === cR) {
+            this.reorient_roll_left();
+        }
+        else if (tU === cB) {
+            this.reorient_backward();
         }
         const interimOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
-        const [_iU, iL, iF, iR, _iB, _iD] = interimOrientation.split('');
-        if (iF === tL) {
-            this.reorient_clockwise();
-        }
-        else if (iF === tR) {
+        const [_iU, iL, _iF, iR, iB, _iD] = interimOrientation.split('');
+        if (tF === iL) {
             this.reorient_counter_clockwise();
         }
-        else if (iF === tB) {
-            if (cU === iL || cU === iR) {
-                this.reorient_forward();
-                this.reorient_forward();
-            }
-            else {
-                this.reorient_clockwise();
-                this.reorient_clockwise();
-            }
+        else if (tF === iR) {
+            this.reorient_clockwise();
         }
-        else if (iF === tU) {
-            this.reorient_forward();
-        }
-        else if (iF === tD) {
-            this.reorient_backward();
+        else if (tF === iB) {
+            this.reorient_clockwise();
+            this.reorient_clockwise();
         }
     }
     private reorient(up: string, front: string) {

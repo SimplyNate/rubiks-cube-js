@@ -173,11 +173,197 @@ describe('perform_reorientation', () => {
         const cube = new Cube();
         cube.perform_reorientation('w', 'o');
         expect(cube.toString()).toBe(correctCube.toString());
+    });
+    test('yo to yb', () => {
+        const known = knownCube();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('y', 'b');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to yr', () => {
+        const known = knownCube();
+        known.reorient_clockwise();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('y', 'r');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to yg', () => {
+        const known = knownCube();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('y', 'g');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to yo', () => {
+        const known = knownCube();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('y', 'o');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to go', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('g', 'o');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to gy', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('g', 'y');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to gr', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        known.reorient_clockwise();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('g', 'r');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to gw', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('g', 'w');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to ow', () => {
+        const known = knownCube();
+        known.reorient_forward();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('o', 'w');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to og', () => {
+        const known = knownCube();
+        known.reorient_forward();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('o', 'g');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to ob', () => {
+        const known = knownCube();
+        known.reorient_forward();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('o', 'b');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to oy', () => {
+        const known = knownCube();
+        known.reorient_forward();
+        known.reorient_counter_clockwise();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('o', 'y');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to bo', () => {
+        const known = knownCube();
+        known.reorient_roll_left();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('b', 'o');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to by', () => {
+        const known = knownCube();
+        known.reorient_roll_left();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('b', 'y');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to bw', () => {
+        const known = knownCube();
+        known.reorient_roll_left();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('b', 'w');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to br', () => {
+        const known = knownCube();
+        known.reorient_roll_left();
+        known.reorient_counter_clockwise();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('b', 'r');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to ry', () => {
+        const known = knownCube();
+        known.reorient_backward();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('r', 'y');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to rg', () => {
+        const known = knownCube();
+        known.reorient_backward();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('r', 'g');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to rb', () => {
+        const known = knownCube();
+        known.reorient_backward();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('r', 'b');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to rw', () => {
+        const known = knownCube();
+        known.reorient_backward();
+        known.reorient_clockwise();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('r', 'w');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to wo', () => {
         const known = knownCube();
         known.reorient_roll_right();
         known.reorient_roll_right();
         const evalCube = knownCube();
         evalCube.perform_reorientation('w', 'o');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to wg', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        known.reorient_roll_right();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('w', 'g');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to wr', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        known.reorient_roll_right();
+        known.reorient_clockwise();
+        known.reorient_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('w', 'r');
+        expect(evalCube.toString()).toBe(known.toString());
+    });
+    test('yo to wb', () => {
+        const known = knownCube();
+        known.reorient_roll_right();
+        known.reorient_roll_right();
+        known.reorient_counter_clockwise();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('w', 'b');
         expect(evalCube.toString()).toBe(known.toString());
     });
 });
