@@ -41,7 +41,7 @@ interface CubeOrientations {
 const cubeOrientations: CubeOrientations = {
     wo: 'wbogry',
     wb: 'wrbogy',
-    wr: 'wrbogy',
+    wr: 'wgrboy',
     wg: 'wogrby',
     bw: 'bowryg',
     bo: 'byowrg',
@@ -485,7 +485,7 @@ export class Cube {
         else if current_front needs to be down
             reorient_backward
          */
-        if (cU === tB) {
+        if (cU === tD) {
             this.reorient_forward();
             this.reorient_forward();
         }

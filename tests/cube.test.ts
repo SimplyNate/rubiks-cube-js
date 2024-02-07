@@ -113,14 +113,14 @@ test('scrambles randomly', () => {
     expect(computed !== neExpectation).toBeTruthy();
 });
 
+function knownCube() {
+    const cube = new Cube();
+    cube.l().counter_d().r().u();
+    expect(cube.toString()).toBe('rrryyyboo/yowgggyoo/rbbyowbbo/yrwrbbwbb/gggyrwygg/wwgwwroor');
+    return cube;
+}
 
 describe('reorient', () => {
-    function knownCube() {
-        const cube = new Cube();
-        cube.l().counter_d().r().u();
-        expect(cube.toString()).toBe('rrryyyboo/yowgggyoo/rbbyowbbo/yrwrbbwbb/gggyrwygg/wwgwwroor');
-        return cube;
-    }
     test('reorient_clockwise', () => {
         const cube = new Cube();
         cube.reorient_clockwise();
@@ -167,6 +167,17 @@ describe('reorient', () => {
 
 describe('perform_reorientation', () => {
     test('Performs reorientation correctly', () => {
-
+        const correctCube = new Cube();
+        correctCube.reorient_roll_right();
+        correctCube.reorient_roll_right();
+        const cube = new Cube();
+        cube.perform_reorientation('w', 'o');
+        expect(cube.toString()).toBe(correctCube.toString());
+        const known = knownCube();
+        known.reorient_roll_right();
+        known.reorient_roll_right();
+        const evalCube = knownCube();
+        evalCube.perform_reorientation('w', 'o');
+        expect(evalCube.toString()).toBe(known.toString());
     });
 });
