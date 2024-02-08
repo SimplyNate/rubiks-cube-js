@@ -461,12 +461,53 @@ export function solveWhiteCross(cube: Cube) {
     }
 }
 
-function solveWhiteCorners() {}
+export function corner_solveInUpLayer(cube: Cube, corner: Corner) {}
+export function corner_solveInDownLayer(cube: Cube, corner: Corner) {}
+export function corner_solveInTopLayer(cube: Cube, corner: Corner) {}
+export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {}
 
-function solveMiddleEdges() {}
+export function solveWhiteCorners(cube: Cube) {
+    cube.perform_reorientation('w', 'o');
+    for (let i = 0; i < 4; i++) {
+        const whiteCorners = findCorners(cube, 'w');
+        const corner = whiteCorners.find(c => !c.correct);
+        if (corner) {
+            // if corner in up layer
+            if (corner.face === cube.findColor('w')) {
+                corner_solveInUpLayer(cube, corner);
+            }
+            // else if corner in down layer
+            else if (corner.face === cube.findColor('y')) {
+                corner_solveInDownLayer(cube, corner);
+            }
+            // else if corner in top layer
+            else if (corner.index === 0 || corner.index === 2) {
+                corner_solveInTopLayer(cube, corner);
+            }
+            // else if corner in bottom layer
+            else if (corner.index === 6 || corner.index === 8) {
+                corner_solveInBottomLayer(cube, corner);
+            }
+        }
+        else {
+            break;
+        }
+    }
+}
 
-function solveYellowCross() {}
+export function solveMiddleEdges(cube: Cube) {}
 
-function solveYellowFace() {}
+export function solveYellowCross(cube: Cube) {}
 
-function solveTopRow() {}
+export function solveYellowFace(cube: Cube) {}
+
+export function solveTopRow(cube: Cube) {}
+
+export function solve(cube: Cube) {
+    solveWhiteCross(cube);
+    solveWhiteCorners(cube);
+    solveMiddleEdges(cube);
+    solveYellowCross(cube);
+    solveYellowFace(cube);
+    solveTopRow(cube);
+}
