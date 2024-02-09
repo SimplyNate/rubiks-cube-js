@@ -461,10 +461,41 @@ export function solveWhiteCross(cube: Cube) {
     }
 }
 
-export function corner_solveInUpLayer(cube: Cube, corner: Corner) {}
-export function corner_solveInDownLayer(cube: Cube, corner: Corner) {}
-export function corner_solveInTopLayer(cube: Cube, corner: Corner) {}
-export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {}
+export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
+    // this should be impossible
+}
+export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
+    /*
+    make d moves such that the corner is in the correct column
+    r' d d r d r' d' r
+     */
+}
+export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
+    /*
+    if corner is in correct position but rotated incorrectly,
+        reorient to where w is now front
+        if w is in position 2
+            r' d r d' r' d r
+        else w is in position 0
+            l d' l' d l d' l'
+    else
+        reorient such that the corner is in position 8
+        r' d r
+        make d moves until corner is in correct column
+        r' d' r
+
+     */
+}
+export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
+    /*
+    make d moves such that corner is in correct column
+    reorient such that the w piece is f
+    if w index === 8
+        f d f'
+    else
+        f' d' f
+     */
+}
 
 export function solveWhiteCorners(cube: Cube) {
     cube.perform_reorientation('w', 'o');
@@ -474,6 +505,7 @@ export function solveWhiteCorners(cube: Cube) {
         if (corner) {
             // if corner in up layer
             if (corner.face === cube.findColor('w')) {
+                // This should be impossible
                 corner_solveInUpLayer(cube, corner);
             }
             // else if corner in down layer
