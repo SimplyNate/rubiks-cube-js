@@ -462,7 +462,34 @@ export function solveWhiteCross(cube: Cube) {
 }
 
 export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
-    // this should be impossible
+    // this means in correct face but wrong index
+    /*
+    reorient such that the w is in index 8
+    r' d r
+    update corner to new position
+    corner_solveInBottomLayer(cube, updatedCorner);
+     */
+    if (corner.index === 0) {
+        cube.reorient_clockwise();
+        cube.reorient_clockwise();
+    }
+    else if (corner.index === 2) {
+        cube.reorient_clockwise();
+    }
+    else if (corner.index === 6) {
+        cube.reorient_counter_clockwise();
+    }
+    cube.counter_r()
+        .d()
+        .r();
+    const corners = findCorners(cube, 'w');
+    const updatedCorner = corners.find(c => c.face === 'r' && c.index === 6);
+    if (updatedCorner) {
+        corner_solveInBottomLayer(cube, updatedCorner);
+    }
+    else {
+        throw new Error('Unable to find expected corner.');
+    }
 }
 export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
     /*
@@ -505,7 +532,6 @@ export function solveWhiteCorners(cube: Cube) {
         if (corner) {
             // if corner in up layer
             if (corner.face === cube.findColor('w')) {
-                // This should be impossible
                 corner_solveInUpLayer(cube, corner);
             }
             // else if corner in down layer
