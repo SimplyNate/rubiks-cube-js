@@ -469,6 +469,8 @@ export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
     update corner to new position
     corner_solveInBottomLayer(cube, updatedCorner);
      */
+    const currentU = cube.colorOf('u');
+    const currentF = cube.colorOf('f');
     if (corner.index === 0) {
         cube.reorient_clockwise();
         cube.reorient_clockwise();
@@ -490,6 +492,7 @@ export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
     else {
         throw new Error('Unable to find expected corner.');
     }
+    cube.perform_reorientation(currentU, currentF);
 }
 export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
     /*
@@ -522,6 +525,41 @@ export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
     else
         f' d' f
      */
+    const adjacentFace = corner.adjacentFace;
+    const adjacentFace2 = corner.adjacentFace2;
+    let adjacentFaceFocus;
+    let adjacentFaceIndexFocus;
+    let downColor: string;
+    if (adjacentFace === 'd') {
+        adjacentFaceFocus = adjacentFace2;
+        adjacentFaceIndexFocus = corner.adjacentIndex2;
+        downColor = cube.cube[corner.adjacentFace][corner.adjacentIndex];
+    }
+    else {
+        adjacentFaceFocus = adjacentFace;
+        adjacentFaceIndexFocus = corner.adjacentIndex;
+        downColor = cube.cube[corner.adjacentFace2][corner.adjacentIndex2];
+    }
+    const adjacentFaceColorFocus = cube.cube[adjacentFaceFocus][adjacentFaceIndexFocus];
+    const targetFace = <string>cube.findColor(adjacentFaceColorFocus);
+    if (areOppositeFaces(targetFace, adjacentFaceFocus)) {
+        cube.d().d();
+    }
+    else if (targetFaceIsCounterClockwise(adjacentFaceFocus, targetFace)) {
+        cube.d();
+    }
+    else if (targetFaceIsClockwise(adjacentFaceFocus, targetFace)) {
+        cube.counter_d();
+    }
+    // The white piece will always be on the face of the down color
+    cube.perform_reorientation(<string>cube.findColor(<string>cube.colorOf('u')), downColor);
+    // D moves does not affect the corner's index, so we can assume it's in the same index now in face F
+    if (corner.index === 8) {
+        cube.f().d().counter_f();
+    }
+    else {
+        cube.counter_f().counter_d().f();
+    }
 }
 
 export function solveWhiteCorners(cube: Cube) {
