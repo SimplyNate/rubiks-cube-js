@@ -497,8 +497,42 @@ export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
 export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
     /*
     make d moves such that the corner is in the correct column
+      the correct column is where either:
+        adjacentFace is counterclockwise to targetFace AND
+        adjacentFace2 is clockwise to targetFace
+        OR
+        adjacentFace2 is counterClockwise to targetFace AND
+        adjacentFace is clockwise to targetFace
     r' d d r d r' d' r
      */
+    let currentCorner = corner;
+    for (let i = 0; i < 3; i++ ) {
+        const targetAdjacent = <string>cube.findColor(currentCorner.adjacentFace);
+        const targetAdjacent2 = <string>cube.findColor(currentCorner.adjacentFace2);
+        if ((targetFaceIsClockwise(currentCorner.adjacentFace, targetAdjacent) || targetFaceIsCounterClockwise(currentCorner.adjacentFace, targetAdjacent)) &&
+            (targetFaceIsClockwise(currentCorner.adjacentFace2, targetAdjacent2) || targetFaceIsCounterClockwise(currentCorner.adjacentFace2, targetAdjacent2))) {
+            break;
+        }
+        else {
+            cube.d();
+            const corners = findCorners(cube, 'w');
+            currentCorner = <Corner>corners.find(c =>
+                c.face === corner.face &&
+                cube.cube[corner.adjacentFace][corner.adjacentIndex] === cube.cube[c.adjacentFace][c.adjacentIndex] &&
+                cube.cube[corner.adjacentFace2][corner.adjacentIndex2] === cube.cube[c.adjacentFace2][c.adjacentIndex2]);
+        }
+    }
+    if (currentCorner.index === 0) {
+        cube.reorient_counter_clockwise();
+    }
+    else if (currentCorner.index === 6) {
+        cube.reorient_counter_clockwise();
+        cube.reorient_counter_clockwise();
+    }
+    else if (currentCorner.index === 8) {
+        cube.reorient_clockwise();
+    }
+    cube.counter_r().d().d().r().d().counter_r().counter_d().r();
 }
 export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
     /*
