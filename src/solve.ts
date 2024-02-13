@@ -543,12 +543,47 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
         else w is in position 0
             l d' l' d l d' l'
     else
-        reorient such that the corner is in position 8
-        r' d r
-        make d moves until corner is in correct column
-        r' d' r
+        reorient such that the white square is now Front
+        if index is 2:
+            r' d r
+        else:
+            l d' l'
+        corner_solveInBottomLayer
 
      */
+    let nonUpAdjacentFace;
+    let nonUpAdjacentIndex;
+    if (corner.adjacentFace === 'u') {
+        nonUpAdjacentFace = corner.adjacentFace2;
+        nonUpAdjacentIndex = corner.adjacentIndex2;
+    }
+    else {
+        nonUpAdjacentFace = corner.adjacentFace;
+        nonUpAdjacentIndex = corner.adjacentIndex;
+    }
+    const nonUpAdjacentColor = cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex];
+    if (cube.colorOf(corner.face) === cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex]) {
+        cube.perform_reorientation(<string>cube.findColor(<string>cube.colorOf('u')), nonUpAdjacentColor);
+        if (corner.index === 2) {
+            cube.counter_r().d().r().counter_d().counter_r().d().r();
+        }
+        else {
+            cube.l().counter_d().counter_l().d().l().counter_d().counter_l();
+        }
+    }
+    else {
+        cube.perform_reorientation(<string>cube.findColor(<string>cube.colorOf('u')), corner.face);
+        if (corner.index === 2) {
+            cube.counter_r().d().r();
+        }
+        else {
+            cube.l().counter_d().counter_l();
+        }
+        const corners = findCorners(cube, 'w');
+        const targetIndex = corner.index === 0 ? 6 : 8;
+        const targetCorner = <Corner>corners.find(c => c.face === corner.face && c.index === targetIndex);
+        corner_solveInBottomLayer(cube, targetCorner);
+    }
 }
 export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
     /*
