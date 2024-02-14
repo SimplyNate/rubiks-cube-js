@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test, describe } from 'vitest';
 import { Cube } from '../src/cube';
 import {
     type Edge,
@@ -16,7 +16,8 @@ import {
     solveInBottomLayerDown,
     solveInBottomLayerMiddle,
     solveInMiddleLayer,
-    solveWhiteCross
+    solveWhiteCross,
+    solveWhiteCorners,
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -264,4 +265,26 @@ test('Solves White Cross from Scrambled', () => {
         const scrambledEdges = findEdges(scrambled, 'w');
         expect(countCorrect(scrambledEdges)).toEqual(4);
     }
+});
+
+describe('corner algorithms', () => {
+    test('corner_solveInUpLayer', () => {
+
+    });
+});
+
+test('Solve White Corners from WhiteCross', () => {
+    const cube = new Cube();
+    cube
+        .r().r().d()
+        .counter_l().counter_b().counter_r()
+        .b().counter_d().u()
+        .r().l().d()
+        .d().f().d()
+        .r().u().counter_d()
+        .r().counter_u();
+    solveWhiteCross(cube);
+    const resultEdges = findEdges(cube, 'w');
+    expect(countCorrect(resultEdges)).toEqual(4);
+    solveWhiteCorners(cube);
 });
