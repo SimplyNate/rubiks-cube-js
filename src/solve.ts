@@ -189,14 +189,17 @@ const adjacencies: AdjacencyMap = {
 export interface Edge {
     face: string;
     index: number;
+    color: string;
     adjacentFace: string;
     adjacentIndex: number;
+    adjacentColor: string;
     correct: boolean;
 }
 
 export interface Corner extends Edge {
     adjacentFace2: string;
     adjacentIndex2: number;
+    adjacentColor2: string;
 }
 
 export function findEdges(cube: Cube, color: string): Edge[] {
@@ -209,8 +212,10 @@ export function findEdges(cube: Cube, color: string): Edge[] {
                 edges.push({
                     face,
                     index,
+                    color,
                     adjacentFace: adjacency[0],
                     adjacentIndex: Number(adjacency[1]),
+                    adjacentColor: cube.cube[adjacency[0]][Number(adjacency[1])],
                     correct: false,
                 });
                 edges[edges.length - 1].correct = isEdgeInCorrectPosition(cube, edges[edges.length - 1]);
@@ -257,10 +262,13 @@ export function findCorners(cube: Cube, color: string): Corner[] {
                 corners.push({
                     face,
                     index,
+                    color,
                     adjacentFace: adjacency[0],
                     adjacentIndex: Number(adjacency[1]),
+                    adjacentColor: cube.cube[adjacency[0]][Number(adjacency[1])],
                     adjacentFace2: adjacency[2],
                     adjacentIndex2: Number(adjacency[3]),
+                    adjacentColor2: cube.cube[adjacency[2]][Number(adjacency[3])],
                     correct: false,
                 });
                 corners[corners.length - 1].correct = isCornerInCorrectPosition(cube, corners[corners.length - 1]);
