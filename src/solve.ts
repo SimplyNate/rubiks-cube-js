@@ -571,7 +571,7 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
     }
     const nonUpAdjacentColor = cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex];
     if (cube.colorOf(corner.face) === cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex]) {
-        cube.perform_reorientation(<string>cube.findColor(<string>cube.colorOf('u')), nonUpAdjacentColor);
+        cube.perform_reorientation(<string>cube.colorOf('u'), nonUpAdjacentColor);
         if (corner.index === 2) {
             cube.counter_r().d().r().counter_d().counter_r().d().r();
         }
@@ -580,7 +580,7 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
         }
     }
     else {
-        cube.perform_reorientation(<string>cube.findColor(<string>cube.colorOf('u')), corner.face);
+        cube.perform_reorientation(<string>cube.colorOf('u'), corner.face);
         if (corner.index === 2) {
             cube.counter_r().d().r();
         }
@@ -629,7 +629,7 @@ export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
         cube.counter_d();
     }
     // The white piece will always be on the face of the down color
-    cube.perform_reorientation(<string>cube.findColor(<string>cube.colorOf('u')), downColor);
+    cube.perform_reorientation(<string>cube.colorOf('u'), downColor);
     // D moves does not affect the corner's index, so we can assume it's in the same index now in face F
     if (corner.index === 8) {
         cube.f().d().counter_f();
