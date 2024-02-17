@@ -17,7 +17,7 @@ import {
     solveInBottomLayerMiddle,
     solveInMiddleLayer,
     solveWhiteCross,
-    solveWhiteCorners,
+    solveWhiteCorners, corner_solveInUpLayer,
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -259,7 +259,7 @@ test('Solves White Cross from Scrambled', () => {
     const resultEdges = findEdges(cube, 'w');
     expect(countCorrect(resultEdges)).toEqual(4);
     // if it can solve 100 random scrambles, we can reasonably assume the function works as intended
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1000; i++) {
         const scrambled = Cube.scrambled();
         solveWhiteCross(scrambled);
         const scrambledEdges = findEdges(scrambled, 'w');
@@ -269,6 +269,21 @@ test('Solves White Cross from Scrambled', () => {
 
 describe('corner algorithms', () => {
     test('corner_solveInUpLayer', () => {
+        const cube = new Cube();
+        cube.perform_reorientation('w', 'o');
+        cube.u();
+        const corners = findCorners(cube, 'w');
+        corner_solveInUpLayer(cube, corners[0]);
+        const results = findCorners(cube, 'w');
+        expect(results[2].correct).toBeTruthy();
+    });
+    test('corner_solveInDownLayer', () => {
+
+    });
+    test('corner_solveInTopLayer', () => {
+
+    });
+    test('corner_solveInBottomLayer', () => {
 
     });
 });
@@ -287,4 +302,25 @@ test('Solve White Corners from WhiteCross', () => {
     const resultEdges = findEdges(cube, 'w');
     expect(countCorrect(resultEdges)).toEqual(4);
     solveWhiteCorners(cube);
+    const resultCorners = findCorners(cube, 'w');
+    expect(countCorrect(resultCorners)).toEqual(4);
+});
+
+test('White Corners and Cross Integration Test', () => {
+    let i = 0;
+    try {
+        for (; i < 1000000; i++) {
+            const c = Cube.scrambled();
+            solveWhiteCross(c);
+            solveWhiteCorners(c);
+            const edges = findEdges(c, 'w');
+            const corners = findCorners(c, 'w');
+            expect(countCorrect(edges)).toEqual(4);
+            expect(countCorrect(corners)).toEqual(4);
+        }
+    }
+    catch (e) {
+        console.error(e);
+        console.log(i);
+    }
 });
