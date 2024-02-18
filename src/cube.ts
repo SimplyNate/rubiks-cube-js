@@ -1,14 +1,17 @@
 // https://ruwix.com/online-rubiks-cube-solver-program/
 
 interface CubePositions {
-    [index: string]: string[];
-    f: string[];
-    l: string[];
-    r: string[];
-    b: string[];
-    u: string[];
-    d: string[];
+    [index: string]: Color[];
+    f: Color[];
+    l: Color[];
+    r: Color[];
+    b: Color[];
+    u: Color[];
+    d: Color[];
 }
+
+export type Face = 'u' | 'l' | 'f' | 'r' | 'b' | 'd';
+export type Color = 'w' | 'r' | 'b' | 'o' | 'g' | 'y';
 
 // min is inclusive, max is exclusive
 function getRandomInt(min: number, max: number) {
@@ -35,34 +38,31 @@ Orientation is defined as:
 Key: UpFront
 Value: [Up, Left, Front, Right, Back, Down]
  */
-interface CubeOrientations {
-    [index: string]: string;
-}
-const cubeOrientations: CubeOrientations = {
-    wo: 'wbogry',
-    wb: 'wrbogy',
-    wr: 'wgrboy',
-    wg: 'wogrby',
-    bw: 'bowryg',
-    bo: 'byowrg',
-    by: 'bryowg',
-    br: 'bwryog',
-    ow: 'ogwbyr',
-    og: 'oygwbr',
-    oy: 'obygwr',
-    ob: 'owbygr',
-    gw: 'grwoyb',
-    gr: 'gyrwob',
-    gy: 'goyrwb',
-    go: 'gwoyrb',
-    rw: 'rbwgyo',
-    rb: 'rybwgo',
-    ry: 'rgybwo',
-    rg: 'rwgybo',
-    yo: 'ygobrw',
-    yg: 'yrgobw',
-    yr: 'ybrgow',
-    yb: 'yobrgw',
+const cubeOrientations: Record<string, Color[]> = {
+    wo: ['w', 'b', 'o', 'g', 'r', 'y'],
+    wb: ['w', 'r', 'b', 'o', 'g', 'y'],
+    wr: ['w', 'g', 'r', 'b', 'o', 'y'],
+    wg: ['w', 'o', 'g', 'r', 'b', 'y'],
+    bw: ['b', 'o', 'w', 'r', 'y', 'g'],
+    bo: ['b', 'y', 'o', 'w', 'r', 'g'],
+    by: ['b', 'r', 'y', 'o', 'w', 'g'],
+    br: ['b', 'w', 'r', 'y', 'o', 'g'],
+    ow: ['o', 'g', 'w', 'b', 'y', 'r'],
+    og: ['o', 'y', 'g', 'w', 'b', 'r'],
+    oy: ['o', 'b', 'y', 'g', 'w', 'r'],
+    ob: ['o', 'w', 'b', 'y', 'g', 'r'],
+    gw: ['g', 'r', 'w', 'o', 'y', 'b'],
+    gr: ['g', 'y', 'r', 'w', 'o', 'b'],
+    gy: ['g', 'o', 'y', 'r', 'w', 'b'],
+    go: ['g', 'w', 'o', 'y', 'r', 'b'],
+    rw: ['r', 'b', 'w', 'g', 'y', 'o'],
+    rb: ['r', 'y', 'b', 'w', 'g', 'o'],
+    ry: ['r', 'g', 'y', 'b', 'w', 'o'],
+    rg: ['r', 'w', 'g', 'y', 'b', 'o'],
+    yo: ['y', 'g', 'o', 'b', 'r', 'w'],
+    yg: ['y', 'r', 'g', 'o', 'b', 'w'],
+    yr: ['y', 'b', 'r', 'g', 'o', 'w'],
+    yb: ['y', 'o', 'b', 'r', 'g', 'w'],
 }
 
 // TODO: Create cube as 20 enumerated and unique colored pieces of the cube
@@ -104,7 +104,7 @@ export class Cube {
         this.scrambleHistory = [];
     }
     static fromString(str: string): Cube {
-        const faceOrder = ['u', 'l', 'f', 'r', 'b', 'd'];
+        const faceOrder: Face[] = ['u', 'l', 'f', 'r', 'b', 'd'];
         const split = str.split('/');
         if (split.length !== 6) {
             throw new Error(`Invalid Cube string. Got ${str}`);
@@ -115,7 +115,7 @@ export class Cube {
             if (face.length !== 9) {
                 throw new Error(`Invalid face string. Got ${face}`);
             }
-            cube.cube[faceOrder[i]] = face.split('');
+            cube.cube[faceOrder[i]] = <Color[]>face.split('');
         }
         return cube;
     }
@@ -175,7 +175,7 @@ export class Cube {
         this.history = [];
         return this;
     }
-    private clockwiseRotation(face: string) {
+    private clockwiseRotation(face: Face) {
         this.cube[face] = [
             this.cube[face][6],
             this.cube[face][3],
@@ -188,7 +188,7 @@ export class Cube {
             this.cube[face][2],
         ];
     }
-    private counterClockwiseRotation(face: string) {
+    private counterClockwiseRotation(face: Face) {
         this.cube[face] = [
             this.cube[face][2],
             this.cube[face][5],
@@ -417,7 +417,7 @@ export class Cube {
         this.counterClockwiseRotation('b');
         return this;
     }
-    performRotation(face: string, counter_clockwise: boolean = false) {
+    performRotation(face: Face, counter_clockwise: boolean = false) {
         if (this.cube[face]) {
             return (<() => this>this[`${counter_clockwise ? 'counter_' : ''}${face}`])();
         }
@@ -447,11 +447,11 @@ export class Cube {
     isSolved(): boolean {
         return this.toString() === solvedCube;
     }
-    perform_reorientation(up: string, front: string) {
+    perform_reorientation(up: Color, front: Color) {
         const currentOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
-        const [_cU, cL, cF, cR, cB, cD] = currentOrientation.split('');
+        const [_cU, cL, cF, cR, cB, cD] = currentOrientation;
         const targetOrientation = cubeOrientations[`${up}${front}`];
-        const [tU, _tL, tF, _tR, _tB, _tD] = targetOrientation.split('');
+        const [tU, _tL, tF, _tR, _tB, _tD] = targetOrientation;
         /*
         Discover where up went first.
         if new up is same as current up, do nothing
@@ -502,7 +502,7 @@ export class Cube {
             this.reorient_backward();
         }
         const interimOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
-        const [_iU, iL, _iF, iR, iB, _iD] = interimOrientation.split('');
+        const [_iU, iL, _iF, iR, iB, _iD] = interimOrientation;
         if (tF === iL) {
             this.reorient_counter_clockwise();
         }
@@ -514,8 +514,8 @@ export class Cube {
             this.reorient_clockwise();
         }
     }
-    private reorient(up: string, front: string) {
-        let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`].split('');
+    private reorient(up: Color, front: Color) {
+        let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`];
         const newU = this.copyByColor(u);
         const newL = this.copyByColor(l);
         const newF = this.copyByColor(f);
@@ -596,7 +596,7 @@ export class Cube {
          */
         let entropy = 0;
         const index = 4;
-        const keys = Object.keys(this.cube)
+        const keys = this.faces();
         for (const key of keys) {
             let total = 0;
             for (let i = 0; i < this.cube[key].length; i++) {
@@ -607,38 +607,41 @@ export class Cube {
         }
         return entropy;
     }
-    get up(): string {
-        return this.cube.u[4];
+    get up(): Color {
+        return <"w" | "r" | "b" | "o" | "g" | "y">this.cube.u[4];
     }
-    get left(): string {
-        return this.cube.l[4];
+    get left(): Color {
+        return <"w" | "r" | "b" | "o" | "g" | "y">this.cube.l[4];
     }
-    get front(): string {
-        return this.cube.f[4];
+    get front(): Color {
+        return <"w" | "r" | "b" | "o" | "g" | "y">this.cube.f[4];
     }
-    get right(): string {
-        return this.cube.r[4];
+    get right(): Color {
+        return <"w" | "r" | "b" | "o" | "g" | "y">this.cube.r[4];
     }
-    get back(): string {
-        return this.cube.b[4];
+    get back(): Color {
+        return <"w" | "r" | "b" | "o" | "g" | "y">this.cube.b[4];
     }
-    get down(): string {
-        return this.cube.d[4];
+    get down(): Color {
+        return <"w" | "r" | "b" | "o" | "g" | "y">this.cube.d[4];
     }
-    colorOf(face: string) {
-        return this.cube[face][4];
+    colorOf(face: Face): Color {
+        return <Color>this.cube[face][4];
     }
-    findColor(color: string) {
-        for (const key of Object.keys(this.cube)) {
+    findColor(color: Color): Face | undefined {
+        for (const key of this.faces()) {
             if (color === this.cube[key][4]) {
-                return key;
+                return <Face>key;
             }
         }
     }
-    copyByColor(color: string) {
+    copyByColor(color: Color): Color[] | undefined {
         const key = this.findColor(color);
         if (key) {
-            return [...this.cube[key]];
+            return <Color[]>[...this.cube[key]];
         }
+    }
+    faces(): Face[] {
+        return <Face[]>Object.keys(this.cube);
     }
 }
