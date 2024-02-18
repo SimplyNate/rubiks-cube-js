@@ -17,7 +17,7 @@ import {
     solveInBottomLayerMiddle,
     solveInMiddleLayer,
     solveWhiteCross,
-    solveWhiteCorners, corner_solveInUpLayer,
+    solveWhiteCorners, corner_solveInUpLayer, corner_solveInDownLayer,
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -278,6 +278,32 @@ describe('corner algorithms', () => {
         expect(results[2].correct).toBeTruthy();
     });
     test('corner_solveInDownLayer', () => {
+        function downLayerScramble() {
+            const cube = new Cube();
+            cube.perform_reorientation('w', 'o');
+            // set known scramble for single incorrect corner
+            cube.l().counter_d().counter_l().counter_f().d().f();
+            return cube;
+        }
+        function testCube(testCube: Cube) {
+            const corners = findCorners(testCube, 'w');
+            const targetCorner = corners.find(c => !c.correct);
+            expect(targetCorner).toBeDefined();
+            corner_solveInDownLayer(testCube, targetCorner);
+            const solvedCorners = findCorners(testCube, 'w');
+            expect(countCorrect(solvedCorners)).toEqual(4);
+        }
+        const down8 = downLayerScramble();
+        testCube(down8);
+        const down6 = downLayerScramble();
+        down6.d();
+        testCube(down6);
+        const down0 = downLayerScramble();
+        down0.d().d();
+        testCube(down0);
+        const down2 = downLayerScramble();
+        down2.counter_d();
+        testCube(down2);
 
     });
     test('corner_solveInTopLayer', () => {
