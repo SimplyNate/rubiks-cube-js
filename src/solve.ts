@@ -1,4 +1,4 @@
-import { Cube } from './cube.js';
+import { Cube, Face, Color } from './cube.js';
 
 export function flip_edge(cube: Cube) {
     cube
@@ -155,56 +155,52 @@ export function permute_u(cube: Cube) {
     return cube;
 }
 
-interface AdjacencyMap {
-    [index: string]: string;
-}
-
-const adjacencies: AdjacencyMap = {
-    u1: 'b1',
-    u3: 'l1',
-    u5: 'r1',
-    u7: 'f1',
-    l1: 'u3',
-    l3: 'b5',
-    l5: 'f3',
-    l7: 'd3',
-    f1: 'u7',
-    f3: 'l5',
-    f5: 'r3',
-    f7: 'd1',
-    r1: 'u5',
-    r3: 'f5',
-    r5: 'b3',
-    r7: 'd5',
-    b1: 'u1',
-    b3: 'r5',
-    b5: 'l3',
-    b7: 'd7',
-    d1: 'f7',
-    d3: 'l7',
-    d5: 'r7',
-    d7: 'b7',
+const adjacencies: Record<string, [Face, number]> = {
+    u1: ['b', 1],
+    u3: ['l', 1],
+    u5: ['r', 1],
+    u7: ['f', 1],
+    l1: ['u', 3],
+    l3: ['b', 5],
+    l5: ['f', 3],
+    l7: ['d', 3],
+    f1: ['u', 7],
+    f3: ['l', 5],
+    f5: ['r', 3],
+    f7: ['d', 1],
+    r1: ['u', 5],
+    r3: ['f', 5],
+    r5: ['b', 3],
+    r7: ['d', 5],
+    b1: ['u', 1],
+    b3: ['r', 5],
+    b5: ['l', 3],
+    b7: ['d', 7],
+    d1: ['f', 7],
+    d3: ['l', 7],
+    d5: ['r', 7],
+    d7: ['b', 7],
 }
 
 export interface Edge {
-    face: string;
+    face: Face;
     index: number;
-    color: string;
-    adjacentFace: string;
+    color: Color;
+    adjacentFace: Face;
     adjacentIndex: number;
-    adjacentColor: string;
+    adjacentColor: Color;
     correct: boolean;
 }
 
 export interface Corner extends Edge {
-    adjacentFace2: string;
+    adjacentFace2: Face;
     adjacentIndex2: number;
-    adjacentColor2: string;
+    adjacentColor2: Color;
 }
 
-export function findEdges(cube: Cube, color: string): Edge[] {
+export function findEdges(cube: Cube, color: Color): Edge[] {
     const edges: Edge[] = [];
-    for (const face of Object.keys(cube.cube)) {
+    for (const face of cube.faces()) {
         for (const index of [1, 3, 5, 7]) {
             const square = cube.cube[face][index];
             if (square === color) {
@@ -225,36 +221,36 @@ export function findEdges(cube: Cube, color: string): Edge[] {
     return edges;
 }
 
-const cornerAdjacencies: AdjacencyMap = {
-    u0: 'l0b2',
-    u2: 'r2b0',
-    u6: 'l2f0',
-    u8: 'f2r0',
-    l0: 'u0b2',
-    l2: 'u6f0',
-    l6: 'b8d6',
-    l8: 'f6d0',
-    f0: 'u6l2',
-    f2: 'u8r0',
-    f6: 'l8d0',
-    f8: 'r6d2',
-    r0: 'u8f2',
-    r2: 'u2b0',
-    r6: 'f8d2',
-    r8: 'b6d8',
-    b0: 'u2r2',
-    b2: 'u0f0',
-    b6: 'r8d8',
-    b8: 'l6d6',
-    d0: 'l8f6',
-    d2: 'f8r6',
-    d6: 'b8l6',
-    d8: 'r8b6',
+const cornerAdjacencies: Record<string, [Face, number, Face, number]> = {
+    u0: ['l', 0, 'b', 2],
+    u2: ['r', 2, 'b', 0],
+    u6: ['l', 2, 'f', 0],
+    u8: ['f', 2, 'r', 0],
+    l0: ['u', 0, 'b', 2],
+    l2: ['u', 6, 'f', 0],
+    l6: ['b', 8, 'd', 6],
+    l8: ['f', 6, 'd', 0],
+    f0: ['u', 6, 'l', 2],
+    f2: ['u', 8, 'r', 0],
+    f6: ['l', 8, 'd', 0],
+    f8: ['r', 6, 'd', 2],
+    r0: ['u', 8, 'f', 2],
+    r2: ['u', 2, 'b', 0],
+    r6: ['f', 8, 'd', 2],
+    r8: ['b', 6, 'd', 8],
+    b0: ['u', 2, 'r', 2],
+    b2: ['u', 0, 'f', 0],
+    b6: ['r', 8, 'd', 8],
+    b8: ['l', 6, 'd', 6],
+    d0: ['l', 8, 'f', 6],
+    d2: ['f', 8, 'r', 6],
+    d6: ['b', 8, 'l', 6],
+    d8: ['r', 8, 'b', 6],
 };
 
-export function findCorners(cube: Cube, color: string): Corner[] {
+export function findCorners(cube: Cube, color: Color): Corner[] {
     const corners: Corner[] = [];
-    for (const face of Object.keys(cube.cube)) {
+    for (const face of cube.faces()) {
         for (const index of [0, 2, 6, 8]) {
             const square = cube.cube[face][index];
             if (square === color) {
@@ -292,51 +288,51 @@ export function isCornerInCorrectPosition(cube: Cube, corner: Corner): boolean {
     return isEdgeInCorrectPosition(cube, corner) && adjacentColor2 === adjacentFaceColor2;
 }
 
-const oppositeColors = {
+const oppositeColors: Record<Color, Color> = {
     b: 'g',
     g: 'b',
     o: 'r',
     r: 'o',
     w: 'y',
     y: 'w',
-} as {[index: string]: string};
+};
 
-export function areOppositeColors(color1: string, color2: string): boolean {
+export function areOppositeColors(color1: Color, color2: Color): boolean {
     return oppositeColors[color1] === color2;
 }
 
-export const oppositeFaces = {
+export const oppositeFaces: Record<Face, Face> = {
     u: 'd',
     d: 'u',
     l: 'r',
     r: 'l',
     f: 'b',
     b: 'f',
-} as {[index: string]: string};
+};
 
-export function areOppositeFaces(face1: string, face2: string): boolean {
+export function areOppositeFaces(face1: Face, face2: Face): boolean {
     return oppositeFaces[face1] === face2;
 }
 
-export const clockwiseFaces = {
+export const clockwiseFaces: Record<string, Face> = {
     f: 'l',
     l: 'b',
     b: 'r',
     r: 'f',
-} as {[index: string]: string};
+};
 
-export const counterClockwiseFaces = {
+export const counterClockwiseFaces: Record<string, Face> = {
     f: 'r',
     r: 'b',
     b: 'l',
     l: 'f',
-} as {[index: string]: string};
+};
 
-export function targetFaceIsClockwise(sourceFace: string, targetFace: string): boolean {
+export function targetFaceIsClockwise(sourceFace: Face, targetFace: Face): boolean {
     return clockwiseFaces[sourceFace] === targetFace;
 }
 
-export function targetFaceIsCounterClockwise(sourceFace: string, targetFace: string): boolean {
+export function targetFaceIsCounterClockwise(sourceFace: Face, targetFace: Face): boolean {
     return counterClockwiseFaces[sourceFace] === targetFace;
 }
 
@@ -378,7 +374,7 @@ export function solveInTopLayerIncorrectFace(cube: Cube, edge: Edge) {
 export function solveInBottomLayerDown(cube: Cube, edge: Edge) {
     const adjacentFace = edge.adjacentFace;
     const adjacentColor = cube.cube[adjacentFace][edge.adjacentIndex];
-    const targetFace = <string>cube.findColor(adjacentColor);
+    const targetFace = <Face>cube.findColor(adjacentColor);
     if (areOppositeFaces(adjacentFace, targetFace)) {
         cube.d().d();
     }
@@ -395,7 +391,7 @@ export function solveInBottomLayerDown(cube: Cube, edge: Edge) {
 export function solveInBottomLayerMiddle(cube: Cube, edge: Edge) {
     const currentFace = edge.face;
     const adjacentColor = cube.cube[edge.adjacentFace][edge.adjacentIndex];
-    const targetFace = <string>cube.findColor(adjacentColor);
+    const targetFace = <Face>cube.findColor(adjacentColor);
     if (areOppositeFaces(currentFace, targetFace)) {
         cube.d().d();
     }
@@ -415,7 +411,7 @@ export function solveInMiddleLayer(cube: Cube, edge: Edge) {
     // If adjacent face is correct, perform targetFace rotation
     const adjacentFace = edge.adjacentFace;
     const adjacentColor = cube.cube[adjacentFace][edge.adjacentIndex];
-    const targetFace = <string>cube.findColor(adjacentColor);
+    const targetFace = <Face>cube.findColor(adjacentColor);
     const counterClockwise = edge.index === 3;
     if (areOppositeFaces(adjacentFace, targetFace)) {
         cube
@@ -515,8 +511,8 @@ export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
      */
     let currentCorner = corner;
     for (let i = 0; i < 3; i++ ) {
-        const targetAdjacent = <string>cube.findColor(currentCorner.adjacentFace);
-        const targetAdjacent2 = <string>cube.findColor(currentCorner.adjacentFace2);
+        const targetAdjacent = <Face>cube.findColor(currentCorner.adjacentColor);
+        const targetAdjacent2 = <Face>cube.findColor(currentCorner.adjacentColor2);
         if ((targetFaceIsClockwise(currentCorner.adjacentFace, targetAdjacent) || targetFaceIsCounterClockwise(currentCorner.adjacentFace, targetAdjacent)) &&
             (targetFaceIsClockwise(currentCorner.adjacentFace2, targetAdjacent2) || targetFaceIsCounterClockwise(currentCorner.adjacentFace2, targetAdjacent2))) {
             break;
@@ -571,7 +567,7 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
     }
     const nonUpAdjacentColor = cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex];
     if (cube.colorOf(corner.face) === cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex]) {
-        cube.perform_reorientation(<string>cube.colorOf('u'), nonUpAdjacentColor);
+        cube.perform_reorientation(cube.colorOf('u'), nonUpAdjacentColor);
         if (corner.index === 2) {
             cube.counter_r().d().r().counter_d().counter_r().d().r();
         }
@@ -580,7 +576,7 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
         }
     }
     else {
-        cube.perform_reorientation(<string>cube.colorOf('u'), corner.face);
+        cube.perform_reorientation(cube.colorOf('u'), cube.colorOf(corner.face));
         if (corner.index === 2) {
             cube.counter_r().d().r();
         }
@@ -606,7 +602,7 @@ export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
     const adjacentFace2 = corner.adjacentFace2;
     let adjacentFaceFocus;
     let adjacentFaceIndexFocus;
-    let downColor: string;
+    let downColor: Color;
     if (adjacentFace === 'd') {
         adjacentFaceFocus = adjacentFace2;
         adjacentFaceIndexFocus = corner.adjacentIndex2;
@@ -618,7 +614,7 @@ export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
         downColor = cube.cube[corner.adjacentFace2][corner.adjacentIndex2];
     }
     const adjacentFaceColorFocus = cube.cube[adjacentFaceFocus][adjacentFaceIndexFocus];
-    const targetFace = <string>cube.findColor(adjacentFaceColorFocus);
+    const targetFace = <Face>cube.findColor(adjacentFaceColorFocus);
     if (areOppositeFaces(targetFace, adjacentFaceFocus)) {
         cube.d().d();
     }
@@ -629,7 +625,7 @@ export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
         cube.counter_d();
     }
     // The white piece will always be on the face of the down color
-    cube.perform_reorientation(<string>cube.colorOf('u'), downColor);
+    cube.perform_reorientation(cube.colorOf('u'), downColor);
     // D moves does not affect the corner's index, so we can assume it's in the same index now in face F
     if (corner.index === 8) {
         cube.f().d().counter_f();
