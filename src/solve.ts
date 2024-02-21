@@ -510,20 +510,33 @@ export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
     r' d d r d r' d' r
      */
     let currentCorner = corner;
+    const targetAdjacent = <Face>cube.findColor(currentCorner.adjacentColor);
+    const targetAdjacent2 = <Face>cube.findColor(currentCorner.adjacentColor2);
+    let targetDownIndex;
+    if ((targetAdjacent === 'f' && targetAdjacent2 === 'l') || targetAdjacent === 'l' && targetAdjacent2 === 'f') {
+        targetDownIndex = 0;
+    }
+    else if ((targetAdjacent === 'f' && targetAdjacent2 === 'r') || (targetAdjacent === 'r' && targetAdjacent2 === 'f')) {
+        targetDownIndex = 2;
+    }
+    else if ((targetAdjacent === 'r' && targetAdjacent2 === 'b') || (targetAdjacent === 'b' && targetAdjacent2 === 'r')) {
+        targetDownIndex = 8;
+    }
+    else {
+        targetDownIndex = 6;
+    }
     for (let i = 0; i < 3; i++ ) {
-        const targetAdjacent = <Face>cube.findColor(currentCorner.adjacentColor);
-        const targetAdjacent2 = <Face>cube.findColor(currentCorner.adjacentColor2);
-        if ((targetFaceIsClockwise(currentCorner.adjacentFace, targetAdjacent) || targetFaceIsCounterClockwise(currentCorner.adjacentFace, targetAdjacent)) &&
-            (targetFaceIsClockwise(currentCorner.adjacentFace2, targetAdjacent2) || targetFaceIsCounterClockwise(currentCorner.adjacentFace2, targetAdjacent2))) {
+        if (targetDownIndex === currentCorner.index) {
             break;
         }
         else {
             cube.d();
             const corners = findCorners(cube, 'w');
             currentCorner = <Corner>corners.find(c =>
-                c.face === corner.face &&
-                cube.cube[corner.adjacentFace][corner.adjacentIndex] === cube.cube[c.adjacentFace][c.adjacentIndex] &&
-                cube.cube[corner.adjacentFace2][corner.adjacentIndex2] === cube.cube[c.adjacentFace2][c.adjacentIndex2]);
+                c.color === corner.color &&
+                c.adjacentColor === corner.adjacentColor &&
+                c.adjacentColor2 === corner.adjacentColor2
+            );
         }
     }
     if (currentCorner.index === 0) {
