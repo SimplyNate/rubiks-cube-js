@@ -17,7 +17,7 @@ import {
     solveInBottomLayerMiddle,
     solveInMiddleLayer,
     solveWhiteCross,
-    solveWhiteCorners, corner_solveInUpLayer, corner_solveInDownLayer,
+    solveWhiteCorners, corner_solveInUpLayer, corner_solveInDownLayer, corner_solveInBottomLayer
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -307,10 +307,51 @@ describe('corner algorithms', () => {
 
     });
     test('corner_solveInTopLayer', () => {
-
     });
     test('corner_solveInBottomLayer', () => {
+        function bottomLayerScramble() {
+            const cube = new Cube();
+            cube.perform_reorientation('w', 'o');
+            cube.l().counter_d().counter_l();
+            return cube;
+        }
+        function bottomLayerScramble2() {
+            const cube = new Cube();
+            cube.perform_reorientation('w', 'o');
+            cube.l().d().counter_l().counter_d();
+            return cube;
+        }
+        function testCube(testCube: Cube) {
+            const corners = findCorners(testCube, 'w');
+            const targetCorner = corners.find(c => !c.correct);
+            expect(targetCorner).toBeDefined();
+            corner_solveInBottomLayer(testCube, targetCorner);
+            const solvedCorners = findCorners(testCube, 'w');
+            expect(countCorrect(solvedCorners)).toEqual(4);
+        }
+        const case0 = bottomLayerScramble();
+        testCube(case0);
+        const case1 = bottomLayerScramble();
+        case1.d();
+        testCube(case1);
+        const case2 = bottomLayerScramble();
+        case2.d().d();
+        testCube(case2);
+        const case3 = bottomLayerScramble();
+        case3.counter_d();
+        testCube(case3);
 
+        const case4 = bottomLayerScramble2();
+        testCube(case4);
+        const case5 = bottomLayerScramble2();
+        case5.d();
+        testCube(case5);
+        const case6 = bottomLayerScramble2();
+        case6.d().d();
+        testCube(case6);
+        const case7 = bottomLayerScramble2();
+        case7.counter_d();
+        testCube(case7);
     });
 });
 
