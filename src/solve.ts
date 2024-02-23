@@ -568,19 +568,15 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
         corner_solveInBottomLayer
 
      */
-    let nonUpAdjacentFace;
-    let nonUpAdjacentIndex;
+    let nonUpAdjacentColor;
     if (corner.adjacentFace === 'u') {
-        nonUpAdjacentFace = corner.adjacentFace2;
-        nonUpAdjacentIndex = corner.adjacentIndex2;
+        nonUpAdjacentColor = corner.adjacentColor2;
     }
     else {
-        nonUpAdjacentFace = corner.adjacentFace;
-        nonUpAdjacentIndex = corner.adjacentIndex;
+        nonUpAdjacentColor = corner.adjacentColor;
     }
-    const nonUpAdjacentColor = cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex];
-    if (cube.colorOf(corner.face) === cube.cube[nonUpAdjacentFace][nonUpAdjacentIndex]) {
-        cube.perform_reorientation(cube.colorOf('u'), nonUpAdjacentColor);
+    cube.perform_reorientation(cube.colorOf('u'), cube.colorOf(corner.face));
+    if (cube.colorOf('f') === nonUpAdjacentColor) {
         if (corner.index === 2) {
             cube.counter_r().d().r().counter_d().counter_r().d().r();
         }
@@ -589,7 +585,6 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
         }
     }
     else {
-        cube.perform_reorientation(cube.colorOf('u'), cube.colorOf(corner.face));
         if (corner.index === 2) {
             cube.counter_r().d().r();
         }
@@ -598,7 +593,8 @@ export function corner_solveInTopLayer(cube: Cube, corner: Corner) {
         }
         const corners = findCorners(cube, 'w');
         const targetIndex = corner.index === 0 ? 6 : 8;
-        const targetCorner = <Corner>corners.find(c => c.face === corner.face && c.index === targetIndex);
+        // Corner face now must be front due to reorientation performed
+        const targetCorner = <Corner>corners.find(c => c.face === 'f' && c.index === targetIndex);
         corner_solveInBottomLayer(cube, targetCorner);
     }
 }
