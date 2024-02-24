@@ -17,7 +17,7 @@ import {
     solveInBottomLayerMiddle,
     solveInMiddleLayer,
     solveWhiteCross,
-    solveWhiteCorners, corner_solveInUpLayer, corner_solveInDownLayer, corner_solveInBottomLayer
+    solveWhiteCorners, corner_solveInUpLayer, corner_solveInDownLayer, corner_solveInBottomLayer, corner_solveInTopLayer
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -307,6 +307,50 @@ describe('corner algorithms', () => {
 
     });
     test('corner_solveInTopLayer', () => {
+        function topLayerScramble() {
+            const cube = new Cube();
+            cube.perform_reorientation('w', 'o');
+            cube.l().counter_d().counter_l().counter_f().counter_d().f();
+            return cube;
+        }
+        function topLayerScramble2() {
+            const cube = new Cube();
+            cube.perform_reorientation('w', 'o');
+            cube.l().d().counter_l().counter_d().l().d().counter_l();
+            return cube;
+        }
+        function testCube(testCube: Cube, expectedSolve = 4) {
+            const corners = findCorners(testCube, 'w');
+            const targetCorner = corners.find(c => !c.correct && c.face !== 'u');
+            expect(targetCorner).toBeDefined();
+            corner_solveInTopLayer(testCube, targetCorner);
+            const solvedCorners = findCorners(testCube, 'w');
+            expect(countCorrect(solvedCorners)).toEqual(expectedSolve);
+        }
+        const case0 = topLayerScramble();
+        testCube(case0);
+        const case1 = topLayerScramble();
+        case1.u();
+        testCube(case1, 1);
+        const case2 = topLayerScramble();
+        case2.u().u();
+        testCube(case2, 1);
+        const case3 = topLayerScramble();
+        case3.counter_u();
+        testCube(case3, 1);
+
+        const case4 = topLayerScramble2();
+        testCube(case4);
+        const case5 = topLayerScramble2();
+        case5.u();
+        testCube(case5, 1);
+        const case6 = topLayerScramble2();
+        case6.u().u();
+        testCube(case6, 1);
+        const case7 = topLayerScramble2();
+        case7.counter_u();
+        testCube(case7, 1);
+
     });
     test('corner_solveInBottomLayer', () => {
         function bottomLayerScramble() {
