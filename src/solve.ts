@@ -239,7 +239,7 @@ const cornerAdjacencies: Record<string, [Face, number, Face, number]> = {
     r6: ['f', 8, 'd', 2],
     r8: ['b', 6, 'd', 8],
     b0: ['u', 2, 'r', 2],
-    b2: ['u', 0, 'f', 0],
+    b2: ['u', 0, 'l', 0],
     b6: ['r', 8, 'd', 8],
     b8: ['l', 6, 'd', 6],
     d0: ['l', 8, 'f', 6],
@@ -610,19 +610,18 @@ export function corner_solveInBottomLayer(cube: Cube, corner: Corner) {
     const adjacentFace = corner.adjacentFace;
     const adjacentFace2 = corner.adjacentFace2;
     let adjacentFaceFocus;
-    let adjacentFaceIndexFocus;
+    let adjacentFaceColorFocus;
     let downColor: Color;
     if (adjacentFace === 'd') {
         adjacentFaceFocus = adjacentFace2;
-        adjacentFaceIndexFocus = corner.adjacentIndex2;
-        downColor = cube.cube[corner.adjacentFace][corner.adjacentIndex];
+        adjacentFaceColorFocus = corner.adjacentColor2;
+        downColor = corner.adjacentColor;
     }
     else {
         adjacentFaceFocus = adjacentFace;
-        adjacentFaceIndexFocus = corner.adjacentIndex;
-        downColor = cube.cube[corner.adjacentFace2][corner.adjacentIndex2];
+        adjacentFaceColorFocus = corner.adjacentColor;
+        downColor = corner.adjacentColor2;
     }
-    const adjacentFaceColorFocus = cube.cube[adjacentFaceFocus][adjacentFaceIndexFocus];
     const targetFace = <Face>cube.findColor(adjacentFaceColorFocus);
     if (areOppositeFaces(targetFace, adjacentFaceFocus)) {
         cube.d().d();
