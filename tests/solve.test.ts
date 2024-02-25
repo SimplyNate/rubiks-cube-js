@@ -397,30 +397,46 @@ describe('corner algorithms', () => {
         case7.counter_d();
         testCube(case7);
     });
-});
 
-test('Solve White Corners from WhiteCross', () => {
-    const cube = new Cube();
-    cube
-        .r().r().d()
-        .counter_l().counter_b().counter_r()
-        .b().counter_d().u()
-        .r().l().d()
-        .d().f().d()
-        .r().u().counter_d()
-        .r().counter_u();
-    solveWhiteCross(cube);
-    const resultEdges = findEdges(cube, 'w');
-    expect(countCorrect(resultEdges)).toEqual(4);
-    solveWhiteCorners(cube);
-    const resultCorners = findCorners(cube, 'w');
-    expect(countCorrect(resultCorners)).toEqual(4);
-});
+    test('Solve White Corners from WhiteCross', () => {
+        const cube = new Cube();
+        cube
+            .r().r().d()
+            .counter_l().counter_b().counter_r()
+            .b().counter_d().u()
+            .r().l().d()
+            .d().f().d()
+            .r().u().counter_d()
+            .r().counter_u();
+        solveWhiteCross(cube);
+        const resultEdges = findEdges(cube, 'w');
+        expect(countCorrect(resultEdges)).toEqual(4);
+        solveWhiteCorners(cube);
+        const resultCorners = findCorners(cube, 'w');
+        expect(countCorrect(resultCorners)).toEqual(4);
+    });
 
-test('White Corners and Cross Integration Test', () => {
-    let i = 0;
-    try {
-        for (; i < 1000000; i++) {
+    test('Specific White Corner Test', () => {
+        const cube = Cube.fromString('rowrybwro/ywrygbwor/bgbwowbyg/yrggbyogg/rbgrroyyb/ybwwwoogo');
+        const before = findCorners(cube, 'w');
+        expect(countCorrect(before)).toEqual(0);
+        solveWhiteCorners(cube);
+        const after = findCorners(cube, 'w');
+        expect(countCorrect(after)).toEqual(4);
+    });
+
+    test('White Corners Randomized Test', () => {
+        for (let i = 0; i < 10000; i++) {
+            const c = Cube.scrambled();
+            const beforeCorners = findCorners(c, 'w');
+            solveWhiteCorners(c);
+            const corners = findCorners(c, 'w');
+            expect(countCorrect(corners)).toEqual(4);
+        }
+    });
+
+    test('White Corners and Cross Integration Test', () => {
+        for (let i = 0; i < 10000; i++) {
             const c = Cube.scrambled();
             solveWhiteCross(c);
             solveWhiteCorners(c);
@@ -429,9 +445,5 @@ test('White Corners and Cross Integration Test', () => {
             expect(countCorrect(edges)).toEqual(4);
             expect(countCorrect(corners)).toEqual(4);
         }
-    }
-    catch (e) {
-        console.error(e);
-        console.log(i);
-    }
+    });
 });
