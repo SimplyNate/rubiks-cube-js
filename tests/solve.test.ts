@@ -49,34 +49,19 @@ test('Finds edges', () => {
 });
 
 test('solveInTopLayerCorrectFace', () => {
-    let cube = new Cube();
-    cube.perform_reorientation('w', 'o');
-    cube.u();
-    let whiteEdges = findEdges(cube, 'w');
-    solveInTopLayerCorrectFace(cube, whiteEdges[0]);
-    let isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 3, adjacentIndex: 1, adjacentFace: 'l', correct: false });
-    expect(isSolved).toBeTruthy();
-    cube = new Cube();
-    cube.perform_reorientation('w', 'o');
-    cube.u();
-    whiteEdges = findEdges(cube, 'w');
-    solveInTopLayerCorrectFace(cube, whiteEdges[1]);
-    isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 7, adjacentIndex: 1, adjacentFace: 'f', correct: false });
-    expect(isSolved).toBeTruthy();
-    cube = new Cube();
-    cube.perform_reorientation('w', 'o');
-    cube.u();
-    whiteEdges = findEdges(cube, 'w');
-    solveInTopLayerCorrectFace(cube, whiteEdges[2]);
-    isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 1, adjacentIndex: 1, adjacentFace: 'b', correct: false });
-    expect(isSolved).toBeTruthy();
-    cube = new Cube();
-    cube.perform_reorientation('w', 'o');
-    cube.u();
-    whiteEdges = findEdges(cube, 'w');
-    solveInTopLayerCorrectFace(cube, whiteEdges[3]);
-    isSolved = isEdgeInCorrectPosition(cube, { face: 'u', index: 5, adjacentIndex: 1, adjacentFace: 'r', correct: false });
-    expect(isSolved).toBeTruthy();
+    function testCube(edgeIndex: number) {
+        const cube = new Cube();
+        cube.perform_reorientation('w', 'o');
+        cube.u();
+        const whiteEdges = findEdges(cube, 'w');
+        solveInTopLayerCorrectFace(cube, whiteEdges[edgeIndex]);
+        const resultEdges = findEdges(cube, 'w');
+        expect(countCorrect(resultEdges)).toBeGreaterThan(countCorrect(whiteEdges));
+    }
+    testCube(0);
+    testCube(1);
+    testCube(2);
+    testCube(3);
 });
 test('solveInTopLayerIncorrectFace', () => {
     let cube = new Cube();

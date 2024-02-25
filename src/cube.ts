@@ -448,6 +448,7 @@ export class Cube {
         return this.toString() === solvedCube;
     }
     perform_reorientation(up: Color, front: Color) {
+        this.history.push(`reorient ${up}${front}`)
         const currentOrientation = cubeOrientations[`${this.colorOf('u')}${this.colorOf('f')}`];
         const [_cU, cL, cF, cR, cB, cD] = currentOrientation;
         const targetOrientation = cubeOrientations[`${up}${front}`];
