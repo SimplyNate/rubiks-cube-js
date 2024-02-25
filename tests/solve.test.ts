@@ -413,7 +413,6 @@ describe('corner algorithms', () => {
     test('White Corners Randomized Test', () => {
         for (let i = 0; i < 10000; i++) {
             const c = Cube.scrambled();
-            const beforeCorners = findCorners(c, 'w');
             solveWhiteCorners(c);
             const corners = findCorners(c, 'w');
             expect(countCorrect(corners)).toEqual(4);
