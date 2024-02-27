@@ -672,13 +672,90 @@ export function solveWhiteCorners(cube: Cube) {
     }
 }
 
-export function solveMiddleEdges(cube: Cube) {}
+export function middle_solveInTopLayer(cube: Cube, edge: Edge) {
+    let nonUColor: Color;
+    let nonUFace: Face;
+    let uColor: Color;
+    if (edge.face === 'u') {
+        nonUColor = edge.adjacentColor;
+        nonUFace = edge.adjacentFace;
+        uColor = edge.color;
+    }
+    else {
+        nonUColor = edge.color;
+        nonUFace = edge.face;
+        uColor = edge.adjacentColor;
+    }
+    const targetFace = <Face>cube.findColor(nonUColor);
+    if (targetFace !== nonUFace) {
+        // perform corresponding u or counter_u rotations
+        if (areOppositeFaces(nonUFace, targetFace)) {
+            cube.u().u();
+        }
+        else if (targetFaceIsClockwise(nonUFace, targetFace)) {
+            cube.u();
+        }
+        else if (targetFaceIsCounterClockwise(nonUFace, targetFace)) {
+            cube.counter_u();
+        }
+    }
+    cube.perform_reorientation(cube.colorOf('u'), nonUColor);
+    const uColorTargetFace = <Face>cube.findColor(uColor);
+    if (targetFaceIsClockwise('f', uColorTargetFace)) {
+        move_edge_ft_fl(cube);
+    }
+    else {
+        move_edge_ft_fr(cube);
+    }
+}
 
-export function solveYellowCross(cube: Cube) {}
+export function middle_solveInMiddleLayer(cube: Cube, edge: Edge) {
+    const moveColor = cube.colorOf(edge.face);
+    cube.perform_reorientation(cube.colorOf('u'), moveColor);
+    if (edge.index === 3) {
+        move_edge_ft_fl(cube);
+    }
+    else {
+        move_edge_ft_fr(cube);
+    }
+    const newEdges = findEdges(cube, edge.color);
+    const newTargetEdge = <Edge>newEdges.find(e => e.color === edge.color && e.adjacentColor === edge.adjacentColor);
+    middle_solveInTopLayer(cube, newTargetEdge);
+}
 
-export function solveYellowFace(cube: Cube) {}
+export function solveMiddleEdges(cube: Cube) {
+    cube.perform_reorientation('y', 'o');
+    const colorsToCheck: Color[] = ['g', 'o', 'b', 'r'];
+    for (const color of colorsToCheck) {
+        for (let i = 0; i < 2; i++) {
+            const edges = findEdges(cube, color);
+            const targetEdge = edges.find(e => e.adjacentColor !== 'y' && e.adjacentColor !== 'w' && !e.correct);
+            if (targetEdge) {
+                /*
+                if targetEdge is in top layer
+                    solveInTopLayer
+                else if targetEdge is in middleLayer (implied incorrect)
+                    solveInMiddleLayer
+                 */
+            }
+            else {
+                break;
+            }
+        }
+    }
+}
 
-export function solveTopRow(cube: Cube) {}
+export function solveYellowCross(cube: Cube) {
+    cube.perform_reorientation('y', 'o');
+}
+
+export function solveYellowFace(cube: Cube) {
+    cube.perform_reorientation('y', 'o');}
+
+
+export function solveTopRow(cube: Cube) {
+    cube.perform_reorientation('y', 'o');
+}
 
 export function solve(cube: Cube) {
     solveWhiteCross(cube);
