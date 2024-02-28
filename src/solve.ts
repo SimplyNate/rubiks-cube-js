@@ -710,7 +710,13 @@ export function middle_solveInTopLayer(cube: Cube, edge: Edge) {
 }
 
 export function middle_solveInMiddleLayer(cube: Cube, edge: Edge) {
-    const moveColor = cube.colorOf(edge.face);
+    let moveColor;
+    if (edge.color === 'y') {
+        moveColor = cube.colorOf(edge.adjacentFace);
+    }
+    else {
+        moveColor = cube.colorOf(edge.face);
+    }
     cube.perform_reorientation(cube.colorOf('u'), moveColor);
     if (edge.index === 3) {
         move_edge_ft_fl(cube);
@@ -731,12 +737,12 @@ export function solveMiddleEdges(cube: Cube) {
             const edges = findEdges(cube, color);
             const targetEdge = edges.find(e => e.adjacentColor !== 'y' && e.adjacentColor !== 'w' && !e.correct);
             if (targetEdge) {
-                /*
-                if targetEdge is in top layer
-                    solveInTopLayer
-                else if targetEdge is in middleLayer (implied incorrect)
-                    solveInMiddleLayer
-                 */
+                if (targetEdge.adjacentFace === 'u' || targetEdge.face === 'u') {
+                    middle_solveInTopLayer(cube, targetEdge);
+                }
+                else {
+                    middle_solveInMiddleLayer(cube, targetEdge);
+                }
             }
             else {
                 break;
