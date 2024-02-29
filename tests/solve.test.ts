@@ -1,5 +1,5 @@
 import { expect, test, describe } from 'vitest';
-import { Cube } from '../src/cube';
+import { Cube, type Color, type Face } from '../src/cube';
 import {
     type Edge,
     type Corner,
@@ -17,7 +17,12 @@ import {
     solveInBottomLayerMiddle,
     solveInMiddleLayer,
     solveWhiteCross,
-    solveWhiteCorners, corner_solveInUpLayer, corner_solveInDownLayer, corner_solveInBottomLayer, corner_solveInTopLayer
+    solveWhiteCorners,
+    corner_solveInUpLayer,
+    corner_solveInDownLayer,
+    corner_solveInBottomLayer,
+    corner_solveInTopLayer,
+    solveMiddleEdges
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -428,6 +433,27 @@ describe('corner algorithms', () => {
             const corners = findCorners(c, 'w');
             expect(countCorrect(edges)).toEqual(4);
             expect(countCorrect(corners)).toEqual(4);
+        }
+    });
+});
+
+describe('middle algorithms', () => {
+    test('Solves Middle Edges', () => {
+        for (let i = 0; i < 10000; i++) {
+            const c = Cube.scrambled();
+            solveWhiteCross(c);
+            solveWhiteCorners(c);
+            solveMiddleEdges(c);
+            const whiteEdges = findEdges(c, 'w');
+            const whiteCorners = findCorners(c, 'w');
+            expect(countCorrect(whiteEdges)).toEqual(4);
+            expect(countCorrect(whiteCorners)).toEqual(4);
+            for (const color of ['o', 'g', 'b', 'r'] as Color[]) {
+                const edges = findEdges(c, color);
+                const corners = findCorners(c, color);
+                expect(countCorrect(edges)).toBeGreaterThanOrEqual(3);
+                expect(countCorrect(corners)).toBeGreaterThanOrEqual(2);
+            }
         }
     });
 });
