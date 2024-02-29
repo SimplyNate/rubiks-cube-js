@@ -753,10 +753,31 @@ export function solveMiddleEdges(cube: Cube) {
 
 export function solveYellowCross(cube: Cube) {
     cube.perform_reorientation('y', 'o');
+    /*
+    while cube is not in yellow cross state:
+        if in dot state:
+            permute_up_dot_to_l_shape
+        else if in l state:
+            perform u such that l is in correct corner
+            f u r u' r' f'
+        else if in line state:
+            perform u such that line is in correct orientation
+            permute_up_dot_to_l_shape
+     */
 }
 
 export function solveYellowFace(cube: Cube) {
-    cube.perform_reorientation('y', 'o');}
+    cube.perform_reorientation('y', 'o');
+    /*
+    if yellow face is not complete:
+        while cube is not in permutation such that only one yellow corner is in position:
+            sune
+        if cube in sune position:
+            sune
+        else:
+            antisune
+     */
+}
 
 
 export function solveTopRow(cube: Cube) {
