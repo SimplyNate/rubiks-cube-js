@@ -751,23 +751,89 @@ export function solveMiddleEdges(cube: Cube) {
     }
 }
 
+export function determineYellowCrossStatus(cube: Cube): string {
+    const i1 = cube.cube.u[1] === 'y';
+    const i3 = cube.cube.u[3] === 'y';
+    const i5 = cube.cube.u[5] === 'y';
+    const i7 = cube.cube.u[7] === 'y';
+    if (i1 && i3 && i5 && i7) {
+        return 'cross';
+    }
+    else if (i1 && i7) {
+        return 'vertical line';
+    }
+    else if (i3 && i5) {
+        return 'horizontal line'
+    }
+    else if (i1 && i3) {
+        return 'left l';
+    }
+    else if (i1 && i5) {
+        return 'right l';
+    }
+    else if (i7 && i3) {
+        return 'bottom left l';
+    }
+    else if (i7 && i5) {
+        return 'bottom right l';
+    }
+    else {
+        return 'dot';
+    }
+}
+
+function permute_l_shape(cube: Cube) {
+    cube.f().u().r().counter_u().counter_r().counter_f();
+}
+
 export function solveYellowCross(cube: Cube) {
     cube.perform_reorientation('y', 'o');
-    /*
-    while cube is not in yellow cross state:
-        if in dot state:
-            permute_up_dot_to_l_shape
-        else if in l state:
-            perform u such that l is in correct corner
-            f u r u' r' f'
-        else if in line state:
-            perform u such that line is in correct orientation
-            permute_up_dot_to_l_shape
-     */
+    let crossStatus = determineYellowCrossStatus(cube);
+    while (crossStatus !== 'cross') {
+        if (crossStatus === 'dot' || crossStatus === 'horizontal line') {
+            permute_up_dot_to_l_shape(cube);
+        }
+        else if (crossStatus === 'left l') {
+            permute_l_shape(cube);
+        }
+        else if (crossStatus === 'right l') {
+            cube.counter_u();
+            permute_l_shape(cube);
+        }
+        else if (crossStatus === 'bottom left l') {
+            cube.u();
+            permute_l_shape(cube);
+        }
+        else if (crossStatus === 'bottom right l') {
+            cube.u().u();
+            permute_l_shape(cube);
+        }
+        else if (crossStatus === 'vertical line') {
+            cube.u();
+            permute_up_dot_to_l_shape(cube);
+        }
+        crossStatus = determineYellowCrossStatus(cube);
+    }
+}
+
+function yellowFaceIsComplete(cube: Cube): boolean {
+    for (const color of cube.cube.u) {
+        if (color !== 'y') {
+            return false;
+        }
+    }
+    return true;
+}
+
+function findYellowCorners(cube: Cube): {
+
 }
 
 export function solveYellowFace(cube: Cube) {
     cube.perform_reorientation('y', 'o');
+    while (!yellowFaceIsComplete(cube)) {
+        const yellowCorners = findCorners(cube, 'y');
+    }
     /*
     if yellow face is not complete:
         while cube is not in permutation such that only one yellow corner is in position:
