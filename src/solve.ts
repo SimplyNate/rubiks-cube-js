@@ -884,9 +884,76 @@ export function solveYellowFace(cube: Cube) {
      */
 }
 
+interface Headlight {
+    face: Face,
+    headlight: Color,
+    middle: Color,
+}
+
+export function findHeadlights(cube: Cube): Headlight[] {
+    const headlights: Headlight[] = [];
+    for (const face of ['l', 'f', 'r', 'b'] as Face[]) {
+        if (cube.cube[face][0] === cube.cube[face][2]) {
+            headlights.push({
+                face,
+                headlight: cube.cube[face][0],
+                middle: cube.cube[face][1],
+            });
+        }
+    }
+    return headlights;
+}
+
+export function orientHeadlights(cube: Cube, headlights: Headlight[]) {
+    const completeRow = headlights.find(h => h.headlight === h.middle);
+    let headlight;
+    if (completeRow) {
+        headlight = completeRow;
+    }
+    else {
+        headlight = headlights[0];
+    }
+    const headlightColorFace = <Face>cube.findColor(headlight.headlight);
+    const targetColorFace = headlight.face;
+    if (areOppositeFaces(targetColorFace, headlightColorFace)) {
+        cube.u().u();
+    }
+    else if (targetFaceIsClockwise(targetColorFace, headlightColorFace)) {
+        cube.u();
+    }
+    else if (targetFaceIsCounterClockwise(targetColorFace, headlightColorFace)) {
+        cube.counter_u();
+    }
+    const oppositeColor = oppositeColors[headlight.headlight];
+    cube.perform_reorientation(cube.colorOf('u'), oppositeColor);
+}
 
 export function solveTopRow(cube: Cube) {
     cube.perform_reorientation('y', 'o');
+    while (!cube.isSolved()) {
+        const headlights = findHeadlights(cube);
+        if (headlights.length === 4) {
+            orientHeadlights(cube, headlights);
+            permute_u(cube);
+        }
+        else {
+            if (headlights.length > 0) {
+                orientHeadlights(cube, headlights);
+            }
+            permute_headlights(cube);
+            const resultHl = findHeadlights(cube);
+            orientHeadlights(cube, resultHl);
+        }
+    }
+    /*
+    if all sides have headlights:
+        permute_u
+    else:
+        find a headlight pair
+        if headlights:
+            make u moves such that headlights is in the back
+        permute_headlights
+     */
 }
 
 export function solve(cube: Cube) {
