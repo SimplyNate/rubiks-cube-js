@@ -22,7 +22,9 @@ import {
     corner_solveInDownLayer,
     corner_solveInBottomLayer,
     corner_solveInTopLayer,
-    solveMiddleEdges, solveYellowCross
+    solveMiddleEdges,
+    solveYellowCross,
+    solveYellowFace
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -483,3 +485,35 @@ describe('yellow cross', () => {
         }
     });
 });
+
+describe('yellow face', () => {
+    test('Solves Yellow Face', () => {
+        for (let i = 0; i < 10000; i++) {
+            const c = Cube.scrambled();
+            solveWhiteCross(c);
+            solveWhiteCorners(c);
+            solveMiddleEdges(c);
+            solveYellowCross(c);
+            solveYellowFace(c);
+            const whiteEdges = findEdges(c, 'w');
+            const whiteCorners = findCorners(c, 'w');
+            expect(countCorrect(whiteEdges)).toEqual(4);
+            expect(countCorrect(whiteCorners)).toEqual(4);
+            for (const color of ['o', 'g', 'b', 'r'] as Color[]) {
+                const edges = findEdges(c, color);
+                const corners = findCorners(c, color);
+                expect(countCorrect(edges)).toBeGreaterThanOrEqual(3);
+                expect(countCorrect(corners)).toBeGreaterThanOrEqual(2);
+            }
+            expect(c.cube.u[0]).toBe('y');
+            expect(c.cube.u[1]).toBe('y');
+            expect(c.cube.u[2]).toBe('y');
+            expect(c.cube.u[3]).toBe('y');
+            expect(c.cube.u[4]).toBe('y');
+            expect(c.cube.u[5]).toBe('y');
+            expect(c.cube.u[6]).toBe('y');
+            expect(c.cube.u[7]).toBe('y');
+            expect(c.cube.u[8]).toBe('y');
+        }
+    });
+})
