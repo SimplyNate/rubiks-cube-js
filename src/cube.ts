@@ -32,7 +32,6 @@ const disallowedRandom = [
     11,
     10
 ];
-const solvedCube = 'yyyyyyyyy/ggggggggg/ooooooooo/bbbbbbbbb/rrrrrrrrr/wwwwwwwww';
 /*
 Orientation is defined as:
 Key: UpFront
@@ -445,7 +444,14 @@ export class Cube {
         );
     }
     isSolved(): boolean {
-        return this.toString() === solvedCube;
+        for (const face of this.faces()) {
+            for (const color of this.cube[face]) {
+                if (color !== this.cube[face][4]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     perform_reorientation(up: Color, front: Color) {
         this.history.push(`reorient ${up}${front}`)
