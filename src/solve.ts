@@ -825,14 +825,53 @@ function yellowFaceIsComplete(cube: Cube): boolean {
     return true;
 }
 
-function findYellowCorners(cube: Cube): {
+function oneYellowCorner(cube: Cube): number | undefined {
+    if (cube.cube.u[0] === 'y' && cube.cube.u[2] !== 'y' && cube.cube.u[6] !== 'y' && cube.cube.u[8] !== 'y') {
+        return 0;
+    }
+    else if (cube.cube.u[2] === 'y' && cube.cube.u[0] !== 'y' && cube.cube.u[6] !== 'y' && cube.cube.u[8] !== 'y') {
+        return 2;
+    }
+    else if (cube.cube.u[6] === 'y' && cube.cube.u[2] !== 'y' && cube.cube.u[0] !== 'y' && cube.cube.u[8] !== 'y') {
+        return 6;
+    }
+    else if (cube.cube.u[8] === 'y' && cube.cube.u[2] !== 'y' && cube.cube.u[6] !== 'y' && cube.cube.u[0] !== 'y') {
+        return 8;
+    }
+}
 
+function suneOrAntisune(cube: Cube) {
+    if (cube.cube.f[2] === 'y') {
+        sune(cube);
+    }
+    else {
+        antisune(cube);
+    }
 }
 
 export function solveYellowFace(cube: Cube) {
     cube.perform_reorientation('y', 'o');
     while (!yellowFaceIsComplete(cube)) {
-        const yellowCorners = findCorners(cube, 'y');
+        const numFaces = oneYellowCorner(cube);
+        if (numFaces === 0) {
+            cube.counter_u();
+            suneOrAntisune(cube);
+        }
+        else if (numFaces === 2) {
+            cube.u().u();
+            suneOrAntisune(cube);
+        }
+        else if (numFaces === 6) {
+            suneOrAntisune(cube);
+        }
+        else if (numFaces === 8) {
+            cube.u();
+            suneOrAntisune(cube);
+        }
+        else {
+            // Simply changing this from always doing sune to sometimes also doing antisune breaks this out of endless loop
+            suneOrAntisune(cube);
+        }
     }
     /*
     if yellow face is not complete:
