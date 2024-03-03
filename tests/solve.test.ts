@@ -24,7 +24,7 @@ import {
     corner_solveInTopLayer,
     solveMiddleEdges,
     solveYellowCross,
-    solveYellowFace
+    solveYellowFace, solveTopRow, solve
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -517,3 +517,25 @@ describe('yellow face', () => {
         }
     });
 })
+
+describe('solve cube', () => {
+    test('Solves Entire Cube', () => {
+        for (let i = 0; i < 10000; i++) {
+            const c = Cube.scrambled();
+            solveWhiteCross(c);
+            solveWhiteCorners(c);
+            solveMiddleEdges(c);
+            solveYellowCross(c);
+            solveYellowFace(c);
+            solveTopRow(c);
+            expect(c.isSolved()).toBe(true);
+        }
+    });
+    test('Solve Integration Function', () => {
+        for (let i = 0; i < 10000; i++) {
+            const c = Cube.scrambled();
+            solve(c);
+            expect(c.isSolved()).toBe(true);
+        }
+    });
+});
