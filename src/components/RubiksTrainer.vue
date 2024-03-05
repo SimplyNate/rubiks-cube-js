@@ -2,77 +2,12 @@
     <canvas id="c"></canvas>
     <div class="menu">
         <button style="display: block; margin-bottom: 0.5rem;" @click="randomize">Randomize</button>
+        <button>Reset</button>
         <div>
             <input type="checkbox" v-model="useAnimation"> Animate
         </div>
         <div>
             <input type="checkbox" v-model="showAxes" @change="toggleAxes"> Show Axes
-        </div>
-        <div>
-            <input type="checkbox" v-model="syncWithTraining" @change="toggleSync"> Sync With Training
-        </div>
-        <div style="margin-top: 1rem;">
-            <h3>Config</h3>
-            <div style="margin-bottom: 1rem;">
-                <div style="font-weight: bold;">Game</div>
-                <div>Difficulty</div>
-                <input type="number" v-model="gameArgs.difficulty">
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <div style="font-weight: bold;">Agent</div>
-                <div>Replay Buffer Size</div>
-                <input type="number" v-model="agentConfig.replayBufferSize">
-                <div>Learning Rate</div>
-                <input type="number" v-model="agentConfig.learningRate">
-                <div>Epsilon Init</div>
-                <input type="number" v-model="agentConfig.epsilonInit">
-                <div>Epsilon Final</div>
-                <input type="number" v-model="agentConfig.epsilonFinal">
-                <div>Epsilon Decay Frames</div>
-                <input type="number" v-model="agentConfig.epsilonDecayFrames">
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <div style="font-weight: bold;">Train</div>
-                <div>Batch Size</div>
-                <input type="number" v-model="trainingConfig.batchSize">
-                <div>Gamma</div>
-                <input type="number" v-model="trainingConfig.gamma">
-                <div>Learning Rate</div>
-                <input type="number" v-model="trainingConfig.learningRate">
-                <div>Cumulative Reward Threshold</div>
-                <input type="number" v-model="trainingConfig.cumulativeRewardThreshold">
-                <div>Max Num Frames</div>
-                <input type="number" v-model="trainingConfig.maxNumFrames">
-                <div>Sync Every Frames</div>
-                <input type="number" v-model="trainingConfig.maxNumFrames">
-            </div>
-            <h3>Learn</h3>
-            <div>
-                <button @click="createNewTrainer">Create New Trainer</button>
-            </div>
-            <div v-if="trainer">
-                <div>Current Reward: {{ trainer.currentReward }}</div>
-                <div>Best Reward: {{ bestReward }}</div>
-                <div>Iteration: {{ iteration }}</div>
-            </div>
-            <div>
-                <button>Step</button>
-            </div>
-            <div>
-                <button @click="startTraining">Train</button>
-            </div>
-            <div>
-                <button>Export Current Model</button>
-            </div>
-            <div>
-                <button>Load Model</button>
-            </div>
-            <div>
-                <button>Export Configuration</button>
-            </div>
-            <div>
-                <button>Load Configuration</button>
-            </div>
         </div>
     </div>
 </template>
@@ -83,10 +18,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCube } from '../shapes.js';
 import {performRotation} from '../animate.js';
-import { CubeAgent, AgentConfig } from '../models/rl/agent.js';
-import { CubeGame, GameArgs } from '../models/game.js';
-import { TrainingParams, Trainer } from '../models/rl/train.js';
-import { Cube } from '../cube.js';
+import { Cube, type Color } from '../cube.js';
 
 
 let queue = false;
@@ -96,104 +28,56 @@ let scene: THREE.Scene;
 
 const useAnimation = ref<boolean>(false);
 const showAxes = ref<boolean>(false);
-const syncWithTraining = ref<boolean>(true);
-const gameArgs = ref<GameArgs>({
-    difficulty: 1,
-    gameType: 'randomLevels',
-});
-const agentConfig = ref<AgentConfig>({
-    replayBufferSize: 1e4,
-    learningRate: 1e-3,
-    epsilonInit: 0.5,
-    epsilonFinal: 0.01,
-    epsilonDecayFrames: 1e5,
-});
-const trainingConfig = ref<TrainingParams>({
-    batchSize: 64,
-    gamma: 0.99,
-    learningRate: 1e-3,
-    cumulativeRewardThreshold: 100,
-    maxNumFrames: 1e6,
-    syncEveryFrames: 1e3,
-});
-
-const trainer = ref<Trainer>(new Trainer());
-
-function createNewTrainer() {
-    trainer.value = new Trainer(
-        new CubeAgent(
-            new CubeGame(
-                gameArgs.value.difficulty
-            ),
-            agentConfig.value.replayBufferSize,
-            agentConfig.value.learningRate,
-            agentConfig.value.epsilonInit,
-            agentConfig.value.epsilonFinal,
-            agentConfig.value.epsilonDecayFrames
-        ),
-        trainingConfig.value.batchSize,
-        trainingConfig.value.gamma,
-        trainingConfig.value.learningRate,
-        trainingConfig.value.cumulativeRewardThreshold,
-        trainingConfig.value.maxNumFrames,
-        trainingConfig.value.syncEveryFrames
-    );
-    if (syncWithTraining.value) {
-        cube.value = trainer.value.agent.game.cube;
-    }
-}
-const bestReward = ref<number>(0);
-const iteration = ref<number>(0);
-
-async function startTraining() {
-    await trainer.value?.train();
-}
 
 const cube = ref<Cube>(new Cube());
-function toggleSync() {
-    if (syncWithTraining.value) {
-        cube.value = trainer.value.agent.game.cube;
-    }
-    else {
-        cube.value = new Cube();
-    }
-}
 
 async function F() {
     await zHandler(1, -1);
+    cube.value.f();
 }
 async function cF() {
     await zHandler(1, 1);
+    cube.value.counter_f();
 }
 async function R() {
     await xHandler(1, -1);
+    cube.value.r();
 }
 async function cR() {
     await xHandler(1, 1);
+    cube.value.counter_r();
 }
 async function U() {
     await yHandler(1, -1);
+    cube.value.u();
 }
 async function cU() {
     await yHandler(1, 1);
+    cube.value.counter_u();
 }
 async function L() {
     await xHandler(-1, 1);
+    cube.value.l();
 }
 async function cL() {
     await xHandler(-1, -1);
+    cube.value.counter_l();
 }
 async function D() {
     await yHandler(-1, 1);
+    cube.value.d();
 }
 async function cD() {
     await yHandler(-1, -1);
+    cube.value.counter_d();
 }
 async function B() {
     await zHandler(-1, -1);
+    cube.value.b();
 }
 async function cB() {
     await zHandler(-1, 1);
+    cube.value.counter_b();
 }
 async function xHandler(x: number, direction: number) {
     await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value);
@@ -204,38 +88,29 @@ async function yHandler(y: number, direction: number) {
 async function zHandler(z: number, direction: number) {
     await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value);
 }
-function getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
-}
 
-function randomIndex() {
-    const indexes = [-1, 1];
-    return indexes[getRandomInt(0, indexes.length)];
-}
-
-function randomDirection() {
-    const directions = [-1, 1];
-    return directions[getRandomInt(0, directions.length)];
-}
-
-function randomHandler() {
-    const handlers = [
-        xHandler,
-        yHandler,
-        zHandler,
-    ];
-    return handlers[getRandomInt(0, handlers.length)];
+async function reorientVisualization(up: Color, front: Color) {
 }
 
 async function randomize() {
-    const iterations = 100;
-    for (let i = 0; i < iterations; i++) {
-        const index = randomIndex();
-        const direction = randomDirection();
-        const handler = randomHandler();
-        await handler(index, direction);
+    const iterations = 20;
+    cube.value = Cube.scrambled(iterations);
+    const moveMap: Record<string, Function> = {
+        u: U,
+        counter_u: cU,
+        l: L,
+        counter_l: cL,
+        f: F,
+        counter_f: cF,
+        r: R,
+        counter_r: cR,
+        b: B,
+        counter_b: cB,
+        d: D,
+        counter_d: cD,
+    };
+    for (const move of cube.value.scrambleHistory) {
+        await moveMap[move]();
     }
 }
 

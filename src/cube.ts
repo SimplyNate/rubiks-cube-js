@@ -1,6 +1,6 @@
 // https://ruwix.com/online-rubiks-cube-solver-program/
 
-interface CubePositions {
+export interface CubePositions {
     [index: string]: Color[];
     f: Color[];
     l: Color[];
@@ -37,7 +37,7 @@ Orientation is defined as:
 Key: UpFront
 Value: [Up, Left, Front, Right, Back, Down]
  */
-const cubeOrientations: Record<string, Color[]> = {
+export const cubeOrientations: Record<string, Color[]> = {
     wo: ['w', 'b', 'o', 'g', 'r', 'y'],
     wb: ['w', 'r', 'b', 'o', 'g', 'y'],
     wr: ['w', 'g', 'r', 'b', 'o', 'y'],

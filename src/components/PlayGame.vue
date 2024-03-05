@@ -14,14 +14,16 @@ import {
     ACTION_COUNTER_R,
     ACTION_COUNTER_U
 } from '../models/game.js';
-import { ref, onMounted } from 'vue';
+import { solve } from '../solve.js';
+import { ref, onMounted, reactive, nextTick } from 'vue';
+import {Color, Cube, Face} from "../cube.js";
 
-const game = ref(new CubeGame);
+const game = reactive<CubeGame>(new CubeGame(20));
 const reward = ref(0);
 const lastReward = ref(0);
 
 function reset() {
-    game.value.reset();
+    game.reset();
     reward.value = 0;
     lastReward.value = 0;
 }
@@ -30,45 +32,82 @@ async function keyListener(evt: KeyboardEvent) {
     const { key } = evt;
     let result;
     if (key === 'u') {
-        result = game.value.step(ACTION_U);
+        result = game.step(ACTION_U);
     }
     else if (key === 'U') {
-        result = game.value.step(ACTION_COUNTER_U);
+        result = game.step(ACTION_COUNTER_U);
     }
     if (key === 'l') {
-        result = game.value.step(ACTION_L);
+        result = game.step(ACTION_L);
     }
     else if (key === 'L') {
-        result = game.value.step(ACTION_COUNTER_L);
+        result = game.step(ACTION_COUNTER_L);
     }
     if (key === 'f') {
-        result = game.value.step(ACTION_F);
+        result = game.step(ACTION_F);
     }
     else if (key === 'F') {
-        result = game.value.step(ACTION_COUNTER_F);
+        result = game.step(ACTION_COUNTER_F);
     }
     if (key === 'r') {
-        result = game.value.step(ACTION_R);
+        result = game.step(ACTION_R);
     }
     else if (key === 'R') {
-        result = game.value.step(ACTION_COUNTER_R);
+        result = game.step(ACTION_COUNTER_R);
     }
     if (key === 'b') {
-        result = game.value.step(ACTION_B);
+        result = game.step(ACTION_B);
     }
     else if (key === 'B') {
-        result = game.value.step(ACTION_COUNTER_B);
+        result = game.step(ACTION_COUNTER_B);
     }
     if (key === 'd') {
-        result = game.value.step(ACTION_D);
+        result = game.step(ACTION_D);
     }
     else if (key === 'D') {
-        result = game.value.step(ACTION_COUNTER_D);
+        result = game.step(ACTION_COUNTER_D);
     }
     if (result) {
         reward.value += result.reward;
         lastReward.value = result.reward;
     }
+}
+
+function solveCube() {
+    const targetCube = Cube.fromString(game.cube.toString());
+    const trackingCube = Cube.fromString(game.cube.toString());
+    solve(targetCube);
+    // @ts-ignore
+    const interval = setInterval(() => {
+        console.log('Interval');
+        const move = targetCube.history.shift();
+        if (move) {
+            if (move.includes('reorient')) {
+                const reorientValue = move.split(' ')[1];
+                const [u, f] = reorientValue.split('');
+                trackingCube.perform_reorientation(u as Color, f as Color);
+            }
+            else {
+                if (move.includes('counter')) {
+                    trackingCube.performRotation(move.split('_')[1] as Face, true);
+                }
+                else {
+                    trackingCube.performRotation(move as Face, false);
+                }
+            }
+            game.cube.cube = trackingCube.cube;
+            nextTick();
+        }
+        else {
+            console.log(trackingCube.isSolved());
+            console.log(game.cube.isSolved());
+            clearInterval(interval);
+        }
+    }, 1000);
+}
+
+function scrambleCube() {
+    game.cube.scramble();
 }
 
 onMounted(() => {
@@ -223,6 +262,8 @@ onMounted(() => {
     <div style="margin-top: 2em;">
         <div>
             <button @click="reset">Reset</button>
+            <button @click="scrambleCube">Scramble</button>
+            <button @click="solveCube">Solve</button>
         </div>
         <div>Entropy: {{ game.cube.entropy }}</div>
         <div>Moves: {{ game.currentMove }} / {{ game.maxMoves }}</div>
