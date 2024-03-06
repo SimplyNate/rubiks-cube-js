@@ -16,15 +16,16 @@
 import {onMounted, ref} from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createCube } from '../shapes.js';
+import { createCube, createColorOverlay } from '../shapes.js';
 import {performRotation} from '../animate.js';
-import { Cube, type Color } from '../cube.js';
+import { Cube } from '../cube.js';
 
 
 let queue = false;
 
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
+const squares = new THREE.Group();
 
 const useAnimation = ref<boolean>(false);
 const showAxes = ref<boolean>(false);
@@ -80,17 +81,15 @@ async function cB() {
     cube.value.counter_b();
 }
 async function xHandler(x: number, direction: number) {
-    await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value);
+    await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value, squares);
 }
 async function yHandler(y: number, direction: number) {
-    await performRotation(scene, cubes, y, Math.PI / 2 * direction, 'y', useAnimation.value)
+    await performRotation(scene, cubes, y, Math.PI / 2 * direction, 'y', useAnimation.value, squares)
 }
 async function zHandler(z: number, direction: number) {
-    await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value);
+    await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value, squares);
 }
 
-async function reorientVisualization(up: Color, front: Color) {
-}
 
 async function randomize() {
     const iterations = 20;
@@ -235,6 +234,11 @@ onMounted(() => {
         }
     }
     scene.add(cubes);
+    const planes = createColorOverlay();
+    for (const key in planes) {
+        squares.add(...planes[key]);
+    }
+    scene.add(squares);
     const color = 0xFFFFFF;
     const intensity = 1;
     const light = new THREE.AmbientLight(color, intensity);

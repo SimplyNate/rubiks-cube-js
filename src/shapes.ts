@@ -69,3 +69,77 @@ export function createCube(x: number, y: number, z: number) {
     );
     return cubeMesh;
 }
+
+export function createColorOverlay() {
+    const planes: Record<string, THREE.Mesh[]> = {
+        u: [],
+        l: [],
+        f: [],
+        r: [],
+        b: [],
+        d: [],
+    };
+    const configs: Record<string, {x: number | null, y: number | null, z: number | null, rotation: string | null}> = {
+        u: {
+            x: null,
+            y: 1.51,
+            z: null,
+            rotation: 'rotateX',
+        },
+        d: {
+            x: null,
+            y: -1.51,
+            z: null,
+            rotation: 'rotateX',
+        },
+        l: {
+            x: -1.51,
+            y: null,
+            z: null,
+            rotation: 'rotateY',
+        },
+        r: {
+            x: 1.51,
+            y: null,
+            z: null,
+            rotation: 'rotateY',
+        },
+        f: {
+            x: null,
+            y: null,
+            z: 1.51,
+            rotation: null,
+        },
+        b: {
+            x: null,
+            y: null,
+            z: -1.51,
+            rotation: null,
+        }
+    }
+    const plane = new THREE.PlaneGeometry(0.98, 0.98);
+    const material = new THREE.MeshBasicMaterial({ color: 0xff00ff, side: THREE.DoubleSide});
+    for (const face of ['u', 'l', 'f', 'r', 'b', 'd']) {
+        const config = configs[face];
+        for (let i = -1; i < 2; i++) {
+            for (let j = -1; j < 2; j++) {
+                const planeMesh = new THREE.Mesh(plane, material);
+                if (config.x) {
+                    planeMesh.position.set(config.x, i, j);
+                }
+                else if (config.y) {
+                    planeMesh.position.set(i, config.y, j);
+                }
+                else if (config.z) {
+                    planeMesh.position.set(i, j, config.z);
+                }
+                if (config.rotation) {
+                    // @ts-ignore
+                    planeMesh[config.rotation](THREE.MathUtils.degToRad(90));
+                }
+                planes[face].push(planeMesh);
+            }
+        }
+    }
+    return planes;
+}
