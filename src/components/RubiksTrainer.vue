@@ -16,8 +16,8 @@
 import {onMounted, ref} from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createCube, createColorOverlay } from '../shapes.js';
-import {performRotation} from '../animate.js';
+import {createCube, createColorOverlay, colorMap} from '../shapes.js';
+// import {performRotation} from '../animate.js';
 import { Cube } from '../cube.js';
 
 
@@ -26,60 +26,85 @@ let queue = false;
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
 const squares = new THREE.Group();
+let squareMap: Record<string, THREE.Mesh[]>;
 
 const useAnimation = ref<boolean>(false);
 const showAxes = ref<boolean>(false);
 
-const cube = ref<Cube>(new Cube());
+let cube = new Cube();
+
+function applyColorsToPlanes() {
+    for (const face in squareMap) {
+        let i = 0;
+        for (const square of squareMap[face]) {
+            const material = <THREE.MeshBasicMaterial>square.material;
+            material.color.set(colorMap[cube.cube[face][i]]);
+            i += 1;
+        }
+    }
+}
 
 async function F() {
-    await zHandler(1, -1);
-    cube.value.f();
+    // await zHandler(1, -1);
+    cube.f();
+    applyColorsToPlanes();
 }
 async function cF() {
-    await zHandler(1, 1);
-    cube.value.counter_f();
+    // await zHandler(1, 1);
+    cube.counter_f();
+    applyColorsToPlanes();
 }
 async function R() {
-    await xHandler(1, -1);
-    cube.value.r();
+    // await xHandler(1, -1);
+    cube.r();
+    applyColorsToPlanes();
 }
 async function cR() {
-    await xHandler(1, 1);
-    cube.value.counter_r();
+    // await xHandler(1, 1);
+    cube.counter_r();
+    applyColorsToPlanes();
 }
 async function U() {
-    await yHandler(1, -1);
-    cube.value.u();
+    // await yHandler(1, -1);
+    cube.u();
+    applyColorsToPlanes();
 }
 async function cU() {
-    await yHandler(1, 1);
-    cube.value.counter_u();
+    // await yHandler(1, 1);
+    cube.counter_u();
+    applyColorsToPlanes();
 }
 async function L() {
-    await xHandler(-1, 1);
-    cube.value.l();
+    // await xHandler(-1, 1);
+    cube.l();
+    applyColorsToPlanes();
 }
 async function cL() {
-    await xHandler(-1, -1);
-    cube.value.counter_l();
+    // await xHandler(-1, -1);
+    cube.counter_l();
+    applyColorsToPlanes();
 }
 async function D() {
-    await yHandler(-1, 1);
-    cube.value.d();
+    // await yHandler(-1, 1);
+    cube.d();
+    applyColorsToPlanes();
 }
 async function cD() {
-    await yHandler(-1, -1);
-    cube.value.counter_d();
+    // await yHandler(-1, -1);
+    cube.counter_d();
+    applyColorsToPlanes();
 }
 async function B() {
-    await zHandler(-1, -1);
-    cube.value.b();
+    // await zHandler(-1, -1);
+    cube.b();
+    applyColorsToPlanes();
 }
 async function cB() {
-    await zHandler(-1, 1);
-    cube.value.counter_b();
+    // await zHandler(-1, 1);
+    cube.counter_b();
+    applyColorsToPlanes();
 }
+/*
 async function xHandler(x: number, direction: number) {
     await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value, squares);
 }
@@ -89,11 +114,12 @@ async function yHandler(y: number, direction: number) {
 async function zHandler(z: number, direction: number) {
     await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value, squares);
 }
+ */
 
 
 async function randomize() {
     const iterations = 20;
-    cube.value = Cube.scrambled(iterations);
+    cube = Cube.scrambled(iterations);
     const moveMap: Record<string, Function> = {
         u: U,
         counter_u: cU,
@@ -108,7 +134,7 @@ async function randomize() {
         d: D,
         counter_d: cD,
     };
-    for (const move of cube.value.scrambleHistory) {
+    for (const move of cube.scrambleHistory) {
         await moveMap[move]();
     }
 }
@@ -234,7 +260,8 @@ onMounted(() => {
         }
     }
     scene.add(cubes);
-    const planes = createColorOverlay();
+    const planes = createColorOverlay(cube);
+    squareMap = planes;
     for (const key in planes) {
         squares.add(...planes[key]);
     }

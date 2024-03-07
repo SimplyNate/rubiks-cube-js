@@ -27,9 +27,17 @@ function selectCubes(scene: THREE.Scene, cubes: THREE.Group, layerIndex: number,
     }
     for (let i = planes.children.length - 1; i >= 0; i--) {
         const plane = planes.children[i];
-        if (plane.position[axis] === layerIndex) {
-            selectedPlanes.push(plane);
-            rotationGroup.add(plane);
+        if (layerIndex >= 0) {
+            if (plane.position[axis] >= layerIndex) {
+                selectedPlanes.push(plane);
+                rotationGroup.add(plane);
+            }
+        }
+        else {
+            if (plane.position[axis] <= layerIndex) {
+                selectedPlanes.push(plane);
+                rotationGroup.add(plane);
+            }
         }
     }
     return { rotationGroup, selectedCubes, selectedPlanes }

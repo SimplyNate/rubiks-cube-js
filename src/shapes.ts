@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {Cube} from "./cube.ts";
 
 const cubeSize = 0.97;
 const colors = [
@@ -9,6 +10,14 @@ const colors = [
     '#ff5800', // orange
     '#b71234', // red
 ];
+export const colorMap: Record<string, string> = {
+    b: '#0046ad',
+    g: '#009b48',
+    y: '#ffd500',
+    w: '#fefefe',
+    o: '#ff5800',
+    r: '#b71234',
+}
 const materials = colors.map(c => new THREE.MeshBasicMaterial({ color: c }));
 const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
 
@@ -70,7 +79,7 @@ export function createCube(x: number, y: number, z: number) {
     return cubeMesh;
 }
 
-export function createColorOverlay() {
+export function createColorOverlay(cube: Cube) {
     const planes: Record<string, THREE.Mesh[]> = {
         u: [],
         l: [],
@@ -79,27 +88,28 @@ export function createColorOverlay() {
         b: [],
         d: [],
     };
+    const distance = 1.5;
     const configs: Record<string, {x: number | null, y: number | null, z: number | null, rotation: string | null}> = {
         u: {
             x: null,
-            y: 1.51,
+            y: distance,
             z: null,
             rotation: 'rotateX',
         },
         d: {
             x: null,
-            y: -1.51,
+            y: -distance,
             z: null,
             rotation: 'rotateX',
         },
         l: {
-            x: -1.51,
+            x: -distance,
             y: null,
             z: null,
             rotation: 'rotateY',
         },
         r: {
-            x: 1.51,
+            x: distance,
             y: null,
             z: null,
             rotation: 'rotateY',
@@ -107,22 +117,23 @@ export function createColorOverlay() {
         f: {
             x: null,
             y: null,
-            z: 1.51,
+            z: distance,
             rotation: null,
         },
         b: {
             x: null,
             y: null,
-            z: -1.51,
+            z: -distance,
             rotation: null,
         }
     }
     const plane = new THREE.PlaneGeometry(0.98, 0.98);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff00ff, side: THREE.DoubleSide});
     for (const face of ['u', 'l', 'f', 'r', 'b', 'd']) {
         const config = configs[face];
+        let index = 0;
         for (let i = -1; i < 2; i++) {
             for (let j = -1; j < 2; j++) {
+                const material = new THREE.MeshBasicMaterial({ color: colorMap[cube.cube[face][index % 9]], side: THREE.DoubleSide});
                 const planeMesh = new THREE.Mesh(plane, material);
                 if (config.x) {
                     planeMesh.position.set(config.x, i, j);
@@ -138,6 +149,7 @@ export function createColorOverlay() {
                     planeMesh[config.rotation](THREE.MathUtils.degToRad(90));
                 }
                 planes[face].push(planeMesh);
+                index += 1;
             }
         }
     }
