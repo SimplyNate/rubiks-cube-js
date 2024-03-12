@@ -1,4 +1,4 @@
-import { Cube, Face, Color } from './cube.js';
+import {Cube, Face, Color, cubeOrientations} from './cube.js';
 
 export function flip_edge(cube: Cube) {
     cube
@@ -155,7 +155,7 @@ export function permute_u(cube: Cube) {
     return cube;
 }
 
-const adjacencies: Record<string, [Face, number]> = {
+export const adjacencies: Record<string, [Face, number]> = {
     u1: ['b', 1],
     u3: ['l', 1],
     u5: ['r', 1],
@@ -964,3 +964,67 @@ export function solve(cube: Cube) {
     solveYellowFace(cube);
     solveTopRow(cube);
 }
+
+export function translateMove(originalOrientation: string, currentOrientation: string, move: string) {
+    const startOrientation = cubeOrientations[originalOrientation];
+    const [_cU, cL, cF, cR, cB, cD] = startOrientation;
+    const targetOrientation = cubeOrientations[currentOrientation];
+    const [tU, _tL, tF, _tR, _tB, _tD] = targetOrientation;
+    let interimOrientation = startOrientation;
+    let interimMove = move;
+    if (tU === cD) {
+        const result = translateForward(translateForward(move).move);
+        interimOrientation = result.interimOrientation;
+        interimMove = result.move;
+    }
+    else if (tU === cF) {
+        const result = translateForward(move);
+        interimOrientation = result.interimOrientation;
+        interimMove = result.move;
+    }
+    else if (tU === cL) {
+        const result = translateRollRight(move);
+        interimOrientation = result.interimOrientation;
+        interimMove = result.move;
+    }
+    else if (tU === cR) {
+        const result = translateRollLeft(move);
+        interimOrientation = result.interimOrientation;
+        interimMove = result.move;
+    }
+    else if (tU === cB) {
+        const result = translateBackward(move);
+        interimOrientation = result.interimOrientation;
+        interimMove = result.move;
+    }
+    const [_iU, iL, _iF, iR, iB, _iD] = interimOrientation;
+    if (tF === iL) {
+        translateCounterClockwise();
+    }
+    else if (tF === iR) {
+        this.reorient_clockwise();
+    }
+    else if (tF === iB) {
+        this.reorient_clockwise();
+        this.reorient_clockwise();
+    }
+}
+
+interface Translation {
+    move: string;
+    interimOrientation: string[];
+}
+
+function translateForward(move: string): Translation {
+
+}
+
+function translateBackward(move: string): Translation {}
+
+function translateRollLeft(move: string): Translation {}
+
+function translateRollRight(move: string): Translation {}
+
+function translateClockwise(move: string): Translation {}
+
+function translateCounterClockwise(move: string): Translation {}
