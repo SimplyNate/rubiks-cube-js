@@ -973,58 +973,63 @@ export function translateMove(originalOrientation: string, currentOrientation: s
     let interimOrientation = startOrientation;
     let interimMove = move;
     if (tU === cD) {
-        const result = translateForward(translateForward(move).move);
-        interimOrientation = result.interimOrientation;
+        const result = translateForward(translateForward({move, orientation: startOrientation}));
+        interimOrientation = result.orientation;
         interimMove = result.move;
     }
     else if (tU === cF) {
-        const result = translateForward(move);
-        interimOrientation = result.interimOrientation;
+        const result = translateForward({move, orientation: startOrientation});
+        interimOrientation = result.orientation;
         interimMove = result.move;
     }
     else if (tU === cL) {
-        const result = translateRollRight(move);
-        interimOrientation = result.interimOrientation;
+        const result = translateRollRight({move, orientation: startOrientation});
+        interimOrientation = result.orientation;
         interimMove = result.move;
     }
     else if (tU === cR) {
-        const result = translateRollLeft(move);
-        interimOrientation = result.interimOrientation;
+        const result = translateRollLeft({move, orientation: startOrientation});
+        interimOrientation = result.orientation;
         interimMove = result.move;
     }
     else if (tU === cB) {
-        const result = translateBackward(move);
-        interimOrientation = result.interimOrientation;
+        const result = translateBackward({move, orientation: startOrientation});
+        interimOrientation = result.orientation;
         interimMove = result.move;
     }
     const [_iU, iL, _iF, iR, iB, _iD] = interimOrientation;
+    let finalMove = interimMove;
     if (tF === iL) {
-        translateCounterClockwise();
+        const result = translateCounterClockwise({move: interimMove, orientation: interimOrientation});
+        finalMove = result.move;
     }
     else if (tF === iR) {
-        this.reorient_clockwise();
+        const result = translateClockwise({move: interimMove, orientation: interimOrientation});
+        finalMove = result.move;
     }
     else if (tF === iB) {
-        this.reorient_clockwise();
-        this.reorient_clockwise();
+        const result = translateClockwise(translateClockwise({move: interimMove, orientation: interimOrientation}));
+        finalMove = result.move;
+
     }
+    return finalMove;
 }
 
 interface Translation {
     move: string;
-    interimOrientation: string[];
+    orientation: Color[];
 }
 
-function translateForward(move: string): Translation {
+function translateForward(translation: Translation): Translation {
 
 }
 
-function translateBackward(move: string): Translation {}
+function translateBackward(translation: Translation): Translation {}
 
-function translateRollLeft(move: string): Translation {}
+function translateRollLeft(translation: Translation): Translation {}
 
-function translateRollRight(move: string): Translation {}
+function translateRollRight(translation: Translation): Translation {}
 
-function translateClockwise(move: string): Translation {}
+function translateClockwise(translation: Translation): Translation {}
 
-function translateCounterClockwise(move: string): Translation {}
+function translateCounterClockwise(translation: Translation): Translation {}
