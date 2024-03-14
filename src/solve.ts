@@ -965,7 +965,7 @@ export function solve(cube: Cube) {
     solveTopRow(cube);
 }
 
-export function translateMove(originalOrientation: string, currentOrientation: string, move: string) {
+export function translateMove(originalOrientation: string, currentOrientation: string, move: Face) {
     const startOrientation = cubeOrientations[originalOrientation];
     const [_cU, cL, cF, cR, cB, cD] = startOrientation;
     const targetOrientation = cubeOrientations[currentOrientation];
@@ -1016,20 +1016,88 @@ export function translateMove(originalOrientation: string, currentOrientation: s
 }
 
 interface Translation {
-    move: string;
+    move: Face;
     orientation: Color[];
 }
 
-function translateForward(translation: Translation): Translation {
+export const forwardFaces: Record<string, Face> = {
+    f: 'u',
+    u: 'b',
+    b: 'd',
+    d: 'f',
+};
 
+export const backwardFaces: Record<string, Face> = {
+    f: 'd',
+    d: 'b',
+    b: 'u',
+    u: 'f',
+};
+
+export const rollLeftFaces: Record<string, Face> = {
+    u: 'l',
+    l: 'd',
+    d: 'r',
+    r: 'u',
+};
+
+export const rollRightFaces: Record<string, Face> = {
+    u: 'r',
+    r: 'd',
+    d: 'l',
+    l: 'u',
+};
+
+function translateForward(translation: Translation): Translation {
+    const resultOrientation = cubeOrientations[`${translation.orientation[2]}${translation.orientation[5]}`];
+    let resultMove = forwardFaces[translation.move];
+    if (!resultMove) {
+        resultMove = translation.move;
+    }
+    return { move: resultMove, orientation: resultOrientation };
 }
 
-function translateBackward(translation: Translation): Translation {}
+function translateBackward(translation: Translation): Translation {
+    const resultOrientation = cubeOrientations[`${translation.orientation[4]}${translation.orientation[0]}`];
+    let resultMove = backwardFaces[translation.move];
+    if (!resultMove) {
+        resultMove = translation.move;
+    }
+    return { move: resultMove, orientation: resultOrientation };
+}
 
-function translateRollLeft(translation: Translation): Translation {}
+function translateRollLeft(translation: Translation): Translation {
+    const resultOrientation = cubeOrientations[`${translation.orientation[3]}${translation.orientation[2]}`];
+    let resultMove = rollLeftFaces[translation.move];
+    if (!resultMove) {
+        resultMove = translation.move;
+    }
+    return { move: resultMove, orientation: resultOrientation };
+}
 
-function translateRollRight(translation: Translation): Translation {}
+function translateRollRight(translation: Translation): Translation {
+    const resultOrientation = cubeOrientations[`${translation.orientation[1]}${translation.orientation[2]}`];
+    let resultMove = rollRightFaces[translation.move];
+    if (!resultMove) {
+        resultMove = translation.move;
+    }
+    return { move: resultMove, orientation: resultOrientation };
+}
 
-function translateClockwise(translation: Translation): Translation {}
+function translateClockwise(translation: Translation): Translation {
+    const resultOrientation = cubeOrientations[`${translation.orientation[0]}${translation.orientation[3]}`];
+    let resultMove = clockwiseFaces[translation.move];
+    if (!resultMove) {
+        resultMove = translation.move;
+    }
+    return { move: resultMove, orientation: resultOrientation };
+}
 
-function translateCounterClockwise(translation: Translation): Translation {}
+function translateCounterClockwise(translation: Translation): Translation {
+    const resultOrientation = cubeOrientations[`${translation.orientation[0]}${translation.orientation[1]}`];
+    let resultMove = counterClockwiseFaces[translation.move];
+    if (!resultMove) {
+        resultMove = translation.move;
+    }
+    return { move: resultMove, orientation: resultOrientation };
+}
