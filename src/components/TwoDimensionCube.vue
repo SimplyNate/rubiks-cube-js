@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Color, Cube, Face} from '../cube.js';
 import {onMounted, ref} from "vue";
-import {solve} from "../solve.ts";
+import {solve, translateMove} from "../solve.ts";
 
 const cube = new Cube();
 
@@ -42,8 +42,27 @@ function clearMoveList() {
 function solveCube() {
     const targetCube = Cube.fromString(cube.toString());
     solve(targetCube);
+    // translate all solve moves
+    const translated: string[] = [];
+    let currentOrientation = `${targetCube.colorOf('u')}${targetCube.colorOf('f')}`;
+    const originalOrientation = `${targetCube.colorOf('u')}${targetCube.colorOf('f')}`;
+    for (const move of targetCube.history) {
+        if (move.includes('reorient')) {
+            currentOrientation = move.split(' ')[1];
+        }
+        else {
+            const isCounterClockwise = move.includes('counter');
+            const parsedMove = isCounterClockwise ? move.split('_')[1] : move;
+            let translatedMove: string | Face = translateMove(currentOrientation, originalOrientation, parsedMove as Face);
+            if (isCounterClockwise) {
+                translatedMove = `counter_${translatedMove}`;
+            }
+            translated.push(translatedMove);
+        }
+    }
+    console.log(translated);
     const interval = setInterval(() => {
-        const move = targetCube.history.shift();
+        const move = translated.shift();
         if (move) {
             moveNumber.value += 1;
             addMoveList(move);

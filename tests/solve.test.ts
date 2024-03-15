@@ -24,7 +24,7 @@ import {
     corner_solveInTopLayer,
     solveMiddleEdges,
     solveYellowCross,
-    solveYellowFace, solveTopRow, solve
+    solveYellowFace, solveTopRow, solve, translateMove,
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -537,5 +537,45 @@ describe('solve cube', () => {
             solve(c);
             expect(c.isSolved()).toBe(true);
         }
+    });
+});
+
+describe('translateMove', () => {
+    const originalOrientation = 'yo';
+    function testMoveUnchanged(newOrientation: string, move: Face) {
+        const result = translateMove(newOrientation, originalOrientation, move);
+        expect(result).toEqual(move);
+    }
+    function testMoveBecomes(newOrientation: string, move: Face, becomes: Face) {
+        const result = translateMove(newOrientation, originalOrientation, move);
+        expect(result).toEqual(becomes);
+    }
+    test('backward', () => {
+        for (const orientation of ['yo', 'ow', 'wr', 'ry']) {
+            for (const move of ['l', 'r'] as Face[]) {
+                testMoveUnchanged(orientation, move);
+            }
+        }
+        testMoveBecomes('ry', 'f', 'u');
+        testMoveBecomes('ry', 'u', 'b');
+        testMoveBecomes('ry', 'b', 'd');
+        testMoveBecomes('ry', 'd', 'f');
+
+        testMoveBecomes('wr', 'f', 'b');
+        testMoveBecomes('wr', 'u', 'd');
+        testMoveBecomes('wr', 'b', 'f');
+        testMoveBecomes('wr', 'd', 'u');
+
+        testMoveBecomes('ow', 'f', 'd');
+        testMoveBecomes('ow', 'd', 'b');
+        testMoveBecomes('ow', 'b', 'u');
+        testMoveBecomes('ow', 'u', 'f');
+    });
+    test('roll left', () => {
+        // twoleft
+        let newOrientation = 'wo';
+        let move: Face = 'l';
+        let result = translateMove(newOrientation, originalOrientation, move);
+        expect(result).toEqual('r');
     });
 });
