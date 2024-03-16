@@ -550,7 +550,7 @@ describe('translateMove', () => {
         const result = translateMove(newOrientation, originalOrientation, move);
         expect(result).toEqual(becomes);
     }
-    test('backward', () => {
+    test('backward and forward', () => {
         for (const orientation of ['yo', 'ow', 'wr', 'ry']) {
             for (const move of ['l', 'r'] as Face[]) {
                 testMoveUnchanged(orientation, move);
@@ -571,11 +571,25 @@ describe('translateMove', () => {
         testMoveBecomes('ow', 'b', 'u');
         testMoveBecomes('ow', 'u', 'f');
     });
-    test('roll left', () => {
-        // twoleft
-        let newOrientation = 'wo';
-        let move: Face = 'l';
-        let result = translateMove(newOrientation, originalOrientation, move);
-        expect(result).toEqual('r');
+    test('roll left and right', () => {
+        for (const orientation of ['go', 'wo', 'bo']) {
+            for (const move of ['f', 'b'] as Face[]) {
+                testMoveUnchanged(orientation, move);
+            }
+        }
+        testMoveBecomes('go', 'u', 'l');
+        testMoveBecomes('go', 'r', 'u');
+        testMoveBecomes('go', 'd', 'r');
+        testMoveBecomes('go', 'l', 'd');
+
+        testMoveBecomes('wo', 'u', 'd');
+        testMoveBecomes('wo', 'r', 'l');
+        testMoveBecomes('wo', 'd', 'u');
+        testMoveBecomes('wo', 'l', 'r');
+
+        testMoveBecomes('bo', 'u', 'r');
+        testMoveBecomes('bo', 'r', 'd');
+        testMoveBecomes('bo', 'd', 'l');
+        testMoveBecomes('bo', 'l', 'u');
     });
 });
