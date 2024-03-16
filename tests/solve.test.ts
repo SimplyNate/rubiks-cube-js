@@ -592,4 +592,45 @@ describe('translateMove', () => {
         testMoveBecomes('bo', 'd', 'l');
         testMoveBecomes('bo', 'l', 'u');
     });
+    test('clockwise and counter clockwise', () => {
+        for (const orientation of ['yb', 'yr', 'yg']) {
+            for (const move of ['u', 'd'] as Face[]) {
+                testMoveUnchanged(orientation, move);
+            }
+        }
+        testMoveBecomes('yg', 'f', 'l');
+        testMoveBecomes('yg', 'l', 'b');
+        testMoveBecomes('yg', 'b', 'r');
+        testMoveBecomes('yg', 'r', 'f');
+
+        testMoveBecomes('yr', 'f', 'b');
+        testMoveBecomes('yr', 'l', 'r');
+        testMoveBecomes('yr', 'b', 'f');
+        testMoveBecomes('yr', 'r', 'l');
+
+        testMoveBecomes('yb', 'f', 'r');
+        testMoveBecomes('yb', 'r', 'b');
+        testMoveBecomes('yb', 'b', 'l');
+        testMoveBecomes('yb', 'l', 'f');
+    });
+
+    test('composite translations', () => {
+        /*
+        wb
+        wg
+        bw
+        by
+        br
+        og
+        oy
+        ob
+        gw
+        gr
+        gy
+        rw
+        rb
+        rg
+         */
+        testMoveBecomes('wb', 'u', 'd');
+    });
 });
