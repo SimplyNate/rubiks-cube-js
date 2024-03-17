@@ -632,5 +632,48 @@ describe('translateMove', () => {
         rg
          */
         testMoveBecomes('wb', 'u', 'd');
+        testMoveBecomes('wb', 'l', 'b');
+        testMoveBecomes('wb', 'f', 'r');
+        testMoveBecomes('wb', 'r', 'f');
+        testMoveBecomes('wb', 'b', 'l');
+        testMoveBecomes('wb', 'd', 'u');
+    });
+    test('simple integration test', () => {
+        const cube = new Cube();
+        cube.perform_reorientation('w', 'o');
+        cube.l().counter_f().counter_d();
+        const testCube = new Cube();
+        const moves = ['l', 'counter_f', 'counter_d'];
+        for (const move of moves) {
+            const isCounterClockwise = move.includes('counter');
+            const parsed = isCounterClockwise ? move.split('_')[1] : move;
+            const translated = translateMove('wo', 'yo', parsed as Face);
+            testCube.performRotation(translated, isCounterClockwise);
+        }
+        testCube.perform_reorientation('w', 'o');
+        const cubeString = cube.toString();
+        const testString = testCube.toString();
+        expect(testString).toEqual(cubeString);
+
+    });
+    test('real example test', () => {
+        const normal = Cube.scrambled();
+        const tester = Cube.fromString(normal.toString());
+        let fromOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`
+        let toOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
+        solve(normal);
+        expect(normal.isSolved()).toBeTruthy();
+        for (const move of normal.history) {
+            if (move.includes('reorient')) {
+                fromOrientation = move.split(' ')[1];
+            }
+            else {
+                const isCounterClockwise = move.includes('counter');
+                const parsed = isCounterClockwise ? move.split('_')[1] : move;
+                const translatedMove: Face = translateMove(fromOrientation, toOrientation, parsed as Face);
+                tester.performRotation(translatedMove, isCounterClockwise);
+            }
+        }
+        expect(tester.isSolved()).toBeTruthy();
     });
 });
