@@ -2,6 +2,7 @@
     <canvas id="c"></canvas>
     <div class="menu">
         <button style="display: block; margin-bottom: 0.5rem;" @click="randomize">Randomize</button>
+        <button style="display: block; margin-bottom: 0.5rem;" @click="solveCube">Solve</button>
         <button>Reset</button>
         <div>
             <input type="checkbox" v-model="useAnimation"> Animate
@@ -16,127 +17,122 @@
 import {onMounted, ref} from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {createCube, createColorOverlay, colorMap} from '../shapes.js';
-// import {performRotation} from '../animate.js';
-import { Cube } from '../cube.js';
+import {createCube} from '../shapes.js';
+import {performRotation} from '../animate.js';
+import { Cube, type Face } from '../cube.js';
+import { solve, translateMove } from '../solve.js';
 
 
 let queue = false;
 
 const cubes = new THREE.Group();
 let scene: THREE.Scene;
-const squares = new THREE.Group();
-let squareMap: Record<string, THREE.Mesh[]>;
 
 const useAnimation = ref<boolean>(false);
 const showAxes = ref<boolean>(false);
 
 let cube = new Cube();
 
-function applyColorsToPlanes() {
-    for (const face in squareMap) {
-        let i = 0;
-        for (const square of squareMap[face]) {
-            const material = <THREE.MeshBasicMaterial>square.material;
-            material.color.set(colorMap[cube.cube[face][i]]);
-            i += 1;
-        }
-    }
+async function F(sync = true) {
+    await zHandler(1, -1);
 }
-
-async function F() {
-    // await zHandler(1, -1);
-    cube.f();
-    applyColorsToPlanes();
+async function cF(sync = true) {
+    await zHandler(1, 1);
 }
-async function cF() {
-    // await zHandler(1, 1);
-    cube.counter_f();
-    applyColorsToPlanes();
+async function R(sync = true) {
+    await xHandler(1, -1);
 }
-async function R() {
-    // await xHandler(1, -1);
-    cube.r();
-    applyColorsToPlanes();
+async function cR(sync = true) {
+    await xHandler(1, 1);
 }
-async function cR() {
-    // await xHandler(1, 1);
-    cube.counter_r();
-    applyColorsToPlanes();
+async function U(sync = true) {
+    await yHandler(1, -1);
 }
-async function U() {
-    // await yHandler(1, -1);
-    cube.u();
-    applyColorsToPlanes();
+async function cU(sync = true) {
+    await yHandler(1, 1);
 }
-async function cU() {
-    // await yHandler(1, 1);
-    cube.counter_u();
-    applyColorsToPlanes();
+async function L(sync = true) {
+    await xHandler(-1, 1);
 }
-async function L() {
-    // await xHandler(-1, 1);
-    cube.l();
-    applyColorsToPlanes();
+async function cL(sync = true) {
+    await xHandler(-1, -1);
 }
-async function cL() {
-    // await xHandler(-1, -1);
-    cube.counter_l();
-    applyColorsToPlanes();
+async function D(sync = true) {
+    await yHandler(-1, 1);
 }
-async function D() {
-    // await yHandler(-1, 1);
-    cube.d();
-    applyColorsToPlanes();
+async function cD(sync = true) {
+    await yHandler(-1, -1);
 }
-async function cD() {
-    // await yHandler(-1, -1);
-    cube.counter_d();
-    applyColorsToPlanes();
+async function B(sync = true) {
+    await zHandler(-1, 1);
 }
-async function B() {
-    // await zHandler(-1, -1);
-    cube.b();
-    applyColorsToPlanes();
+async function cB(sync = true) {
+    await zHandler(-1, -1);
 }
-async function cB() {
-    // await zHandler(-1, 1);
-    cube.counter_b();
-    applyColorsToPlanes();
-}
-/*
 async function xHandler(x: number, direction: number) {
-    await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value, squares);
+    await performRotation(scene, cubes, x, Math.PI / 2 * direction, 'x', useAnimation.value);
 }
 async function yHandler(y: number, direction: number) {
-    await performRotation(scene, cubes, y, Math.PI / 2 * direction, 'y', useAnimation.value, squares)
+    await performRotation(scene, cubes, y, Math.PI / 2 * direction, 'y', useAnimation.value)
 }
 async function zHandler(z: number, direction: number) {
-    await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value, squares);
+    await performRotation(scene, cubes, z, Math.PI / 2 * direction, 'z', useAnimation.value);
 }
- */
+
+
+const moveMap: Record<string, Function> = {
+    u: U,
+    counter_u: cU,
+    l: L,
+    counter_l: cL,
+    f: F,
+    counter_f: cF,
+    r: R,
+    counter_r: cR,
+    b: B,
+    counter_b: cB,
+    d: D,
+    counter_d: cD,
+};
 
 
 async function randomize() {
     const iterations = 20;
     cube = Cube.scrambled(iterations);
-    const moveMap: Record<string, Function> = {
-        u: U,
-        counter_u: cU,
-        l: L,
-        counter_l: cL,
-        f: F,
-        counter_f: cF,
-        r: R,
-        counter_r: cR,
-        b: B,
-        counter_b: cB,
-        d: D,
-        counter_d: cD,
-    };
     for (const move of cube.scrambleHistory) {
         await moveMap[move]();
     }
+}
+
+async function solveCube() {
+    const originalOrientation = `yo`;
+    let currentOrientation = originalOrientation;
+    cube.history = [];
+    const testCube = Cube.fromString(cube.toString());
+    testCube.perform_reorientation('y', 'o');
+    solve(cube);
+    console.log(cube.history);
+    const translatedHistory = [];
+    for (const move of cube.history) {
+        if (move.includes('reorient')) {
+            currentOrientation = move.split(' ')[1];
+            translatedHistory.push('reorient yo');
+        }
+        else {
+            const isCounterClockwise = move.includes('counter');
+            const parsedMove = isCounterClockwise ? move.split('_')[1] : move;
+            let translatedMove: string | Face = translateMove(currentOrientation, originalOrientation, parsedMove as Face);
+            testCube.performRotation(translatedMove as Face, isCounterClockwise);
+            if (isCounterClockwise) {
+                translatedMove = `counter_${translatedMove}`;
+            }
+            translatedHistory.push(translatedMove);
+            await moveMap[translatedMove]();
+        }
+    }
+    console.log(translatedHistory);
+    console.log(testCube.isSolved());
+    console.log(testCube.toString());
 }
 
 async function keyListener(evt: KeyboardEvent) {
@@ -260,12 +256,6 @@ onMounted(() => {
         }
     }
     scene.add(cubes);
-    const planes = createColorOverlay(cube);
-    squareMap = planes;
-    for (const key in planes) {
-        squares.add(...planes[key]);
-    }
-    scene.add(squares);
     const color = 0xFFFFFF;
     const intensity = 1;
     const light = new THREE.AmbientLight(color, intensity);

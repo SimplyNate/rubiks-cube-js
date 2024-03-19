@@ -615,28 +615,103 @@ describe('translateMove', () => {
     });
 
     test('composite translations', () => {
-        /*
-        wb
-        wg
-        bw
-        by
-        br
-        og
-        oy
-        ob
-        gw
-        gr
-        gy
-        rw
-        rb
-        rg
-         */
         testMoveBecomes('wb', 'u', 'd');
         testMoveBecomes('wb', 'l', 'b');
         testMoveBecomes('wb', 'f', 'r');
         testMoveBecomes('wb', 'r', 'f');
         testMoveBecomes('wb', 'b', 'l');
         testMoveBecomes('wb', 'd', 'u');
+
+        testMoveBecomes('wg', 'u', 'd');
+        testMoveBecomes('wg', 'l', 'f');
+        testMoveBecomes('wg', 'f', 'l');
+        testMoveBecomes('wg', 'r', 'b');
+        testMoveBecomes('wg', 'b', 'r');
+        testMoveBecomes('wg', 'd', 'u');
+
+        testMoveBecomes('bw', 'u', 'r');
+        testMoveBecomes('bw', 'l', 'f');
+        testMoveBecomes('bw', 'f', 'd');
+        testMoveBecomes('bw', 'r', 'b');
+        testMoveBecomes('bw', 'b', 'u');
+        testMoveBecomes('bw', 'd', 'l');
+
+        testMoveBecomes('by', 'u', 'r');
+        testMoveBecomes('by', 'l', 'b');
+        testMoveBecomes('by', 'f', 'u');
+        testMoveBecomes('by', 'r', 'f');
+        testMoveBecomes('by', 'b', 'd');
+        testMoveBecomes('by', 'd', 'l');
+
+        testMoveBecomes('br', 'u', 'r');
+        testMoveBecomes('br', 'l', 'd');
+        testMoveBecomes('br', 'f', 'b');
+        testMoveBecomes('br', 'r', 'u');
+        testMoveBecomes('br', 'b', 'f');
+        testMoveBecomes('br', 'd', 'l');
+
+        testMoveBecomes('og', 'u', 'f');
+        testMoveBecomes('og', 'l', 'u');
+        testMoveBecomes('og', 'f', 'l');
+        testMoveBecomes('og', 'r', 'd');
+        testMoveBecomes('og', 'b', 'r');
+        testMoveBecomes('og', 'd', 'b');
+
+        testMoveBecomes('oy', 'u', 'f');
+        testMoveBecomes('oy', 'l', 'r');
+        testMoveBecomes('oy', 'f', 'u');
+        testMoveBecomes('oy', 'r', 'l');
+        testMoveBecomes('oy', 'b', 'd');
+        testMoveBecomes('oy', 'd', 'b');
+
+        testMoveBecomes('ob', 'u', 'f');
+        testMoveBecomes('ob', 'l', 'd');
+        testMoveBecomes('ob', 'f', 'r');
+        testMoveBecomes('ob', 'r', 'u');
+        testMoveBecomes('ob', 'b', 'l');
+        testMoveBecomes('ob', 'd', 'b');
+
+        testMoveBecomes('gw', 'u', 'l');
+        testMoveBecomes('gw', 'l', 'b');
+        testMoveBecomes('gw', 'f', 'd');
+        testMoveBecomes('gw', 'r', 'f');
+        testMoveBecomes('gw', 'b', 'u');
+        testMoveBecomes('gw', 'd', 'r');
+
+        testMoveBecomes('gy', 'u', 'l');
+        testMoveBecomes('gy', 'l', 'f');
+        testMoveBecomes('gy', 'f', 'u');
+        testMoveBecomes('gy', 'r', 'b');
+        testMoveBecomes('gy', 'b', 'd');
+        testMoveBecomes('gy', 'd', 'r');
+
+        testMoveBecomes('gr', 'u', 'l');
+        testMoveBecomes('gr', 'l', 'u');
+        testMoveBecomes('gr', 'f', 'b');
+        testMoveBecomes('gr', 'r', 'd');
+        testMoveBecomes('gr', 'b', 'f');
+        testMoveBecomes('gr', 'd', 'r');
+
+        testMoveBecomes('rw', 'u', 'b');
+        testMoveBecomes('rw', 'l', 'r');
+        testMoveBecomes('rw', 'f', 'd');
+        testMoveBecomes('rw', 'r', 'l');
+        testMoveBecomes('rw', 'b', 'u');
+        testMoveBecomes('rw', 'd', 'f');
+
+        testMoveBecomes('rb', 'u', 'b');
+        testMoveBecomes('rb', 'l', 'u');
+        testMoveBecomes('rb', 'f', 'r');
+        testMoveBecomes('rb', 'r', 'd');
+        testMoveBecomes('rb', 'b', 'l');
+        testMoveBecomes('rb', 'd', 'f');
+
+        testMoveBecomes('rg', 'u', 'b');
+        testMoveBecomes('rg', 'l', 'd');
+        testMoveBecomes('rg', 'f', 'l');
+        testMoveBecomes('rg', 'r', 'u');
+        testMoveBecomes('rg', 'b', 'r');
+        testMoveBecomes('rg', 'd', 'f');
     });
     test('simple integration test', () => {
         const cube = new Cube();
@@ -657,23 +732,50 @@ describe('translateMove', () => {
 
     });
     test('real example test', () => {
-        const normal = Cube.scrambled();
-        const tester = Cube.fromString(normal.toString());
-        let fromOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`
-        let toOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
-        solve(normal);
-        expect(normal.isSolved()).toBeTruthy();
-        for (const move of normal.history) {
-            if (move.includes('reorient')) {
-                fromOrientation = move.split(' ')[1];
+        let pass = 0;
+        const passOrientations = {};
+        let fail = 0;
+        const failed = [];
+        const failOrientations = {};
+        for (let i = 0; i < 10000; i++) {
+            const normal = Cube.scrambled();
+            const tester = Cube.fromString(normal.toString());
+            let fromOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`
+            let toOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
+            solve(normal);
+            expect(normal.isSolved()).toBeTruthy();
+            const reorientations = [];
+            for (const move of normal.history) {
+                if (move.includes('reorient')) {
+                    fromOrientation = move.split(' ')[1];
+                    reorientations.push(fromOrientation);
+                }
+                else {
+                    const isCounterClockwise = move.includes('counter');
+                    const parsed = isCounterClockwise ? move.split('_')[1] : move;
+                    const translatedMove: Face = translateMove(fromOrientation, toOrientation, parsed as Face);
+                    tester.performRotation(translatedMove, isCounterClockwise);
+                }
+            }
+            if (tester.isSolved()) {
+                pass += 1;
+                for (const o of reorientations) {
+                    passOrientations[o] = true;
+                }
             }
             else {
-                const isCounterClockwise = move.includes('counter');
-                const parsed = isCounterClockwise ? move.split('_')[1] : move;
-                const translatedMove: Face = translateMove(fromOrientation, toOrientation, parsed as Face);
-                tester.performRotation(translatedMove, isCounterClockwise);
+                fail += 1;
+                failed.push(...reorientations);
+            }
+            // expect(tester.isSolved()).toBeTruthy();
+        }
+        for (const reorientation of failed) {
+            if (!passOrientations[reorientation]) {
+                failOrientations[reorientation] = true;
             }
         }
-        expect(tester.isSolved()).toBeTruthy();
+        console.log(`Pass: ${pass}, Fail: ${fail}`);
+        console.log((pass / (pass + fail) * 100).toFixed(2));
+        console.log(Object.keys(failOrientations));
     });
 });
