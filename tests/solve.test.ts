@@ -729,7 +729,24 @@ describe('translateMove', () => {
         const cubeString = cube.toString();
         const testString = testCube.toString();
         expect(testString).toEqual(cubeString);
-
+    });
+    test('Deep scramble integration test', () => {
+        const cube = new Cube();
+        cube
+            .r().r().d()
+            .counter_l().counter_b().counter_r()
+            .b().counter_d().u()
+            .r().l().d()
+            .d().f().d()
+            .r().u().counter_d()
+            .r().counter_u();
+        cube.scrambleHistory = [...cube.history];
+        cube.history = [];
+        const tester = Cube.fromString(cube.toString());
+        expect(tester.toString()).toEqual(cube.toString());
+        expect(JSON.stringify(tester.cube)).toEqual(JSON.stringify(cube.cube));
+        solve(cube);
+        expect(cube.isSolved()).toBe(true);
     });
     test('real example test', () => {
         let pass = 0;
