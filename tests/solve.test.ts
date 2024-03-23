@@ -747,6 +747,19 @@ describe('translateMove', () => {
         expect(JSON.stringify(tester.cube)).toEqual(JSON.stringify(cube.cube));
         solve(cube);
         expect(cube.isSolved()).toBe(true);
+        let fromOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
+        for (const move of cube.history) {
+            if (move.includes('reorient')) {
+                fromOrientation = move.split(' ')[1];
+                tester.perform_reorientation(fromOrientation[0] as Color, fromOrientation[1] as Color);
+            }
+            else {
+                const isCounterClockwise = move.includes('counter');
+                const parsed = isCounterClockwise ? move.split('_')[1] : move;
+                const translatedMove: Face = translateMove(fromOrientation, toOrientation, parsed as Face);
+                tester.performRotation(translatedMove, isCounterClockwise);
+            }
+        }
     });
     test('real example test', () => {
         let pass = 0;
