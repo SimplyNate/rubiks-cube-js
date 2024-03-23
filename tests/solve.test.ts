@@ -748,6 +748,7 @@ describe('translateMove', () => {
         solve(cube);
         expect(cube.isSolved()).toBe(true);
         let fromOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
+        let toOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
         for (const move of cube.history) {
             if (move.includes('reorient')) {
                 fromOrientation = move.split(' ')[1];
@@ -760,6 +761,7 @@ describe('translateMove', () => {
                 tester.performRotation(translatedMove, isCounterClockwise);
             }
         }
+        expect(tester.isSolved()).toBe(true);
     });
     test('real example test', () => {
         let pass = 0;
