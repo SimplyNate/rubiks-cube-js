@@ -538,6 +538,35 @@ describe('solve cube', () => {
             expect(c.isSolved()).toBe(true);
         }
     });
+    test('Solves with accurate history', () => {
+        let good = 0;
+        let bad = 0;
+        for (let i = 0; i < 10000; i++) {
+            const c = Cube.scrambled();
+            const tester = Cube.fromString(c.toString());
+            solve(c);
+            let fromOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
+            for (const move of c.history) {
+                if (move.includes('reorient')) {
+                    fromOrientation = move.split(' ')[1];
+                    tester.perform_reorientation(fromOrientation[0] as Color, fromOrientation[1] as Color);
+                }
+                else {
+                    const isCounterClockwise = move.includes('counter');
+                    const parsed = isCounterClockwise ? move.split('_')[1] : move;
+                    tester.performRotation(parsed as Face, isCounterClockwise);
+                }
+            }
+            // expect(tester.isSolved()).toBe(true);
+            if (tester.isSolved()) {
+                good += 1;
+            }
+            else {
+                bad += 1;
+            }
+        }
+        console.log(`Good: ${good} | Bad: ${bad}`);
+    });
 });
 
 describe('translateMove', () => {
@@ -743,6 +772,7 @@ describe('translateMove', () => {
         cube.scrambleHistory = [...cube.history];
         cube.history = [];
         const tester = Cube.fromString(cube.toString());
+        const tracker = Cube.fromString(cube.toString());
         expect(tester.toString()).toEqual(cube.toString());
         expect(JSON.stringify(tester.cube)).toEqual(JSON.stringify(cube.cube));
         solve(cube);
@@ -752,15 +782,18 @@ describe('translateMove', () => {
         for (const move of cube.history) {
             if (move.includes('reorient')) {
                 fromOrientation = move.split(' ')[1];
-                tester.perform_reorientation(fromOrientation[0] as Color, fromOrientation[1] as Color);
+                // tester.perform_reorientation(fromOrientation[0] as Color, fromOrientation[1] as Color);
+                tracker.perform_reorientation(fromOrientation[0] as Color, fromOrientation[1] as Color);
             }
             else {
                 const isCounterClockwise = move.includes('counter');
                 const parsed = isCounterClockwise ? move.split('_')[1] : move;
                 const translatedMove: Face = translateMove(fromOrientation, toOrientation, parsed as Face);
                 tester.performRotation(translatedMove, isCounterClockwise);
+                tracker.performRotation(parsed as Face, isCounterClockwise);
             }
         }
+        expect(tracker.isSolved()).toBe(true);
         expect(tester.isSolved()).toBe(true);
     });
     test('real example test', () => {
