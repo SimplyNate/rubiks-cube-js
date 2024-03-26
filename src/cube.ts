@@ -71,6 +71,7 @@ export class Cube {
     cube: CubePositions;
     history: string[];
     scrambleHistory: string[];
+    positionHistory: string[];
 
     constructor() {
         this.cube = {
@@ -101,6 +102,7 @@ export class Cube {
         };
         this.history = [];
         this.scrambleHistory = [];
+        this.positionHistory = [this.toString()];
     }
     static fromString(str: string): Cube {
         const faceOrder: Face[] = ['u', 'l', 'f', 'r', 'b', 'd'];
@@ -116,6 +118,7 @@ export class Cube {
             }
             cube.cube[faceOrder[i]] = <Color[]>face.split('');
         }
+        cube.positionHistory = [cube.toString()];
         return cube;
     }
     static scrambled(steps: number = 20): Cube {
@@ -172,6 +175,7 @@ export class Cube {
         }
         this.scrambleHistory = this.history;
         this.history = [];
+        this.positionHistory = [this.toString()];
         return this;
     }
     private clockwiseRotation(face: Face) {
@@ -216,6 +220,7 @@ export class Cube {
         this.cube.d[3] = firstCopy[3];
         this.cube.d[6] = firstCopy[6];
         this.clockwiseRotation('l');
+        this.positionHistory.push(this.toString());
         return this;
     }
     counter_l() {
@@ -234,6 +239,7 @@ export class Cube {
         this.cube.u[3] = firstCopy[3];
         this.cube.u[6] = firstCopy[6];
         this.counterClockwiseRotation('l');
+        this.positionHistory.push(this.toString());
         return this;
     }
     r() {
@@ -252,6 +258,7 @@ export class Cube {
         this.cube.u[5] = firstCopy[5];
         this.cube.u[8] = firstCopy[8];
         this.clockwiseRotation('r');
+        this.positionHistory.push(this.toString());
         return this;
     }
     counter_r() {
@@ -270,6 +277,7 @@ export class Cube {
         this.cube.d[5] = firstCopy[5];
         this.cube.d[8] = firstCopy[8];
         this.counterClockwiseRotation('r');
+        this.positionHistory.push(this.toString());
         return this;
     }
     u() {
@@ -288,6 +296,7 @@ export class Cube {
         this.cube.l[1] = firstCopy[1];
         this.cube.l[2] = firstCopy[2];
         this.clockwiseRotation('u');
+        this.positionHistory.push(this.toString());
         return this;
     }
     counter_u() {
@@ -306,6 +315,7 @@ export class Cube {
         this.cube.r[1] = firstCopy[1];
         this.cube.r[2] = firstCopy[2];
         this.counterClockwiseRotation('u');
+        this.positionHistory.push(this.toString());
         return this;
     }
     d() {
@@ -324,6 +334,7 @@ export class Cube {
         this.cube.r[7] = firstCopy[7];
         this.cube.r[8] = firstCopy[8];
         this.clockwiseRotation('d');
+        this.positionHistory.push(this.toString());
         return this;
     }
     counter_d() {
@@ -342,6 +353,7 @@ export class Cube {
         this.cube.l[7] = firstCopy[7];
         this.cube.l[8] = firstCopy[8];
         this.counterClockwiseRotation('d');
+        this.positionHistory.push(this.toString());
         return this;
     }
     f() {
@@ -360,6 +372,7 @@ export class Cube {
         this.cube.r[3] = copy[7];
         this.cube.r[6] = copy[8];
         this.clockwiseRotation('f');
+        this.positionHistory.push(this.toString());
         return this;
     }
     counter_f() {
@@ -378,6 +391,7 @@ export class Cube {
         this.cube.l[5] = copy[7];
         this.cube.l[2] = copy[8];
         this.counterClockwiseRotation('f');
+        this.positionHistory.push(this.toString());
         return this;
     }
     b() {
@@ -396,6 +410,7 @@ export class Cube {
         this.cube.u[1] = copy[5];
         this.cube.u[2] = copy[8];
         this.clockwiseRotation('b');
+        this.positionHistory.push(this.toString());
         return this;
     }
     counter_b() {
@@ -414,6 +429,7 @@ export class Cube {
         this.cube.d[7] = copy[5];
         this.cube.d[8] = copy[2];
         this.counterClockwiseRotation('b');
+        this.positionHistory.push(this.toString());
         return this;
     }
     performRotation(face: Face, counter_clockwise: boolean = false) {
@@ -520,6 +536,7 @@ export class Cube {
             this.reorient_clockwise();
             this.reorient_clockwise();
         }
+        this.positionHistory.push(this.toString());
     }
     private reorient(up: Color, front: Color) {
         let [u, l, f, r, b, d] = cubeOrientations[`${up}${front}`];
