@@ -556,6 +556,10 @@ describe('solve cube', () => {
                     const parsed = isCounterClockwise ? move.split('_')[1] : move;
                     tester.performRotation(parsed as Face, isCounterClockwise);
                 }
+                const i = tester.positionHistory.length - 1;
+                if (tester.positionHistory[i] !== c.positionHistory[i]) {
+                    console.log('Deviation');
+                }
             }
             // expect(tester.isSolved()).toBe(true);
             if (tester.isSolved()) {
