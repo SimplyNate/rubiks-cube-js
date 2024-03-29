@@ -558,6 +558,10 @@ describe('solve cube', () => {
                 }
                 const i2 = tester.positionHistory.length - 1;
                 if (tester.positionHistory[i2] !== c.positionHistory[i2]) {
+                    const testerLayout = tester.positionHistory[i2];
+                    const solverLayout = c.positionHistory[i2];
+                    const testerHistory = tester.history[i2-1];
+                    const solverHistory = c.history[i2-1];
                     console.log('Deviation');
                 }
             }
