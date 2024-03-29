@@ -559,9 +559,16 @@ describe('solve cube', () => {
                 const i2 = tester.positionHistory.length - 1;
                 if (tester.positionHistory[i2] !== c.positionHistory[i2]) {
                     const testerLayout = tester.positionHistory[i2];
+                    const testerLast = tester.positionHistory[i2-1];
                     const solverLayout = c.positionHistory[i2];
+                    const solverLast = c.positionHistory[i2-1];
                     const testerHistory = tester.history[i2-1];
                     const solverHistory = c.history[i2-1];
+                    const newLastCube = Cube.fromString(testerLast);
+                    const isCounter = testerHistory.includes('counter');
+                    const parsed = isCounter ? testerHistory.split('_')[1] : move;
+                    newLastCube.performRotation(parsed as Face, isCounter);
+                    // Maybe something is writing counter_r incorrectly?
                     console.log('Deviation');
                 }
             }
