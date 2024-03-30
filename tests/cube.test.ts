@@ -367,3 +367,66 @@ describe('perform_reorientation', () => {
         expect(evalCube.toString()).toBe(known.toString());
     });
 });
+
+describe('history', () => {
+    test('u writes u', () => {
+        const c = new Cube();
+        c.u();
+        expect(c.history[0]).toBe('u');
+    });
+    test('counter_u writes counter_u', () => {
+        const c = new Cube();
+        c.counter_u();
+        expect(c.history[0]).toBe('counter_u');
+    });
+    test('l writes l', () => {
+        const c = new Cube();
+        c.l();
+        expect(c.history[0]).toBe('l');
+    });
+    test('counter_l writes counter_l', () => {
+        const c = new Cube();
+        c.counter_l();
+        expect(c.history[0]).toBe('counter_l');
+    });
+    test('f writes f', () => {
+        const c = new Cube();
+        c.f();
+        expect(c.history[0]).toBe('f');
+    });
+    test('counter_f writes counter_f', () => {
+        const c = new Cube();
+        c.counter_f();
+        expect(c.history[0]).toBe('counter_f');
+    });
+    test('r writes r', () => {
+        const c = new Cube();
+        c.r();
+        expect(c.history[0]).toBe('r');
+    });
+    test('counter_r writes counter_r', () => {
+        const c = new Cube();
+        c.counter_r();
+        expect(c.history[0]).toBe('counter_r');
+    });
+    test('b writes b', () => {
+        const c = new Cube();
+        c.b();
+        expect(c.history[0]).toBe('b');
+    });
+    test('counter_b writes counter_b', () => {
+        const c = new Cube();
+        c.counter_b();
+        expect(c.history[0]).toBe('counter_b');
+    });
+    test('d writes d', () => {
+        const c = new Cube();
+        c.d();
+        expect(c.history[0]).toBe('d');
+    });
+    test('counter_d writes counter_d', () => {
+        const c = new Cube();
+        c.counter_d();
+        expect(c.history[0]).toBe('counter_d');
+    });
+});
