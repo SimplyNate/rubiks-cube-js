@@ -790,13 +790,9 @@ describe('translateMove', () => {
         expect(tester.isSolved()).toBe(true);
     });
     test('real example test', () => {
-        let pass = 0;
-        let fail = 0;
-        let tracker = 0;
         for (let i = 0; i < 10000; i++) {
             const normal = Cube.scrambled();
             const tester = Cube.fromString(normal.toString());
-            const trackingCube = Cube.fromString(normal.toString());
             let fromOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`
             let toOrientation = `${tester.colorOf('u')}${tester.colorOf('f')}`;
             solve(normal);
@@ -804,28 +800,15 @@ describe('translateMove', () => {
             for (const move of normal.history) {
                 if (move.includes('reorient')) {
                     fromOrientation = move.split(' ')[1];
-                    trackingCube.perform_reorientation(fromOrientation[0] as Color, fromOrientation[1] as Color);
                 }
                 else {
                     const isCounterClockwise = move.includes('counter');
                     const parsed = isCounterClockwise ? move.split('_')[1] : move;
                     const translatedMove: Face = translateMove(fromOrientation, toOrientation, parsed as Face);
                     tester.performRotation(translatedMove, isCounterClockwise);
-                    trackingCube.performRotation(parsed as Face, isCounterClockwise);
                 }
             }
-            if (tester.isSolved()) {
-                pass += 1;
-            }
-            else {
-                fail += 1;
-            }
-            if (trackingCube.isSolved()) {
-                tracker += 1;
-            }
-            // expect(tester.isSolved()).toBeTruthy();
+            expect(tester.isSolved()).toBeTruthy();
         }
-        console.log(`Pass: ${pass}, Fail: ${fail}`);
-        console.log(tracker);
     });
 });
