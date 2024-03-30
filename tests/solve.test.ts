@@ -539,8 +539,6 @@ describe('solve cube', () => {
         }
     });
     test('Solves with accurate history', () => {
-        let good = 0;
-        let bad = 0;
         for (let i = 0; i < 10000; i++) {
             const c = Cube.scrambled();
             const tester = Cube.fromString(c.toString());
@@ -557,30 +555,10 @@ describe('solve cube', () => {
                     tester.performRotation(parsed as Face, isCounterClockwise);
                 }
                 const i2 = tester.positionHistory.length - 1;
-                if (tester.positionHistory[i2] !== c.positionHistory[i2]) {
-                    const testerLayout = tester.positionHistory[i2];
-                    const testerLast = tester.positionHistory[i2-1];
-                    const solverLayout = c.positionHistory[i2];
-                    const solverLast = c.positionHistory[i2-1];
-                    const testerHistory = tester.history[i2-1];
-                    const solverHistory = c.history[i2-1];
-                    const newLastCube = Cube.fromString(testerLast);
-                    const isCounter = testerHistory.includes('counter');
-                    const parsed = isCounter ? testerHistory.split('_')[1] : move;
-                    newLastCube.performRotation(parsed as Face, isCounter);
-                    // Maybe something is writing counter_r incorrectly?
-                    console.log('Deviation');
-                }
+                expect(tester.positionHistory[i2]).toEqual(c.positionHistory[i2]);
             }
-            // expect(tester.isSolved()).toBe(true);
-            if (tester.isSolved()) {
-                good += 1;
-            }
-            else {
-                bad += 1;
-            }
+            expect(tester.isSolved()).toBe(true);
         }
-        console.log(`Good: ${good} | Bad: ${bad}`);
     });
 });
 

@@ -476,14 +476,17 @@ export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
     const currentU = cube.colorOf('u');
     const currentF = cube.colorOf('f');
     if (corner.index === 0) {
-        cube.reorient_clockwise();
-        cube.reorient_clockwise();
+        cube.perform_reorientation(currentU, cube.colorOf('b'));
+        // cube.reorient_clockwise();
+        // cube.reorient_clockwise();
     }
     else if (corner.index === 2) {
-        cube.reorient_clockwise();
+        cube.perform_reorientation(currentU, cube.colorOf('r'));
+        // cube.reorient_clockwise();
     }
     else if (corner.index === 6) {
-        cube.reorient_counter_clockwise();
+        cube.perform_reorientation(currentU, cube.colorOf('l'));
+        // cube.reorient_counter_clockwise();
     }
     cube.counter_r()
         .d()
@@ -539,15 +542,19 @@ export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
             );
         }
     }
+    const currentU = cube.colorOf('u');
     if (currentCorner.index === 0) {
-        cube.reorient_counter_clockwise();
+        cube.perform_reorientation(currentU, cube.colorOf('l'));
+        // cube.reorient_counter_clockwise();
     }
     else if (currentCorner.index === 6) {
-        cube.reorient_counter_clockwise();
-        cube.reorient_counter_clockwise();
+        cube.perform_reorientation(currentU, cube.colorOf('b'));
+        // cube.reorient_counter_clockwise();
+        // cube.reorient_counter_clockwise();
     }
     else if (currentCorner.index === 8) {
-        cube.reorient_clockwise();
+        cube.perform_reorientation(currentU, cube.colorOf('r'));
+        // cube.reorient_clockwise();
     }
     cube.counter_r().d().d().r().d().counter_r().counter_d().r();
 }
