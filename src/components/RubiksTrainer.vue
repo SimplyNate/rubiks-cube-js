@@ -33,40 +33,40 @@ const showAxes = ref<boolean>(false);
 
 let cube = new Cube();
 
-async function F(sync = true) {
+async function F() {
     await zHandler(1, -1);
 }
-async function cF(sync = true) {
+async function cF() {
     await zHandler(1, 1);
 }
-async function R(sync = true) {
+async function R() {
     await xHandler(1, -1);
 }
-async function cR(sync = true) {
+async function cR() {
     await xHandler(1, 1);
 }
-async function U(sync = true) {
+async function U() {
     await yHandler(1, -1);
 }
-async function cU(sync = true) {
+async function cU() {
     await yHandler(1, 1);
 }
-async function L(sync = true) {
+async function L() {
     await xHandler(-1, 1);
 }
-async function cL(sync = true) {
+async function cL() {
     await xHandler(-1, -1);
 }
-async function D(sync = true) {
+async function D() {
     await yHandler(-1, 1);
 }
-async function cD(sync = true) {
+async function cD() {
     await yHandler(-1, -1);
 }
-async function B(sync = true) {
+async function B() {
     await zHandler(-1, 1);
 }
-async function cB(sync = true) {
+async function cB() {
     await zHandler(-1, -1);
 }
 async function xHandler(x: number, direction: number) {

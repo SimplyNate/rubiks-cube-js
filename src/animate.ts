@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const iterations = 20;
+const iterations = 10;
 
 export function select(cubes: THREE.Group, layerIndex: number, axis: 'x' | 'y' | 'z'): THREE.Object3D[] {
     const selectedCubes:THREE.Object3D[] = [];
