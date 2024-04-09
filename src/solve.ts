@@ -474,7 +474,7 @@ export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
     corner_solveInBottomLayer(cube, updatedCorner);
      */
     const currentU = cube.colorOf('u');
-    const currentF = cube.colorOf('f');
+    // const currentF = cube.colorOf('f');
     if (corner.index === 0) {
         cube.perform_reorientation(currentU, cube.colorOf('b'));
         // cube.reorient_clockwise();
@@ -499,7 +499,7 @@ export function corner_solveInUpLayer(cube: Cube, corner: Corner) {
     else {
         throw new Error('Unable to find expected corner.');
     }
-    cube.perform_reorientation(currentU, currentF);
+    // cube.perform_reorientation(currentU, currentF);
 }
 export function corner_solveInDownLayer(cube: Cube, corner: Corner) {
     /*
