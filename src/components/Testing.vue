@@ -1,10 +1,16 @@
 <script setup lang="ts">
+// @ts-ignore
 import { ref, onMounted, computed } from 'vue';
+// @ts-ignore
 import * as tf from '@tensorflow/tfjs';
+// @ts-ignore
 import { createDQN } from '../models/rl/dqn.js';
+// @ts-ignore
 import { NUM_ACTIONS, CubeGame, getStateTensor } from '../models/game.js';
+// @ts-ignore
 import { CubeAgent } from '../models/rl/agent.js';
 import { Trainer } from '../models/rl/train.js';
+// @ts-ignore
 import { Cube } from "../cube.js";
 
 /*
