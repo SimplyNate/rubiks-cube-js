@@ -1,7 +1,7 @@
 <template>
     <canvas id="c"></canvas>
     <div class="menu">
-        <button style="display: block; margin-bottom: 0.5rem;" @click="randomize">Randomize</button>
+        <button style="display: block; margin-bottom: 0.5rem;" @click="randomize" :disabled="isRandomizing">Randomize</button>
         <button style="display: block; margin-bottom: 0.5rem;" @click="solveCube">Solve</button>
         <button>Reset</button>
         <div>
@@ -95,12 +95,17 @@ const moveMap: Record<string, Function> = {
     counter_d: cD,
 };
 
+const isRandomizing = ref<boolean>(false);
 
 async function randomize() {
-    const iterations = 20;
-    cube = Cube.scrambled(iterations);
-    for (const move of cube.scrambleHistory) {
-        await moveMap[move]();
+    if (!isRandomizing.value) {
+        isRandomizing.value = true;
+        const iterations = 20;
+        cube = Cube.scrambled(iterations);
+        for (const move of cube.scrambleHistory) {
+            await moveMap[move]();
+        }
+        isRandomizing.value = false;
     }
 }
 
