@@ -1,9 +1,9 @@
 <template>
     <canvas id="c"></canvas>
     <div class="menu">
-        <button style="display: block; margin-bottom: 0.5rem;" @click="randomize" :disabled="isComputing">Randomize</button>
-        <button style="display: block; margin-bottom: 0.5rem;" @click="solveCube" :disabled="isComputing">Solve</button>
-        <button>Reset</button>
+        <button class="button-blue" @click="randomize" :disabled="isComputing">Randomize</button>
+        <button class="button-green" @click="solveCube" :disabled="isComputing">Solve</button>
+        <button class="button-red" @click="resetCube" :disabled="isComputing">Reset</button>
         <div>
             <input type="checkbox" v-model="useAnimation"> Animate
         </div>
@@ -110,34 +110,34 @@ async function randomize() {
 }
 
 async function solveCube() {
-    const originalOrientation = `yo`;
-    let currentOrientation = originalOrientation;
-    cube.history = [];
-    const testCube = Cube.fromString(cube.toString());
-    testCube.perform_reorientation('y', 'o');
-    solve(cube);
-    console.log(cube.history);
-    const translatedHistory = [];
-    for (const move of cube.history) {
-        if (move.includes('reorient')) {
-            currentOrientation = move.split(' ')[1];
-            translatedHistory.push('reorient yo');
-        }
-        else {
-            const isCounterClockwise = move.includes('counter');
-            const parsedMove = isCounterClockwise ? move.split('_')[1] : move;
-            let translatedMove: string | Face = translateMove(currentOrientation, originalOrientation, parsedMove as Face);
-            testCube.performRotation(translatedMove as Face, isCounterClockwise);
-            if (isCounterClockwise) {
-                translatedMove = `counter_${translatedMove}`;
+    if (!isComputing.value) {
+        isComputing.value = true;
+        const originalOrientation = `yo`;
+        let currentOrientation = originalOrientation;
+        cube.history = [];
+        const testCube = Cube.fromString(cube.toString());
+        testCube.perform_reorientation('y', 'o');
+        solve(cube);
+        const translatedHistory = [];
+        for (const move of cube.history) {
+            if (move.includes('reorient')) {
+                currentOrientation = move.split(' ')[1];
+                translatedHistory.push('reorient yo');
             }
-            translatedHistory.push(translatedMove);
-            await moveMap[translatedMove]();
+            else {
+                const isCounterClockwise = move.includes('counter');
+                const parsedMove = isCounterClockwise ? move.split('_')[1] : move;
+                let translatedMove: string | Face = translateMove(currentOrientation, originalOrientation, parsedMove as Face);
+                testCube.performRotation(translatedMove as Face, isCounterClockwise);
+                if (isCounterClockwise) {
+                    translatedMove = `counter_${translatedMove}`;
+                }
+                translatedHistory.push(translatedMove);
+                await moveMap[translatedMove]();
+            }
         }
+        isComputing.value = false;
     }
-    console.log(translatedHistory);
-    console.log(testCube.isSolved());
-    console.log(testCube.toString());
 }
 
 async function keyListener(evt: KeyboardEvent) {
@@ -225,6 +225,28 @@ function toggleAxes() {
     }
 }
 
+function resetCube() {
+    cube = new Cube();
+    scene?.clear();
+    drawScene();
+}
+
+function drawScene() {
+    cubes.clear();
+    for (let x = 0; x < 3; x++) {
+        for (let y = 0; y < 3; y++) {
+            for (let z = 0; z < 3; z++) {
+                if (x === 1 && y === 1 && z === 1) {
+                    continue;
+                }
+                const cube = createCube(x - 1, y - 1, z - 1);
+                cubes.add(cube);
+            }
+        }
+    }
+    scene.add(cubes);
+}
+
 onMounted(() => {
     const canvas = <HTMLCanvasElement>document.querySelector('#c');
     const renderer = new THREE.WebGLRenderer({
@@ -247,19 +269,7 @@ onMounted(() => {
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color('#add8e6');
-    {
-        for (let x = 0; x < 3; x++) {
-            for (let y = 0; y < 3; y++) {
-                for (let z = 0; z < 3; z++) {
-                    if (x === 1 && y === 1 && z === 1) {
-                        continue;
-                    }
-                    const cube = createCube(x - 1, y - 1, z - 1);
-                    cubes.add(cube);
-                }
-            }
-        }
-    }
+    drawScene();
     scene.add(cubes);
     const color = 0xFFFFFF;
     const intensity = 1;
@@ -312,16 +322,38 @@ onMounted(() => {
 }
 
 button {
+    display: block;
+    margin-bottom: 0.5rem;
     padding: 4px;
     width: 100%;
     background-color: transparent;
-    border: 2px solid green;
+    border: 2px solid;
     border-radius: 5px;
     transition: background-color 100ms linear, color 100ms linear;
 }
 
-button:hover:not([disabled]) {
+.button-green {
+    border-color: green;
+}
+.button-green:hover:not([disabled]) {
     background-color: green;
+}
+
+.button-blue {
+    border-color: #229cf3;
+}
+.button-blue:hover:not([disabled]) {
+    background-color: #229cf3;
+}
+
+.button-red {
+    border-color: #dd3355;
+}
+.button-red:hover:not([disabled]) {
+    background-color: #dd3355;
+}
+
+button:hover:not([disabled]) {
     color: white;
     transition: background-color 100ms linear, color 100ms linear;
 }
