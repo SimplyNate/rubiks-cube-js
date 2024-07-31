@@ -1,8 +1,8 @@
 <template>
     <canvas id="c"></canvas>
     <div class="menu">
-        <button style="display: block; margin-bottom: 0.5rem;" @click="randomize" :disabled="isRandomizing">Randomize</button>
-        <button style="display: block; margin-bottom: 0.5rem;" @click="solveCube">Solve</button>
+        <button style="display: block; margin-bottom: 0.5rem;" @click="randomize" :disabled="isComputing">Randomize</button>
+        <button style="display: block; margin-bottom: 0.5rem;" @click="solveCube" :disabled="isComputing">Solve</button>
         <button>Reset</button>
         <div>
             <input type="checkbox" v-model="useAnimation"> Animate
@@ -95,17 +95,17 @@ const moveMap: Record<string, Function> = {
     counter_d: cD,
 };
 
-const isRandomizing = ref<boolean>(false);
+const isComputing = ref<boolean>(false);
 
 async function randomize() {
-    if (!isRandomizing.value) {
-        isRandomizing.value = true;
+    if (!isComputing.value) {
+        isComputing.value = true;
         const iterations = 20;
         cube = Cube.scrambled(iterations);
         for (const move of cube.scrambleHistory) {
             await moveMap[move]();
         }
-        isRandomizing.value = false;
+        isComputing.value = false;
     }
 }
 
@@ -307,6 +307,23 @@ onMounted(() => {
     padding: 1rem;
     background-color: white;
     max-width: 250px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+button {
+    padding: 4px;
+    width: 100%;
+    background-color: transparent;
+    border: 2px solid green;
+    border-radius: 5px;
+    transition: background-color 100ms linear, color 100ms linear;
+}
+
+button:hover:not([disabled]) {
+    background-color: green;
+    color: white;
+    transition: background-color 100ms linear, color 100ms linear;
 }
 
 </style>
