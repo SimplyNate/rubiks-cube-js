@@ -99,9 +99,11 @@ const isComputing = ref<boolean>(false);
 
 async function randomize() {
     if (!isComputing.value) {
+        // reorient cube to ensure it is synced with visualization
+        cube.perform_reorientation('y', 'o');
         isComputing.value = true;
         const iterations = 20;
-        cube = Cube.scrambled(iterations);
+        cube.scramble(iterations);
         for (const move of cube.scrambleHistory) {
             await moveMap[move]();
         }

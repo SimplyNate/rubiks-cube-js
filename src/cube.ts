@@ -127,6 +127,8 @@ export class Cube {
         return cube;
     }
     scramble(steps: number = 20) {
+        // Reset history when scrambling
+        this.history = [];
         let i = 0;
         let last;
         while (i < steps) {

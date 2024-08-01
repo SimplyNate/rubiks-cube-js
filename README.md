@@ -1,7 +1,6 @@
 ## TODO
 ___
 * Write README
-* Solve doesn't work when Randomize button is invoked > 1 times
 * Filter out unnecessary moves
 * Add control for animation speed
 * Improve UI
