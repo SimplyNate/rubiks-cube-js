@@ -963,6 +963,32 @@ export function solveTopRow(cube: Cube) {
      */
 }
 
+export function optimizeMoves(cube: Cube, depth: 4) {
+    for (let searchWindow = depth; searchWindow > 0; searchWindow--) {
+        const deletionIndexes = [];
+        for (let i = 0; i < cube.length - searchWindow; i++) {
+            const current = cube.history.slice(i, searchWindow);
+            const next = cube.history.slice(i + searchWindow, searchWindow);
+            next.reverse();
+            let isSame = true;
+            for (let j = 0; j < current.length; j++) {
+                if (current[j] !== next[j]) {
+                    isSame = false;
+                    break;
+                }
+            }
+            if (isSame) {
+                for (let j = i + searchWindow; j < i + searchWindow + searchWindow; j++) {
+                    deletionIndexes.push(j);
+                }
+            }
+        }
+        for (const index of deletionIndexes.reverse()) {
+            cube.history.splice(index, 1);
+        }
+    }
+}
+
 export function solve(cube: Cube) {
     solveWhiteCross(cube);
     solveWhiteCorners(cube);
