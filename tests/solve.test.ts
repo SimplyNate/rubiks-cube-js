@@ -25,6 +25,7 @@ import {
     solveMiddleEdges,
     solveYellowCross,
     solveYellowFace, solveTopRow, solve, translateMove,
+    optimizeMoves,
 } from '../src/solve';
 
 function countCorrect(edges: Edge[] | Corner[]): number {
@@ -810,5 +811,15 @@ describe('translateMove', () => {
             }
             expect(tester.isSolved()).toBeTruthy();
         }
+    });
+});
+
+describe('optimizeMoves', () => {
+    test('removes unnecessary moves', () => {
+        const cube = Cube.scrambled();
+        const applyCube = cube.copy();
+        solve(cube);
+        const beforeOptimizeState = cube.copy();
+        optimizeMoves(cube);
     });
 });

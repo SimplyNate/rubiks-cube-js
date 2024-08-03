@@ -963,7 +963,7 @@ export function solveTopRow(cube: Cube) {
      */
 }
 
-export function optimizeMoves(cube: Cube, depth: 4) {
+export function optimizeMoves(cube: Cube, depth = 4) {
     for (let searchWindow = depth; searchWindow > 0; searchWindow--) {
         const deletionIndexes = [];
         for (let i = 0; i < cube.length - searchWindow; i++) {
@@ -971,6 +971,9 @@ export function optimizeMoves(cube: Cube, depth: 4) {
             const next = cube.history.slice(i + searchWindow, searchWindow);
             next.reverse();
             let isSame = true;
+            /*
+            TODO: Check if next move window is the *opposite moves* in reverse order, not if they're the same moves in reverse order
+             */
             for (let j = 0; j < current.length; j++) {
                 if (current[j] !== next[j]) {
                     isSame = false;

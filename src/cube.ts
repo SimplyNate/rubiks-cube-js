@@ -672,7 +672,6 @@ export class Cube {
     }
     copy(): Cube {
         const cube = new Cube();
-        // Copy the cube's positions to new cube
         cube.cube = JSON.parse(JSON.stringify(this.cube));
         cube.history = JSON.parse(JSON.stringify(this.history));
         cube.scrambleHistory = JSON.parse(JSON.stringify(this.scrambleHistory));
