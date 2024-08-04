@@ -963,23 +963,36 @@ export function solveTopRow(cube: Cube) {
      */
 }
 
-export function optimizeMoves(cube: Cube, depth = 4) {
+/**
+ * Removes unnecessary moves from the provided move history. This works best on the translated history so that
+ * reorientations do not disguise real destructive moves
+ * @param history
+ * @param depth
+ */
+export function optimizeMoves(history: string[], depth = 4) {
+    // Copy provided history
+    const newHistory = [...history];
     for (let searchWindow = depth; searchWindow > 0; searchWindow--) {
         const deletionIndexes = [];
-        for (let i = 0; i < cube.length - searchWindow; i++) {
-            const current = cube.history.slice(i, searchWindow);
-            const next = cube.history.slice(i + searchWindow, searchWindow);
+        for (let i = 0; i < newHistory.length - searchWindow - searchWindow; i++) {
+            const current = newHistory.slice(i, i + searchWindow);
+            const next = newHistory.slice(i + searchWindow, i + searchWindow + searchWindow);
             next.reverse();
             let isSame = true;
-            /*
-            TODO: Check if next move window is the *opposite moves* in reverse order, not if they're the same moves in reverse order
-             */
             for (let j = 0; j < current.length; j++) {
-                if (current[j] !== next[j]) {
-                    isSame = false;
+                // If is a counter move, match would be a natural
+                // else if natural move, match a counter move
+                if (current[j].includes('counter')) {
+                    isSame = current[j].replace('counter', '') === next[j];
+                }
+                else {
+                    isSame = `counter_${current[j]}` === next[j];
+                }
+                if (!isSame) {
                     break;
                 }
             }
+            // TODO: If an unnecessary move is found, remove BOTH moves, not just next moves
             if (isSame) {
                 for (let j = i + searchWindow; j < i + searchWindow + searchWindow; j++) {
                     deletionIndexes.push(j);
@@ -987,9 +1000,10 @@ export function optimizeMoves(cube: Cube, depth = 4) {
             }
         }
         for (const index of deletionIndexes.reverse()) {
-            cube.history.splice(index, 1);
+            newHistory.splice(index, 1);
         }
     }
+    return newHistory;
 }
 
 export function solve(cube: Cube) {

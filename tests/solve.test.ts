@@ -816,10 +816,31 @@ describe('translateMove', () => {
 
 describe('optimizeMoves', () => {
     test('removes unnecessary moves', () => {
+        const originalOrientation = `yo`;
+        let currentOrientation = originalOrientation;
         const cube = Cube.scrambled();
-        const applyCube = cube.copy();
+        const testCube = Cube.fromString(cube.toString());
+        testCube.perform_reorientation('y', 'o');
         solve(cube);
-        const beforeOptimizeState = cube.copy();
-        optimizeMoves(cube);
+        const translatedHistory = [];
+        for (const move of cube.history) {
+            if (move.includes('reorient')) {
+                currentOrientation = move.split(' ')[1];
+                translatedHistory.push('reorient yo');
+            }
+            else {
+                const isCounterClockwise = move.includes('counter');
+                const parsedMove = isCounterClockwise ? move.split('_')[1] : move;
+                let translatedMove: string | Face = translateMove(currentOrientation, originalOrientation, parsedMove as Face);
+                testCube.performRotation(translatedMove as Face, isCounterClockwise);
+                if (isCounterClockwise) {
+                    translatedMove = `counter_${translatedMove}`;
+                }
+                translatedHistory.push(translatedMove);
+            }
+        }
+        const filteredHistory = translatedHistory.filter(h => !h.includes('reorient'));
+        const optimized = optimizeMoves(filteredHistory);
+        console.log(filteredHistory.length, optimized.length);
     });
 });
