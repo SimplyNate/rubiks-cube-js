@@ -155,6 +155,22 @@ export function permute_u(cube: Cube) {
     return cube;
 }
 
+export function permute_counter_u(cube: Cube) {
+    cube
+        .counter_l()
+        .u()
+        .counter_l()
+        .counter_u()
+        .counter_l()
+        .counter_u()
+        .counter_l()
+        .u()
+        .l()
+        .u()
+        .counter_l()
+        .counter_l();
+}
+
 export const adjacencies: Record<string, [Face, number]> = {
     u1: ['b', 1],
     u3: ['l', 1],
@@ -941,7 +957,12 @@ export function solveTopRow(cube: Cube) {
         const headlights = findHeadlights(cube);
         if (headlights.length === 4) {
             orientHeadlights(cube, headlights);
-            permute_u(cube);
+            if (cube.cube.f[1] === cube.colorOf('r')) {
+                permute_u(cube);
+            }
+            else {
+                permute_counter_u(cube);
+            }
         }
         else {
             if (headlights.length > 0) {
@@ -952,15 +973,6 @@ export function solveTopRow(cube: Cube) {
             orientHeadlights(cube, resultHl);
         }
     }
-    /*
-    if all sides have headlights:
-        permute_u
-    else:
-        find a headlight pair
-        if headlights:
-            make u moves such that headlights is in the back
-        permute_headlights
-     */
 }
 
 /**
@@ -969,38 +981,42 @@ export function solveTopRow(cube: Cube) {
  * @param history
  * @param depth
  */
-export function optimizeMoves(history: string[], depth = 4) {
+export function optimizeMoves(history: string[]) {
     // Copy provided history
     const newHistory = [...history];
-    for (let searchWindow = depth; searchWindow > 0; searchWindow--) {
+    let done = false;
+    while (!done) {
         const deletionIndexes = [];
-        for (let i = 0; i < newHistory.length - searchWindow - searchWindow; i++) {
-            const current = newHistory.slice(i, i + searchWindow);
-            const next = newHistory.slice(i + searchWindow, i + searchWindow + searchWindow);
-            next.reverse();
-            let isSame = true;
-            for (let j = 0; j < current.length; j++) {
+        let skipNext = false;
+        for (let i = 0; i < newHistory.length - 1; i++) {
+            if (skipNext) {
+                skipNext = false;
+            }
+            else {
+                const current = newHistory[i];
+                const next = newHistory[i + 1];
+                let isSame = true;
                 // If is a counter move, match would be a natural
                 // else if natural move, match a counter move
-                if (current[j].includes('counter')) {
-                    isSame = current[j].replace('counter', '') === next[j];
+                if (current.includes('counter')) {
+                    isSame = current.replace('counter', '') === next;
                 }
                 else {
-                    isSame = `counter_${current[j]}` === next[j];
+                    isSame = `counter_${current}` === next;
                 }
-                if (!isSame) {
-                    break;
-                }
-            }
-            // TODO: If an unnecessary move is found, remove BOTH moves, not just next moves
-            if (isSame) {
-                for (let j = i + searchWindow; j < i + searchWindow + searchWindow; j++) {
-                    deletionIndexes.push(j);
+                if (isSame) {
+                    deletionIndexes.push(i, i+1);
+                    skipNext = true;
                 }
             }
         }
-        for (const index of deletionIndexes.reverse()) {
-            newHistory.splice(index, 1);
+        if (deletionIndexes.length > 0) {
+            for (const index of deletionIndexes.reverse()) {
+                newHistory.splice(index, 1);
+            }
+        }
+        else {
+            done = true;
         }
     }
     return newHistory;
